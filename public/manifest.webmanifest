@@ -1,0 +1,19 @@
+{
+  "name": "CSM Tutor — Assistente de Enfermagem",
+  "short_name": "CSM Tutor",
+  "description": "Tutor digital com IA para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#b22222",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
