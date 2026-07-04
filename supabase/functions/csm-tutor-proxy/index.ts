@@ -46,6 +46,97 @@ function sanitizeInput(text: string): string {
   return sanitized.trim();
 }
 
+async function callGroqFallback(
+  action: string,
+  topic: string,
+  format: string,
+  history: any[],
+  temperature: number,
+  responseMimeType: string
+): Promise<string> {
+  const groqApiKey = Deno.env.get('GROQ_API_KEY');
+  if (!groqApiKey) {
+    throw new Error("GROQ_API_KEY não configurada no Supabase.");
+  }
+
+  // 1. Prepare messages in OpenAI/Groq Chat format
+  const messages: any[] = [
+    { role: 'system', content: SYSTEM_INSTRUCTION }
+  ];
+
+  if (action === 'generateQuizJson') {
+    const sanitizedTopic = sanitizeInput(topic);
+    const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
+Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
+Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
+Você DEVE responder estritamente em formato JSON com o seguinte esquema (não inclua blocos markdown de código, retorne apenas o JSON bruto):
+{
+  "questions": [
+    {
+      "question": "Texto da pergunta?",
+      "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
+      "answer": 0,
+      "explanation": "Explicação detalhada e fundamentação teórica baseada em literaturas científicas brasileiras (ex: Potter, Brunner & Suddarth, resoluções do COFEN/COREN, manuais do Ministério da Saúde)."
+    }
+  ]
+}`;
+    messages.push({ role: 'user', content: prompt });
+
+  } else if (action === 'generateStudyContent') {
+    const sanitizedTopic = sanitizeInput(topic);
+    const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
+Este conteúdo é para um aluno do curso técnico da CSM Educação. Foque em excelência técnica e cuidado humanizado. 
+Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
+
+    history.forEach((msg: any) => {
+      messages.push({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content
+      });
+    });
+
+    messages.push({ role: 'user', content: prompt });
+
+  } else if (action === 'chat') {
+    history.forEach((msg: any) => {
+      messages.push({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content
+      });
+    });
+  }
+
+  // 2. Fetch Groq API
+  const groqUrl = 'https://api.groq.com/openai/v1/chat/completions';
+  const requestBody: any = {
+    model: 'llama-3.3-70b-versatile',
+    messages: messages,
+    temperature: temperature
+  };
+
+  // If json formatting is requested, ask Groq for JSON output format
+  if (responseMimeType === 'application/json') {
+    requestBody.response_format = { type: 'json_object' };
+  }
+
+  const response = await fetch(groqUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqApiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Erro na API do Groq Fallback: ${errorText}`);
+  }
+
+  const groqData = await response.json();
+  return groqData.choices?.[0]?.message?.content || '';
+}
+
 Deno.serve(async (req: Request) => {
   // Trata requisições OPTIONS (Preflight do CORS)
   if (req.method === 'OPTIONS') {
@@ -134,7 +225,7 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
       });
     }
 
-    // 3. Execução da chamada HTTP para a API do Gemini
+    // 3. Execução da chamada HTTP para a API do Gemini com Fallback para Groq
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
     
     const requestBody = {
@@ -148,26 +239,64 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
       }
     };
 
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
+    let responseText = '';
+    let usedFallback = false;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return new Response(JSON.stringify({ error: "Erro na API do Gemini", details: errorText }), {
-        status: response.status,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    try {
+      const response = await fetch(geminiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini status code ${response.status}: ${errorText}`);
+      }
+
+      const geminiData = await response.json();
+      responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    } catch (geminiError: any) {
+      console.warn("Gemini falhou. Tentando fallback para Groq...", geminiError.message);
+      
+      const groqApiKey = Deno.env.get('GROQ_API_KEY');
+      if (groqApiKey) {
+        try {
+          responseText = await callGroqFallback(
+            action,
+            topic,
+            format,
+            history,
+            temperature,
+            responseMimeType
+          );
+          usedFallback = true;
+          console.info("Fallback para Groq concluído com sucesso!");
+        } catch (groqError: any) {
+          console.error("Fallback para Groq também falhou:", groqError.message);
+          return new Response(JSON.stringify({ 
+            error: "Erro na API do Gemini (e o fallback para Groq também falhou)", 
+            details: geminiError.message,
+            groqDetails: groqError.message
+          }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      } else {
+        return new Response(JSON.stringify({ 
+          error: "Erro na API do Gemini", 
+          details: geminiError.message 
+        }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
-    const geminiData = await response.json();
-    const responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    return new Response(JSON.stringify({ text: responseText }), {
+    return new Response(JSON.stringify({ text: responseText, fallback: usedFallback }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
