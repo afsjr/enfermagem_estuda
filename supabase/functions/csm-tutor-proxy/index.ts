@@ -135,7 +135,7 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
     }
 
     // 3. Execução da chamada HTTP para a API do Gemini
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
     
     const requestBody = {
       contents: contents,
