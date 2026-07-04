@@ -7,9 +7,10 @@ interface ChatMessageProps {
   message: Message;
   darkMode?: boolean;
   onTopicClick?: (topic: string) => void;
+  onAddToNotes?: (content: string) => void;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicClick }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicClick, onAddToNotes }) => {
   const isAssistant = message.role === 'assistant';
   const [copied, setCopied] = useState(false);
 
@@ -102,6 +103,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
           </div>
           
           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            {isAssistant && onAddToNotes && (
+              <button 
+                onClick={() => onAddToNotes(message.content)}
+                className={`p-1.5 rounded hover:bg-black/10 text-[10px] flex items-center gap-1 ${isAssistant ? 'text-slate-455 hover:text-emerald-500' : 'text-white/60'}`}
+                title="Salvar nas Notas"
+              >
+                <i className="fas fa-file-signature"></i>
+              </button>
+            )}
             <button 
               onClick={handleShare}
               className={`p-1.5 rounded hover:bg-black/10 text-[10px] flex items-center gap-1 ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}

@@ -8,6 +8,7 @@ import DoseCalculator from './components/DoseCalculator';
 import QuizView from './components/QuizView';
 import OnboardingModal from './components/OnboardingModal';
 import { telemetry, StudentProfile } from './telemetryService';
+import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz'>('dashboard');
@@ -87,6 +88,12 @@ const App: React.FC = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [history, setHistory] = useState<{id: string, topic: string}[]>([]);
   
+  // NotebookLM Workspace States
+  const [studioTab, setStudioTab] = useState<'documents' | 'calculator' | 'quiz' | 'notes'>('documents');
+  const [generatedDoc, setGeneratedDoc] = useState<{ title: string; content: string; format: StudyFormat } | null>(null);
+  const [notes, setNotes] = useState<string>('');
+  const [activeMobileView, setActiveMobileView] = useState<'chat' | 'studio'>('chat');
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const geminiRef = useRef<GeminiService | null>(null);
 
@@ -104,6 +111,10 @@ const App: React.FC = () => {
     if (savedTheme === 'dark') {
       setDarkMode(true);
     }
+    const savedNotes = localStorage.getItem('enfassist_notes');
+    if (savedNotes) {
+      setNotes(savedNotes);
+    }
   }, []);
 
   const updateStats = (updater: (prev: typeof stats) => typeof stats) => {
@@ -118,6 +129,31 @@ const App: React.FC = () => {
     const nextMode = !darkMode;
     setDarkMode(nextMode);
     localStorage.setItem('enfassist_theme', nextMode ? 'dark' : 'light');
+  };
+
+  const handleSaveNotes = (newNotes: string) => {
+    setNotes(newNotes);
+    localStorage.setItem('enfassist_notes', newNotes);
+  };
+
+  const handleAddToNotes = (text: string) => {
+    // Remove "Para Aprofundar" section to keep notes clean
+    const cleanText = text.replace(/🚀 Para Aprofundar[\s\S]*/i, '').trim();
+    const timestampStr = new Date().toLocaleString('pt-BR');
+    const noteEntry = `\n\n--- [Anotação em ${timestampStr}]\n${cleanText}\n`;
+    
+    // Append to existing notes or start a new notes text
+    setNotes(prev => {
+      const nextNotes = prev ? prev + noteEntry : noteEntry.trim();
+      localStorage.setItem('enfassist_notes', nextNotes);
+      return nextNotes;
+    });
+
+    // Switch tab to notes so student knows it succeeded
+    setStudioTab('notes');
+    if (window.innerWidth < 1024) {
+      setActiveMobileView('studio');
+    }
   };
 
   const getGeminiService = () => {
@@ -223,10 +259,21 @@ const App: React.FC = () => {
         actionDetail: `Formato: ${format} | Tema: ${state.topic?.substring(0, 100)}`
       });
 
+      // Save to document workspace
+      setGeneratedDoc({
+        title: `${format} — ${state.topic}`,
+        content: content,
+        format: format
+      });
+      setStudioTab('documents');
+      if (window.innerWidth < 1024) {
+        setActiveMobileView('studio');
+      }
+
       const resultMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: content,
+        content: `📄 **${format} Gerado!**\n\nPreparei um material pedagógico estruturado sobre **"${state.topic}"** no formato de **${format}**.\n\nO documento completo foi aberto no seu **Estúdio de Estudos** ao lado! Você pode lê-lo, copiá-lo ou salvá-lo diretamente nas suas anotações.`,
         timestamp: new Date(),
       };
       setMessages([...updatedMessages, resultMessage]);
@@ -516,71 +563,281 @@ const App: React.FC = () => {
           )}
 
           {activeView === 'tutor' && (
-            <div className="flex flex-col h-full">
-              {/* Chat Area */}
-              <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
-                {messages.map(msg => (
-                  <ChatMessage key={msg.id} message={msg} darkMode={darkMode} onTopicClick={handleDeepDive} />
-                ))}
-                {state.isGenerating && (
-                  <div className="flex flex-col gap-1 ml-4">
-                    <div className={`flex items-center gap-1.5 p-3 rounded-2xl border shadow-sm w-20 justify-center ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>
-                      <span className="w-1.5 h-1.5 bg-[#003366] rounded-full animate-[bounce_1s_infinite_0ms]"></span>
-                      <span className="w-1.5 h-1.5 bg-[#b22222] rounded-full animate-[bounce_1s_infinite_200ms]"></span>
-                      <span className="w-1.5 h-1.5 bg-[#FFCC00] rounded-full animate-[bounce_1s_infinite_400ms]"></span>
+            <div className="flex flex-1 flex-col lg:flex-row h-full overflow-hidden min-h-0">
+              
+              {/* MOBILE ONLY: Tab bar toggle at the top of the tutor view */}
+              <div className="lg:hidden flex border-b shrink-0 bg-[#b22222]/5 dark:bg-black/20">
+                <button
+                  onClick={() => setActiveMobileView('chat')}
+                  className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider text-center border-b-2 transition-all ${
+                    activeMobileView === 'chat'
+                      ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888]'
+                      : 'border-transparent text-slate-500'
+                  }`}
+                >
+                  <i className="fas fa-comment-medical mr-1.5"></i> Chat
+                </button>
+                <button
+                  onClick={() => setActiveMobileView('studio')}
+                  className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider text-center border-b-2 transition-all ${
+                    activeMobileView === 'studio'
+                      ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888]'
+                      : 'border-transparent text-slate-500'
+                  }`}
+                >
+                  <i className="fas fa-toolbox mr-1.5"></i> Estúdio de Estudos
+                </button>
+              </div>
+
+              {/* LEFT COLUMN: Chat Panel */}
+              <div className={`w-full lg:w-[55%] flex flex-col h-full border-r dark:border-[#333] shrink-0 min-h-0 ${
+                activeMobileView === 'chat' ? 'flex' : 'hidden lg:flex'
+              }`}>
+                {/* Chat Area */}
+                <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
+                  {messages.map(msg => (
+                    <ChatMessage 
+                      key={msg.id} 
+                      message={msg} 
+                      darkMode={darkMode} 
+                      onTopicClick={handleDeepDive} 
+                      onAddToNotes={handleAddToNotes}
+                    />
+                  ))}
+                  {state.isGenerating && (
+                    <div className="flex flex-col gap-1 ml-4">
+                      <div className={`flex items-center gap-1.5 p-3 rounded-2xl border shadow-sm w-20 justify-center ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>
+                        <span className="w-1.5 h-1.5 bg-[#003366] rounded-full animate-[bounce_1s_infinite_0ms]"></span>
+                        <span className="w-1.5 h-1.5 bg-[#b22222] rounded-full animate-[bounce_1s_infinite_200ms]"></span>
+                        <span className="w-1.5 h-1.5 bg-[#FFCC00] rounded-full animate-[bounce_1s_infinite_400ms]"></span>
+                      </div>
                     </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </main>
+
+                {/* Action Bar (Format Selector) */}
+                {state.topic && !state.isGenerating && (
+                  <div className={`border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]`}>
+                    <div className={`px-4 pt-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-center ${darkMode ? 'text-[#FFCC00]' : 'text-[#b22222]'}`}>
+                      Formatos de Apoio Pedagógico
+                    </div>
+                    <FormatSelector onSelect={handleFormatSelect} selected={state.format} compact darkMode={darkMode} />
                   </div>
                 )}
-                <div ref={messagesEndRef} />
-              </main>
 
-              {/* Action Bar (Format Selector) */}
-              {state.topic && !state.isGenerating && (
-                <div className={`border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]`}>
-                  <div className={`px-4 pt-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-center ${darkMode ? 'text-[#FFCC00]' : 'text-[#b22222]'}`}>
-                    Formatos de Apoio Pedagógico
+                {/* Input Area */}
+                <footer className={`p-4 border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} sticky bottom-0`}>
+                  <div className="flex items-center gap-2 max-w-4xl mx-auto font-semibold">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                        placeholder="Tire suas dúvidas clínicas (ex: como fazer sondagem nasogástrica)..."
+                        className={`w-full pl-4 pr-12 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all shadow-sm text-sm ${
+                          darkMode 
+                          ? 'bg-[#252525] border-[#333] text-white placeholder-slate-500' 
+                          : 'bg-[#b22222]/10 border-[#b22222]/20 text-[#b22222] placeholder-[#b22222]/60'
+                        }`}
+                      />
+                      <style>{`
+                        input { 
+                          color: ${darkMode ? 'white' : '#b22222'} !important; 
+                        }
+                      `}</style>
+                      
+                      <button
+                        onClick={() => handleSend()}
+                        disabled={state.isGenerating || !input.trim()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-[#FFCC00] text-[#003366] rounded-lg flex items-center justify-center hover:bg-[#b22222] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md"
+                      >
+                        <i className="fas fa-paper-plane text-xs"></i>
+                      </button>
+                    </div>
                   </div>
-                  <FormatSelector onSelect={handleFormatSelect} selected={state.format} compact darkMode={darkMode} />
-                </div>
-              )}
+                  <div className="text-center mt-2">
+                    <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
+                      CSM EDUCAÇÃO • Ensino de Saúde Baseado em Evidências
+                    </p>
+                  </div>
+                </footer>
+              </div>
 
-              {/* Input Area */}
-              <footer className={`p-4 border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} sticky bottom-0`}>
-                <div className="flex items-center gap-2 max-w-4xl mx-auto font-semibold">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                      placeholder="Tire suas dúvidas clínicas (ex: como fazer sondagem nasogástrica)..."
-                      className={`w-full pl-4 pr-12 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all shadow-sm text-sm ${
-                        darkMode 
-                        ? 'bg-[#252525] border-[#333] text-white placeholder-slate-500' 
-                        : 'bg-[#b22222]/10 border-[#b22222]/20 text-[#b22222] placeholder-[#b22222]/60'
-                      }`}
-                    />
-                    <style>{`
-                      input { 
-                        color: ${darkMode ? 'white' : '#b22222'} !important; 
-                      }
-                    `}</style>
-                    
-                    <button
-                      onClick={() => handleSend()}
-                      disabled={state.isGenerating || !input.trim()}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-[#FFCC00] text-[#003366] rounded-lg flex items-center justify-center hover:bg-[#b22222] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md"
-                    >
-                      <i className="fas fa-paper-plane text-xs"></i>
-                    </button>
-                  </div>
+              {/* RIGHT COLUMN: NotebookLM Tools / Studio Panel */}
+              <div className={`w-full lg:w-[45%] flex flex-col h-full bg-slate-50 dark:bg-[#121212] overflow-hidden min-h-0 ${
+                activeMobileView === 'studio' ? 'flex' : 'hidden lg:flex'
+              }`}>
+                
+                {/* Studio Tab bar headers */}
+                <div className={`flex border-b shrink-0 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-slate-100 border-slate-200'}`}>
+                  <button
+                    onClick={() => setStudioTab('documents')}
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                      studioTab === 'documents'
+                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                    }`}
+                  >
+                    <i className="fas fa-file-alt mr-1"></i> Documentos
+                  </button>
+                  <button
+                    onClick={() => setStudioTab('calculator')}
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                      studioTab === 'calculator'
+                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                    }`}
+                  >
+                    <i className="fas fa-calculator mr-1"></i> Cálculo
+                  </button>
+                  <button
+                    onClick={() => setStudioTab('quiz')}
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                      studioTab === 'quiz'
+                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                    }`}
+                  >
+                    <i className="fas fa-check-double mr-1"></i> Quiz
+                  </button>
+                  <button
+                    onClick={() => setStudioTab('notes')}
+                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                      studioTab === 'notes'
+                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                    }`}
+                  >
+                    <i className="fas fa-edit mr-1"></i> Notas
+                  </button>
                 </div>
-                <div className="text-center mt-2">
-                  <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
-                    CSM EDUCAÇÃO • Ensino de Saúde Baseado em Evidências
-                  </p>
+
+                {/* Tab content wrapper */}
+                <div className="flex-1 overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                  
+                  {/* Documents Tab */}
+                  {studioTab === 'documents' && (
+                    <div className="p-4 md:p-6 space-y-6 h-full flex flex-col min-h-0">
+                      {!generatedDoc ? (
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6 opacity-40">
+                          <i className="fas fa-file-invoice text-5xl mb-4 text-[#b22222]/40"></i>
+                          <h4 className="font-bold text-sm uppercase tracking-wider text-slate-600 dark:text-slate-400">Estúdio de Materiais Pedagógicos</h4>
+                          <p className="text-xs max-w-sm mt-2 leading-relaxed">
+                            Nenhum material de estudo gerado nesta sessão de chat.<br/><br/>
+                            Digite sua dúvida, defina um tema e clique em um dos botões de **"Formatos de Apoio Pedagógico"** abaixo do chat para gerar mapas mentais, resumos, estudos de caso e muito mais!
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col h-full">
+                          {/* Document Metadata Headers */}
+                          <div className="flex justify-between items-center pb-4 border-b dark:border-[#333] mb-4 shrink-0">
+                            <div>
+                              <span className="px-2 py-0.5 bg-[#b22222]/15 dark:bg-[#b22222]/30 text-[#b22222] dark:text-[#ff8888] rounded-full text-[9px] font-black uppercase tracking-wider">
+                                {generatedDoc.format}
+                              </span>
+                              <h3 className="font-black text-sm md:text-base mt-1.5 leading-tight">{generatedDoc.title}</h3>
+                            </div>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(generatedDoc.content);
+                                  alert('Conteúdo copiado!');
+                                }}
+                                className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs"
+                                title="Copiar Documento"
+                              >
+                                <i className="fas fa-copy"></i>
+                              </button>
+                              <button
+                                onClick={() => handleAddToNotes(`[Documento: ${generatedDoc.title}]\n\n${generatedDoc.content}`)}
+                                className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs text-emerald-600 dark:text-emerald-400"
+                                title="Salvar nas Notas"
+                              >
+                                <i className="fas fa-file-signature"></i>
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {/* Sheet of Paper layout for document reading */}
+                          <div className={`flex-1 overflow-y-auto p-6 rounded-xl border shadow-inner ${
+                            darkMode 
+                              ? 'bg-[#222] border-[#333] text-slate-100' 
+                              : 'bg-amber-50/10 border-slate-200 text-slate-800'
+                          }`}>
+                            <div className="prose max-w-none text-xs md:text-sm leading-relaxed font-medium">
+                              <ReactMarkdown>{generatedDoc.content}</ReactMarkdown>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Calculator Tab */}
+                  {studioTab === 'calculator' && (
+                    <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                      <DoseCalculator
+                        onCompleteCalculation={handleCompleteCalculation}
+                        darkMode={darkMode}
+                      />
+                    </div>
+                  )}
+
+                  {/* Quiz Tab */}
+                  {studioTab === 'quiz' && (
+                    <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                      <QuizView
+                        onGenerateQuiz={handleGenerateQuiz}
+                        onAwardXp={handleAwardXp}
+                        onIncrementQuizzes={handleIncrementQuizzes}
+                        darkMode={darkMode}
+                        initialTopic={state.topic}
+                      />
+                    </div>
+                  )}
+
+                  {/* Notes Tab */}
+                  {studioTab === 'notes' && (
+                    <div className="p-4 md:p-6 space-y-4 h-full flex flex-col min-h-0">
+                      <div className="flex justify-between items-center shrink-0 pb-2 border-b dark:border-[#333]">
+                        <div>
+                          <h4 className="font-bold text-xs uppercase tracking-wider text-[#b22222] dark:text-[#ff8888]">✍️ Meu Bloco de Notas</h4>
+                          <p className="text-[10px] text-slate-500 font-semibold leading-tight">Suas anotações locais e trechos salvos do chat</p>
+                        </div>
+                        {notes && (
+                          <button
+                            onClick={() => {
+                              if (confirm('Tem certeza que deseja apagar todas as suas anotações?')) {
+                                handleSaveNotes('');
+                              }
+                            }}
+                            className="px-2.5 py-1 text-[9px] bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 font-black rounded-lg uppercase tracking-wider hover:bg-red-200"
+                          >
+                            Limpar Tudo
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 flex flex-col min-h-0">
+                        <textarea
+                          value={notes}
+                          onChange={(e) => handleSaveNotes(e.target.value)}
+                          placeholder="Comece a digitar suas anotações ou clique em 'Salvar nas Notas' nas respostas do chat para reunir seu material pedagógico..."
+                          className={`w-full flex-1 p-4 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#FFCC00] text-xs md:text-sm font-semibold leading-relaxed resize-none ${
+                            darkMode 
+                              ? 'bg-[#222] border-[#333] text-slate-200 placeholder-slate-600' 
+                              : 'bg-yellow-50/15 border-slate-200 text-slate-700 placeholder-slate-400'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                 </div>
-              </footer>
+              </div>
+
             </div>
           )}
 

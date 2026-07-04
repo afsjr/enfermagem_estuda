@@ -12,15 +12,23 @@ interface QuizViewProps {
   onAwardXp: (xp: number) => void;
   onIncrementQuizzes: (topic: string, score: string) => void;
   darkMode?: boolean;
+  initialTopic?: string;
 }
 
 const QuizView: React.FC<QuizViewProps> = ({
   onGenerateQuiz,
   onAwardXp,
   onIncrementQuizzes,
-  darkMode
+  darkMode,
+  initialTopic
 }) => {
-  const [topicInput, setTopicInput] = useState<string>('Sinais Vitais e Monitorização');
+  const [topicInput, setTopicInput] = useState<string>(initialTopic || 'Sinais Vitais e Monitorização');
+  
+  React.useEffect(() => {
+    if (initialTopic) {
+      setTopicInput(initialTopic);
+    }
+  }, [initialTopic]);
   const [loading, setLoading] = useState<boolean>(false);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
