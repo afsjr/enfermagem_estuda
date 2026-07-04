@@ -74,6 +74,18 @@ const App: React.FC = () => {
     studyMaterialsGenerated: 0
   });
 
+  const currentLevel = Math.floor(stats.xp / 100) + 1;
+  const xpInCurrentLevel = stats.xp % 100;
+  const progressPercent = Math.min(xpInCurrentLevel, 100);
+
+  const getRankName = (level: number) => {
+    if (level <= 1) return 'Estudante Calouro 🎓';
+    if (level === 2) return 'Técnico em Formação 🏥';
+    if (level === 3) return 'Cuidado Humanizado 🩺';
+    if (level === 4) return 'Mestre dos Curativos 🩹';
+    return 'Líder do Cuidado Clínico 🏆';
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -526,26 +538,33 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex gap-4 text-[9px] font-black uppercase border-r border-white/20 pr-4 items-center">
+            {/* Persisted Evolution Progress Widget in Header */}
+            <div className="hidden sm:flex gap-3.5 items-center border-r border-white/20 pr-4 shrink-0">
+              <div className="text-right">
+                <span className="px-2 py-0.5 bg-[#FFCC00] text-[#003366] rounded-full text-[8px] font-black uppercase tracking-wider block leading-none">
+                  {getRankName(currentLevel)}
+                </span>
+                <div className="relative group flex items-center justify-end gap-1 mt-1 leading-none cursor-help select-none">
+                  <span className="text-[9px] opacity-75 font-black uppercase tracking-wider">⚡ {stats.xp} XP</span>
+                  <span className="w-3 h-3 rounded-full bg-white/10 hover:bg-[#FFCC00] hover:text-[#003366] flex items-center justify-center text-[7px] font-black transition-all">?</span>
+                  <span className="absolute hidden group-hover:block bg-slate-900 text-white text-[10px] p-2.5 rounded-lg shadow-xl w-56 right-0 top-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-relaxed font-semibold">
+                    ⚡ Pontos de Experiência acumulados. Ganhe XP tirando dúvidas (+5 XP), gerando guias (+10 XP), usando calculadoras (+15 XP) ou acertando quizzes (+20 XP).
+                  </span>
+                </div>
+              </div>
               
-              {/* XP Tooltip */}
-              <div className="relative group flex items-center gap-1.5 cursor-help">
-                <span>⚡ {stats.xp} XP</span>
-                <span className="w-3.5 h-3.5 rounded-full bg-white/20 hover:bg-[#FFCC00] hover:text-[#003366] flex items-center justify-center text-[8px] font-black transition-all">?</span>
-                <span className="absolute hidden group-hover:block bg-slate-900 text-white text-[10px] p-2.5 rounded-lg shadow-xl w-56 right-0 top-6 z-50 normal-case tracking-normal border border-slate-700/50 leading-relaxed font-semibold">
-                  ⚡ Pontos de Experiência acumulados. Ganhe XP tirando dúvidas (+5 XP), gerando guias (+10 XP), usando calculadoras (+15 XP) ou acertando quizzes (+20 XP).
-                </span>
+              <div className="w-24 lg:w-32 space-y-1">
+                <div className="flex justify-between text-[9px] font-black uppercase tracking-wider opacity-85 leading-none">
+                  <span>Nível {currentLevel}</span>
+                  <span>{progressPercent}%</span>
+                </div>
+                <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden shadow-inner">
+                  <div 
+                    className="bg-[#FFCC00] h-full rounded-full transition-all duration-500 shadow-md"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
               </div>
-
-              {/* Nível Tooltip */}
-              <div className="relative group flex items-center gap-1.5 cursor-help">
-                <span className="flex items-center gap-1"><i className="fas fa-trophy text-[#FFCC00]"></i> Nível {Math.floor(stats.xp / 100) + 1}</span>
-                <span className="w-3.5 h-3.5 rounded-full bg-white/20 hover:bg-[#FFCC00] hover:text-[#003366] flex items-center justify-center text-[8px] font-black transition-all">?</span>
-                <span className="absolute hidden group-hover:block bg-slate-900 text-white text-[10px] p-2.5 rounded-lg shadow-xl w-56 right-0 top-6 z-50 normal-case tracking-normal border border-slate-700/50 leading-relaxed font-semibold">
-                  🏆 Seu nível acadêmico de enfermagem. Cada 100 XP você avança de nível e evolui seu título pedagógico.
-                </span>
-              </div>
-
             </div>
             {activeView === 'tutor' && (
               <button 
@@ -699,202 +718,278 @@ const App: React.FC = () => {
               {/* RIGHT COLUMN: NotebookLM Tools / Studio Panel */}
               <div className={`w-full flex flex-col h-full bg-slate-50 dark:bg-[#121212] overflow-hidden min-h-0 transition-all duration-300 ease-in-out ${
                 isStudioExpanded 
-                  ? 'lg:w-[45%] lg:opacity-100 border-l dark:border-[#333]' 
-                  : 'lg:w-0 lg:opacity-0 lg:pointer-events-none border-l-0'
+                  ? 'lg:w-[45%] border-l dark:border-[#333]' 
+                  : 'lg:w-16 border-l dark:border-[#333]'
               } ${
                 activeMobileView === 'studio' ? 'flex' : 'hidden lg:flex'
               }`}>
                 
-                {/* Studio Tab bar headers */}
-                <div className={`flex border-b shrink-0 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-slate-100 border-slate-200'}`}>
-                  <button
-                    onClick={() => setStudioTab('documents')}
-                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
-                      studioTab === 'documents'
-                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
-                    }`}
-                  >
-                    <i className="fas fa-file-alt mr-1"></i> Documentos
-                  </button>
-                  <button
-                    onClick={() => setStudioTab('calculator')}
-                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
-                      studioTab === 'calculator'
-                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
-                    }`}
-                  >
-                    <i className="fas fa-calculator mr-1"></i> Cálculo
-                  </button>
-                  <button
-                    onClick={() => setStudioTab('quiz')}
-                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
-                      studioTab === 'quiz'
-                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
-                    }`}
-                  >
-                    <i className="fas fa-check-double mr-1"></i> Quiz
-                  </button>
-                  <button
-                    onClick={() => setStudioTab('notes')}
-                    className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
-                      studioTab === 'notes'
-                        ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
-                        : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
-                    }`}
-                  >
-                    <i className="fas fa-edit mr-1"></i> Notas
-                  </button>
-                </div>
+                {/* Collapsed Sidebar View (desktop only) */}
+                {!isStudioExpanded && (
+                  <div className="hidden lg:flex flex-col items-center justify-between py-6 h-full bg-slate-100 dark:bg-[#1a1a1a] w-full shrink-0">
+                    <div className="flex flex-col gap-5 w-full items-center">
+                      <button
+                        onClick={() => {
+                          setStudioTab('documents');
+                          setIsStudioExpanded(true);
+                          setHasNewStudioContent(false);
+                        }}
+                        className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                          studioTab === 'documents'
+                            ? 'bg-[#b22222] text-white shadow-md'
+                            : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-[#252525]'
+                        }`}
+                        title="Documentos Gerados"
+                      >
+                        <i className="fas fa-file-alt text-sm"></i>
+                        {hasNewStudioContent && (
+                          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#1a1a1a] animate-pulse"></span>
+                        )}
+                      </button>
 
-                {/* Tab content wrapper */}
-                <div className="flex-1 overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                      <button
+                        onClick={() => {
+                          setStudioTab('calculator');
+                          setIsStudioExpanded(true);
+                        }}
+                        className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                          studioTab === 'calculator'
+                            ? 'bg-[#b22222] text-white shadow-md'
+                            : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-[#252525]'
+                        }`}
+                        title="Calculadora Farmacológica"
+                      >
+                        <i className="fas fa-calculator text-sm"></i>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setStudioTab('quiz');
+                          setIsStudioExpanded(true);
+                        }}
+                        className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                          studioTab === 'quiz'
+                            ? 'bg-[#b22222] text-white shadow-md'
+                            : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-[#252525]'
+                        }`}
+                        title="Simulador de Quiz"
+                      >
+                        <i className="fas fa-check-double text-sm"></i>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setStudioTab('notes');
+                          setIsStudioExpanded(true);
+                        }}
+                        className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                          studioTab === 'notes'
+                            ? 'bg-[#b22222] text-white shadow-md'
+                            : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-[#252525]'
+                        }`}
+                        title="Bloco de Notas"
+                      >
+                        <i className="fas fa-edit text-sm"></i>
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setIsStudioExpanded(true);
+                        setHasNewStudioContent(false);
+                      }}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-200 dark:hover:bg-[#252525] transition-all bg-[#b22222]/10 hover:text-[#b22222]"
+                      title="Expandir Painel"
+                    >
+                      <i className="fas fa-chevron-left text-sm"></i>
+                    </button>
+                  </div>
+                )}
+
+                {/* Expanded/Full View (Always shown on mobile, shown on desktop ONLY when expanded) */}
+                <div className={`flex-1 flex flex-col h-full min-h-0 overflow-hidden ${
+                  isStudioExpanded ? 'flex' : 'lg:hidden'
+                }`}>
                   
-                  {/* Documents Tab */}
-                  {studioTab === 'documents' && (
-                    <div className="p-4 md:p-6 space-y-6 h-full flex flex-col min-h-0">
-                      {!generatedDoc ? (
-                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6 opacity-40">
-                          <i className="fas fa-file-invoice text-5xl mb-4 text-[#b22222]/40"></i>
-                          <h4 className="font-bold text-sm uppercase tracking-wider text-slate-600 dark:text-slate-400">Estúdio de Materiais Pedagógicos</h4>
-                          <p className="text-xs max-w-sm mt-2 leading-relaxed">
-                            Nenhum material de estudo gerado nesta sessão de chat.<br/><br/>
-                            Digite sua dúvida, defina um tema e clique em um dos botões de **"Formatos de Apoio Pedagógico"** abaixo do chat para gerar mapas mentais, resumos, estudos de caso e muito mais!
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col h-full">
-                          {/* Document Metadata Headers */}
-                          <div className="flex justify-between items-center pb-4 border-b dark:border-[#333] mb-4 shrink-0">
-                            <div>
-                              <span className="px-2 py-0.5 bg-[#b22222]/15 dark:bg-[#b22222]/30 text-[#b22222] dark:text-[#ff8888] rounded-full text-[9px] font-black uppercase tracking-wider">
-                                {generatedDoc.format}
-                              </span>
-                              <h3 className="font-black text-sm md:text-base mt-1.5 leading-tight">{generatedDoc.title}</h3>
+                  {/* Studio Tab bar headers */}
+                  <div className={`flex border-b shrink-0 items-center justify-between ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-slate-100 border-slate-200'}`}>
+                    <div className="flex flex-1">
+                      <button
+                        onClick={() => setStudioTab('documents')}
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                          studioTab === 'documents'
+                            ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                        }`}
+                      >
+                        <i className="fas fa-file-alt mr-1"></i> Documentos
+                      </button>
+                      <button
+                        onClick={() => setStudioTab('calculator')}
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                          studioTab === 'calculator'
+                            ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                        }`}
+                      >
+                        <i className="fas fa-calculator mr-1"></i> Cálculo
+                      </button>
+                      <button
+                        onClick={() => setStudioTab('quiz')}
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                          studioTab === 'quiz'
+                            ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                        }`}
+                      >
+                        <i className="fas fa-check-double mr-1"></i> Quiz
+                      </button>
+                      <button
+                        onClick={() => setStudioTab('notes')}
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-wider border-b-2 text-center transition-all ${
+                          studioTab === 'notes'
+                            ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-white dark:bg-[#1a1a1a]'
+                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525]'
+                        }`}
+                      >
+                        <i className="fas fa-edit mr-1"></i> Notas
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => setIsStudioExpanded(false)}
+                      className="p-3 text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 dark:hover:bg-[#252525] border-l dark:border-[#333] transition-all hidden lg:block"
+                      title="Recolher Painel"
+                    >
+                      <i className="fas fa-chevron-right text-xs"></i>
+                    </button>
+                  </div>
+
+                  {/* Tab content wrapper */}
+                  <div className="flex-1 overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                    
+                    {/* Documents Tab */}
+                    {studioTab === 'documents' && (
+                      <div className="p-4 md:p-6 space-y-6 h-full flex flex-col min-h-0">
+                        {!generatedDoc ? (
+                          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 opacity-40">
+                            <i className="fas fa-file-invoice text-5xl mb-4 text-[#b22222]/40"></i>
+                            <h4 className="font-bold text-sm uppercase tracking-wider text-slate-600 dark:text-slate-400">Estúdio de Materiais Pedagógicos</h4>
+                            <p className="text-xs max-w-sm mt-2 leading-relaxed">
+                              Nenhum material de estudo gerado nesta sessão de chat.<br/><br/>
+                              Digite sua dúvida, defina um tema e clique em um dos botões de **"Formatos de Apoio Pedagógico"** abaixo do chat para gerar mapas mentais, resumos, estudos de caso e muito mais!
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col h-full">
+                            {/* Document Metadata Headers */}
+                            <div className="flex justify-between items-center pb-4 border-b dark:border-[#333] mb-4 shrink-0">
+                              <div>
+                                <span className="px-2 py-0.5 bg-[#b22222]/15 dark:bg-[#b22222]/30 text-[#b22222] dark:text-[#ff8888] rounded-full text-[9px] font-black uppercase tracking-wider">
+                                  {generatedDoc.format}
+                                </span>
+                                <h3 className="font-black text-sm md:text-base mt-1.5 leading-tight">{generatedDoc.title}</h3>
+                              </div>
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(generatedDoc.content);
+                                    alert('Conteúdo copiado!');
+                                  }}
+                                  className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs"
+                                  title="Copiar Documento"
+                                >
+                                  <i className="fas fa-copy"></i>
+                                </button>
+                                <button
+                                  onClick={() => handleAddToNotes(`[Documento: ${generatedDoc.title}]\n\n${generatedDoc.content}`)}
+                                  className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs text-emerald-600 dark:text-emerald-400"
+                                  title="Salvar nas Notas"
+                                >
+                                  <i className="fas fa-file-signature"></i>
+                                </button>
+                              </div>
                             </div>
-                            <div className="flex gap-1">
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(generatedDoc.content);
-                                  alert('Conteúdo copiado!');
-                                }}
-                                className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs"
-                                title="Copiar Documento"
-                              >
-                                <i className="fas fa-copy"></i>
-                              </button>
-                              <button
-                                onClick={() => handleAddToNotes(`[Documento: ${generatedDoc.title}]\n\n${generatedDoc.content}`)}
-                                className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#252525] dark:hover:bg-[#333] rounded-lg text-xs text-emerald-600 dark:text-emerald-400"
-                                title="Salvar nas Notas"
-                              >
-                                <i className="fas fa-file-signature"></i>
-                              </button>
+                            
+                            {/* Sheet of Paper layout for document reading */}
+                            <div className={`flex-1 overflow-y-auto p-6 rounded-xl border shadow-inner ${
+                              darkMode 
+                                ? 'bg-[#222] border-[#333] text-slate-100' 
+                                : 'bg-amber-50/10 border-slate-200 text-slate-800'
+                            }`}>
+                              <div className="prose max-w-none text-xs md:text-sm leading-relaxed font-medium">
+                                <ReactMarkdown>{generatedDoc.content}</ReactMarkdown>
+                              </div>
                             </div>
                           </div>
-                          
-                          {/* Sheet of Paper layout for document reading */}
-                          <div className={`flex-1 overflow-y-auto p-6 rounded-xl border shadow-inner ${
-                            darkMode 
-                              ? 'bg-[#222] border-[#333] text-slate-100' 
-                              : 'bg-amber-50/10 border-slate-200 text-slate-800'
-                          }`}>
-                            <div className="prose max-w-none text-xs md:text-sm leading-relaxed font-medium">
-                              <ReactMarkdown>{generatedDoc.content}</ReactMarkdown>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Calculator Tab */}
-                  {studioTab === 'calculator' && (
-                    <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
-                      <DoseCalculator
-                        onCompleteCalculation={handleCompleteCalculation}
-                        darkMode={darkMode}
-                      />
-                    </div>
-                  )}
-
-                  {/* Quiz Tab */}
-                  {studioTab === 'quiz' && (
-                    <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
-                      <QuizView
-                        onGenerateQuiz={handleGenerateQuiz}
-                        onAwardXp={handleAwardXp}
-                        onIncrementQuizzes={handleIncrementQuizzes}
-                        darkMode={darkMode}
-                        initialTopic={state.topic}
-                      />
-                    </div>
-                  )}
-
-                  {/* Notes Tab */}
-                  {studioTab === 'notes' && (
-                    <div className="p-4 md:p-6 space-y-4 h-full flex flex-col min-h-0">
-                      <div className="flex justify-between items-center shrink-0 pb-2 border-b dark:border-[#333]">
-                        <div>
-                          <h4 className="font-bold text-xs uppercase tracking-wider text-[#b22222] dark:text-[#ff8888]">✍️ Meu Bloco de Notas</h4>
-                          <p className="text-[10px] text-slate-500 font-semibold leading-tight">Suas anotações locais e trechos salvos do chat</p>
-                        </div>
-                        {notes && (
-                          <button
-                            onClick={() => {
-                              if (confirm('Tem certeza que deseja apagar todas as suas anotações?')) {
-                                handleSaveNotes('');
-                              }
-                            }}
-                            className="px-2.5 py-1 text-[9px] bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 font-black rounded-lg uppercase tracking-wider hover:bg-red-200"
-                          >
-                            Limpar Tudo
-                          </button>
                         )}
                       </div>
-                      
-                      <div className="flex-1 flex flex-col min-h-0">
-                        <textarea
-                          value={notes}
-                          onChange={(e) => handleSaveNotes(e.target.value)}
-                          placeholder="Comece a digitar suas anotações ou clique em 'Salvar nas Notas' nas respostas do chat para reunir seu material pedagógico..."
-                          className={`w-full flex-1 p-4 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#FFCC00] text-xs md:text-sm font-semibold leading-relaxed resize-none ${
-                            darkMode 
-                              ? 'bg-[#222] border-[#333] text-slate-200 placeholder-slate-600' 
-                              : 'bg-yellow-50/15 border-slate-200 text-slate-700 placeholder-slate-400'
-                          }`}
+                    )}
+
+                    {/* Calculator Tab */}
+                    {studioTab === 'calculator' && (
+                      <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                        <DoseCalculator
+                          onCompleteCalculation={handleCompleteCalculation}
+                          darkMode={darkMode}
                         />
                       </div>
-                    </div>
-                  )}
-
-                </div>
-              </div>
-
-              {/* Floating Tab on the right when studio is collapsed (desktop only) */}
-              {!isStudioExpanded && (
-                <button
-                  onClick={() => {
-                    setIsStudioExpanded(true);
-                    setHasNewStudioContent(false);
-                  }}
-                  className="hidden lg:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-[#b22222] text-white hover:bg-[#8b0000] py-4 px-2.5 rounded-l-2xl shadow-xl flex-col items-center gap-2 transition-all hover:pr-4 border-l border-t border-b border-[#FFCC00]/50"
-                  title="Abrir Estúdio de Estudos"
-                >
-                  <div className="relative">
-                    <i className="fas fa-toolbox text-xs"></i>
-                    {hasNewStudioContent && (
-                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#b22222] animate-pulse"></span>
                     )}
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest [writing-mode:vertical-lr] select-none">
-                    Estúdio de Estudos
-                  </span>
-                </button>
-              )}
 
+                    {/* Quiz Tab */}
+                    {studioTab === 'quiz' && (
+                      <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                        <QuizView
+                          onGenerateQuiz={handleGenerateQuiz}
+                          onAwardXp={handleAwardXp}
+                          onIncrementQuizzes={handleIncrementQuizzes}
+                          darkMode={darkMode}
+                          initialTopic={state.topic}
+                        />
+                      </div>
+                    )}
+
+                    {/* Notes Tab */}
+                    {studioTab === 'notes' && (
+                      <div className="p-4 md:p-6 space-y-4 h-full flex flex-col min-h-0">
+                        <div className="flex justify-between items-center shrink-0 pb-2 border-b dark:border-[#333]">
+                          <div>
+                            <h4 className="font-bold text-xs uppercase tracking-wider text-[#b22222] dark:text-[#ff8888]">✍️ Meu Bloco de Notas</h4>
+                            <p className="text-[10px] text-slate-500 font-semibold leading-tight">Suas anotações locais e trechos salvos do chat</p>
+                          </div>
+                          {notes && (
+                            <button
+                              onClick={() => {
+                                if (confirm('Tem certeza que deseja apagar todas as suas anotações?')) {
+                                  handleSaveNotes('');
+                                }
+                              }}
+                              className="px-2.5 py-1 text-[9px] bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 font-black rounded-lg uppercase tracking-wider hover:bg-red-200"
+                            >
+                              Limpar Tudo
+                            </button>
+                          )}
+                        </div>
+                        
+                        <div className="flex-1 flex flex-col min-h-0">
+                          <textarea
+                            value={notes}
+                            onChange={(e) => handleSaveNotes(e.target.value)}
+                            placeholder="Comece a digitar suas anotações ou clique em 'Salvar nas Notas' nas respostas do chat para reunir seu material pedagógico..."
+                            className={`w-full flex-1 p-4 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#FFCC00] text-xs md:text-sm font-semibold leading-relaxed resize-none ${
+                              darkMode 
+                                ? 'bg-[#222] border-[#333] text-slate-200 placeholder-slate-600' 
+                                : 'bg-yellow-50/15 border-slate-200 text-slate-700 placeholder-slate-400'
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                </div>
+
+              </div>
             </div>
           )}
 

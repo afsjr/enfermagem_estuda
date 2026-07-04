@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface DashboardOverviewProps {
   stats: {
@@ -22,6 +22,15 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   onImportBackup,
   darkMode
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      onSelectTopic(searchQuery.trim());
+      onNavigate('tutor');
+    }
+  };
   const disciplines = [
     {
       name: 'Fundamentos de Enfermagem',
@@ -120,6 +129,51 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             {100 - xpInCurrentLevel} XP para o próximo nível
           </p>
         </div>
+      </section>
+
+      {/* Search Input for quick start */}
+      <section className={`p-5 rounded-2xl border transition-all shadow-sm ${
+        darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'
+      }`}>
+        <form onSubmit={handleSearchSubmit} className="space-y-3">
+          <div className="text-center md:text-left space-y-1">
+            <h3 className="font-bold text-xs uppercase tracking-wider text-[#b22222] dark:text-[#ff8888] flex items-center gap-2">
+              <i className="fas fa-search text-sm"></i> O que você quer estudar hoje?
+            </h3>
+            <p className={`text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Digite qualquer assunto clínico ou procedimento técnico para iniciar seu tutor inteligente de IA imediatamente.
+            </p>
+          </div>
+          <div className="flex gap-2 max-w-3xl">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Ex: Sondagem nasogástrica, administração de heparina, RCP, anatomia do coração..."
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all ${
+                  darkMode
+                    ? 'bg-[#1a1a1a] border-[#444] text-white placeholder-slate-650'
+                    : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'
+                }`}
+              />
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                <i className="fas fa-search"></i>
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={!searchQuery.trim()}
+              className="px-6 py-3 bg-[#b22222] hover:bg-[#8b0000] disabled:opacity-40 disabled:hover:bg-[#b22222] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shrink-0 flex items-center gap-2"
+            >
+              <span>Estudar</span>
+              <i className="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          <p className="text-[10px] opacity-60 font-semibold italic text-center md:text-left">
+            💡 Ou escolha uma das disciplinas ou ferramentas sugeridas abaixo para guiar seus estudos.
+          </p>
+        </form>
       </section>
 
       {/* Summary Statistics Grid */}
