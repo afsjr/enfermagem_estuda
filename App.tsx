@@ -93,6 +93,8 @@ const App: React.FC = () => {
   const [generatedDoc, setGeneratedDoc] = useState<{ title: string; content: string; format: StudyFormat } | null>(null);
   const [notes, setNotes] = useState<string>('');
   const [activeMobileView, setActiveMobileView] = useState<'chat' | 'studio'>('chat');
+  const [isStudioExpanded, setIsStudioExpanded] = useState<boolean>(true);
+  const [hasNewStudioContent, setHasNewStudioContent] = useState<boolean>(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const geminiRef = useRef<GeminiService | null>(null);
@@ -153,6 +155,9 @@ const App: React.FC = () => {
     setStudioTab('notes');
     if (window.innerWidth < 1024) {
       setActiveMobileView('studio');
+    } else {
+      setIsStudioExpanded(true);
+      setHasNewStudioContent(true);
     }
   };
 
@@ -268,6 +273,9 @@ const App: React.FC = () => {
       setStudioTab('documents');
       if (window.innerWidth < 1024) {
         setActiveMobileView('studio');
+      } else {
+        setIsStudioExpanded(true);
+        setHasNewStudioContent(true);
       }
 
       const resultMessage: Message = {
@@ -539,6 +547,25 @@ const App: React.FC = () => {
               </div>
 
             </div>
+            {activeView === 'tutor' && (
+              <button 
+                onClick={() => {
+                  setIsStudioExpanded(!isStudioExpanded);
+                  setHasNewStudioContent(false);
+                }}
+                className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                  isStudioExpanded 
+                    ? 'bg-white/20 text-[#FFCC00]' 
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                } hidden lg:flex`}
+                title={isStudioExpanded ? "Recolher Estúdio de Estudos" : "Expandir Estúdio de Estudos"}
+              >
+                <i className={`fas ${isStudioExpanded ? 'fa-columns' : 'fa-toolbox'} text-sm`}></i>
+                {hasNewStudioContent && !isStudioExpanded && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#b22222] animate-pulse"></span>
+                )}
+              </button>
+            )}
             <button 
               onClick={toggleTheme}
               className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
@@ -590,7 +617,11 @@ const App: React.FC = () => {
               </div>
 
               {/* LEFT COLUMN: Chat Panel */}
-              <div className={`w-full lg:w-[55%] flex flex-col h-full border-r dark:border-[#333] shrink-0 min-h-0 ${
+              <div className={`w-full flex flex-col h-full shrink-0 min-h-0 transition-all duration-300 ease-in-out ${
+                isStudioExpanded 
+                  ? 'lg:w-[55%] border-r dark:border-[#333]' 
+                  : 'lg:w-full border-r-0'
+              } ${
                 activeMobileView === 'chat' ? 'flex' : 'hidden lg:flex'
               }`}>
                 {/* Chat Area */}
@@ -666,7 +697,11 @@ const App: React.FC = () => {
               </div>
 
               {/* RIGHT COLUMN: NotebookLM Tools / Studio Panel */}
-              <div className={`w-full lg:w-[45%] flex flex-col h-full bg-slate-50 dark:bg-[#121212] overflow-hidden min-h-0 ${
+              <div className={`w-full flex flex-col h-full bg-slate-50 dark:bg-[#121212] overflow-hidden min-h-0 transition-all duration-300 ease-in-out ${
+                isStudioExpanded 
+                  ? 'lg:w-[45%] lg:opacity-100 border-l dark:border-[#333]' 
+                  : 'lg:w-0 lg:opacity-0 lg:pointer-events-none border-l-0'
+              } ${
                 activeMobileView === 'studio' ? 'flex' : 'hidden lg:flex'
               }`}>
                 
@@ -837,6 +872,28 @@ const App: React.FC = () => {
 
                 </div>
               </div>
+
+              {/* Floating Tab on the right when studio is collapsed (desktop only) */}
+              {!isStudioExpanded && (
+                <button
+                  onClick={() => {
+                    setIsStudioExpanded(true);
+                    setHasNewStudioContent(false);
+                  }}
+                  className="hidden lg:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-[#b22222] text-white hover:bg-[#8b0000] py-4 px-2.5 rounded-l-2xl shadow-xl flex-col items-center gap-2 transition-all hover:pr-4 border-l border-t border-b border-[#FFCC00]/50"
+                  title="Abrir Estúdio de Estudos"
+                >
+                  <div className="relative">
+                    <i className="fas fa-toolbox text-xs"></i>
+                    {hasNewStudioContent && (
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#b22222] animate-pulse"></span>
+                    )}
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest [writing-mode:vertical-lr] select-none">
+                    Estúdio de Estudos
+                  </span>
+                </button>
+              )}
 
             </div>
           )}
