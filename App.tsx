@@ -139,6 +139,14 @@ const App: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   const toggleTheme = () => {
     const nextMode = !darkMode;
     setDarkMode(nextMode);
@@ -880,12 +888,14 @@ const App: React.FC = () => {
                     {studioTab === 'documents' && (
                       <div className="p-4 md:p-6 space-y-6 h-full flex flex-col min-h-0">
                         {!generatedDoc ? (
-                          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 opacity-40">
-                            <i className="fas fa-file-invoice text-5xl mb-4 text-[#b22222]/40"></i>
-                            <h4 className="font-bold text-sm uppercase tracking-wider text-slate-600 dark:text-slate-400">Estúdio de Materiais Pedagógicos</h4>
-                            <p className="text-xs max-w-sm mt-2 leading-relaxed">
+                          <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+                            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-5 shadow-sm">
+                              <i className="fas fa-file-invoice text-3xl text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <h4 className="font-bold text-sm uppercase tracking-wider text-slate-700 dark:text-slate-300">Estúdio de Materiais Pedagógicos</h4>
+                            <p className="text-xs max-w-sm mt-3 leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
                               Nenhum material de estudo gerado nesta sessão de chat.<br/><br/>
-                              Digite sua dúvida, defina um tema e clique em um dos botões de **"Formatos de Apoio Pedagógico"** abaixo do chat para gerar mapas mentais, resumos, estudos de caso e muito mais!
+                              Digite sua dúvida, defina um tema e clique em um dos botões de <strong className="text-slate-700 dark:text-slate-300">"Formatos de Apoio Pedagógico"</strong> abaixo do chat para gerar mapas mentais, resumos, estudos de caso e muito mais!
                             </p>
                           </div>
                         ) : (
