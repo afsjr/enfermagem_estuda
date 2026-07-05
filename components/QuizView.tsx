@@ -112,7 +112,7 @@ const QuizView: React.FC<QuizViewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col">
+    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col pb-24 lg:pb-6">
       {questions.length === 0 && !loading && (
         // Setup State
         <div className={`p-6 rounded-2xl border text-center space-y-6 ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>
@@ -231,7 +231,7 @@ const QuizView: React.FC<QuizViewProps> = ({
                     key={idx}
                     disabled={isAnswered}
                     onClick={() => handleSelectOption(idx)}
-                    className={`w-full p-4 rounded-xl border text-left text-xs md:text-sm font-semibold flex items-center gap-3 transition-all ${buttonStyle}`}
+                    className={`w-full p-4 sm:p-4 min-h-[52px] rounded-xl border text-left text-xs md:text-sm font-semibold flex items-center gap-3 transition-all ${buttonStyle}`}
                   >
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-[11px] border shrink-0 ${
                       isAnswered && isCorrectAnswer
@@ -271,19 +271,19 @@ const QuizView: React.FC<QuizViewProps> = ({
           </div>
 
           {/* Action Footer */}
-          <div className="pt-4 flex justify-end">
+          <div className="pt-4 flex flex-col sm:flex-row justify-end gap-2">
             {!isAnswered ? (
               <button
                 disabled={selectedOption === null}
                 onClick={handleSubmitAnswer}
-                className="px-6 py-3 bg-[#FFCC00] text-[#003366] rounded-xl text-xs font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:bg-amber-400 hover:scale-105 transition-all shadow-md"
+                className="w-full sm:w-auto px-6 py-3.5 bg-[#FFCC00] text-[#003366] rounded-xl text-xs font-bold uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed hover:bg-amber-400 hover:scale-105 transition-all shadow-md"
               >
                 Confirmar Resposta <i className="fas fa-check ml-1.5"></i>
               </button>
             ) : (
               <button
                 onClick={handleNext}
-                className="px-6 py-3 bg-[#b22222] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#8b0000] hover:scale-105 transition-all shadow-md"
+                className="w-full sm:w-auto px-6 py-3.5 bg-[#b22222] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#8b0000] hover:scale-105 transition-all shadow-md"
               >
                 {currentIdx < questions.length - 1 ? 'Próxima Questão' : 'Ver Resultado'} <i className="fas fa-arrow-right ml-1.5"></i>
               </button>

@@ -90,17 +90,17 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto overflow-y-auto h-full">
+    <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6">
       {/* Welcome & Gamification Header */}
       <section className={`p-6 rounded-2xl border transition-all shadow-sm flex flex-col md:flex-row items-center gap-6 justify-between ${
         darkMode ? 'bg-[#252525] border-[#333] text-white' : 'bg-white border-slate-200 text-slate-800'
       }`}>
         <div className="space-y-2 text-center md:text-left flex-1">
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight">Bem-vindo de volta ao seu espaço de estudos! 👋</h2>
+          <h2 className="text-lg md:text-2xl font-bold tracking-tight">Bem-vindo ao CSM Tutor! 👋</h2>
           <p className={`text-xs md:text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
             Desenvolva suas habilidades práticas e teóricas de enfermagem com ajuda de IA e simuladores clínicos.
           </p>
-          <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-2">
+          <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-4 mt-2">
             <span className="px-2.5 py-1 bg-red-100 dark:bg-[#b22222]/20 text-[#b22222] dark:text-[#ff8888] rounded-full text-[10px] font-bold uppercase tracking-wider">
               {getRankName(currentLevel)}
             </span>
@@ -144,13 +144,13 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               Digite qualquer assunto clínico ou procedimento técnico para iniciar seu tutor inteligente de IA imediatamente.
             </p>
           </div>
-          <div className="flex gap-2 max-w-3xl">
+          <div className="flex flex-col sm:flex-row gap-2 max-w-3xl">
             <div className="relative flex-1">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Ex: Sondagem nasogástrica, administração de heparina, RCP, anatomia do coração..."
+                placeholder="Ex: Sondagem nasogástrica, RCP..."
                 className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all ${
                   darkMode
                     ? 'bg-[#1a1a1a] border-[#444] text-white placeholder-slate-650'
@@ -164,7 +164,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <button
               type="submit"
               disabled={!searchQuery.trim()}
-              className="px-6 py-3 bg-[#b22222] hover:bg-[#8b0000] disabled:opacity-40 disabled:hover:bg-[#b22222] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shrink-0 flex items-center gap-2"
+              className="w-full sm:w-auto px-6 py-3.5 bg-[#b22222] hover:bg-[#8b0000] disabled:opacity-40 disabled:hover:bg-[#b22222] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shrink-0 flex items-center justify-center gap-2"
             >
               <span>Estudar</span>
               <i className="fas fa-arrow-right"></i>
@@ -177,29 +177,29 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </section>
 
       {/* Summary Statistics Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
+      <section className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 sm:grid sm:grid-cols-2 md:grid-cols-4 sm:gap-4 sm:overflow-visible sm:pb-0 hide-scrollbar">
+        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 snap-center shrink-0 w-[45%] sm:w-auto ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
           <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-indigo-500">XP Acumulado</span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-2xl font-black">{stats.xp}</span>
             <span className="text-[10px] text-green-500 font-bold">⚡ +15xp/quiz</span>
           </div>
         </div>
-        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
+        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 snap-center shrink-0 w-[45%] sm:w-auto ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
           <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-[#b22222]">Quizzes Feitos</span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-2xl font-black">{stats.quizzesCompleted}</span>
             <span className="text-[10px] opacity-40 font-semibold">Testes práticos</span>
           </div>
         </div>
-        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
+        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 snap-center shrink-0 w-[45%] sm:w-auto ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
           <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-emerald-500">Cálculos Realizados</span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-2xl font-black">{stats.calculationsCompleted}</span>
             <span className="text-[10px] opacity-40 font-semibold">Simulações farmacológicas</span>
           </div>
         </div>
-        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
+        <div className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition-all hover:scale-102 snap-center shrink-0 w-[45%] sm:w-auto ${darkMode ? 'bg-[#1e1e1e] border-[#333]' : 'bg-white border-slate-200'}`}>
           <span className="text-[9px] font-black uppercase tracking-widest opacity-60 text-amber-500">Materiais de Estudo</span>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-2xl font-black">{stats.studyMaterialsGenerated}</span>
@@ -289,7 +289,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           <i className="fas fa-graduation-cap text-[#b22222] text-lg"></i>
           <h3 className="font-bold text-sm uppercase tracking-widest text-[#b22222] dark:text-[#ff8888]">Disciplinas do Perfil Pedagógico</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {disciplines.map((d) => (
             <div 
               key={d.name}
@@ -312,7 +312,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                     onNavigate('tutor');
                     onSelectTopic(d.topic);
                   }}
-                  className="px-3.5 py-1.5 bg-[#b22222] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider hover:bg-[#8b0000] hover:scale-105 transition-all shadow-sm"
+                  className="px-4 py-2.5 bg-[#b22222] text-white text-[11px] font-bold rounded-xl uppercase tracking-wider hover:bg-[#8b0000] active:scale-95 transition-all shadow-sm min-h-[44px] flex items-center"
                 >
                   Estudar Tópico <i className="fas fa-chevron-right ml-1"></i>
                 </button>

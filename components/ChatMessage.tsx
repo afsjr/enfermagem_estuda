@@ -66,7 +66,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
                 <button
                   key={idx}
                   onClick={() => onTopicClick?.(cleanTopic)}
-                  className={`text-left px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  className={`text-left px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
                     darkMode 
                     ? 'bg-[#333] border-[#444] text-[#FFCC00] hover:bg-[#444]' 
                     : 'bg-white border-[#b22222]/20 text-[#b22222] hover:bg-[#b22222]/5 hover:border-[#b22222]'
@@ -85,7 +85,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
 
   return (
     <div className={`flex w-full mb-4 ${isAssistant ? 'justify-start' : 'justify-end'}`}>
-      <div className={`relative group max-w-[92%] sm:max-w-[85%] rounded-2xl p-4 shadow-sm border transition-all duration-300 ${
+      <div className={`relative group max-w-[95%] sm:max-w-[85%] rounded-2xl p-4 shadow-sm border transition-all duration-300 ${
         isAssistant 
         ? darkMode 
           ? 'bg-[#252525] border-[#333] text-slate-200' 
@@ -102,11 +102,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
             </span>
           </div>
           
-          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
             {isAssistant && onAddToNotes && (
               <button 
                 onClick={() => onAddToNotes(message.content)}
-                className={`p-1.5 rounded hover:bg-black/10 text-[10px] flex items-center gap-1 ${isAssistant ? 'text-slate-455 hover:text-emerald-500' : 'text-white/60'}`}
+                className={`p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded hover:bg-black/10 text-[10px] gap-1 ${isAssistant ? 'text-slate-455 hover:text-emerald-500' : 'text-white/60'}`}
                 title="Salvar nas Notas"
               >
                 <i className="fas fa-file-signature"></i>
@@ -114,14 +114,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
             )}
             <button 
               onClick={handleShare}
-              className={`p-1.5 rounded hover:bg-black/10 text-[10px] flex items-center gap-1 ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}
+              className={`p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded hover:bg-black/10 text-[10px] gap-1 ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}
               title="Compartilhar"
             >
               <i className="fas fa-share-alt"></i>
             </button>
             <button 
               onClick={copyToClipboard}
-              className={`p-1.5 rounded hover:bg-black/10 text-[10px] flex items-center gap-1 ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}
+              className={`p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded hover:bg-black/10 text-[10px] gap-1 ${isAssistant ? 'text-slate-400' : 'text-white/60'}`}
               title="Copiar"
             >
               <i className={`fas ${copied ? 'fa-check text-green-500' : 'fa-copy'}`}></i>
@@ -129,11 +129,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
           </div>
         </div>
 
-        <div className={`prose max-w-none text-sm sm:text-base leading-relaxed font-medium ${darkMode && isAssistant ? 'prose-invert' : ''}`}>
+        <div className={`chat-prose max-w-none text-[0.875rem] sm:text-base leading-relaxed font-medium ${darkMode && isAssistant ? 'chat-prose-dark' : ''}`}>
           {renderContent(message.content)}
         </div>
         
-        <div className="mt-3 text-[9px] opacity-40 text-right font-bold tracking-tighter">
+        <div className="mt-3 text-[10px] sm:text-[9px] opacity-40 text-right font-bold tracking-tighter">
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>

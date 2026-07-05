@@ -19,23 +19,27 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({ onSelect, selected, com
   ];
 
   return (
-    <div className={`grid grid-cols-5 gap-1.5 px-4 ${compact ? 'py-1.5' : 'py-2.5'} ${darkMode ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+    <div className={`flex overflow-x-auto gap-2 snap-x snap-mandatory lg:grid lg:grid-cols-5 lg:overflow-visible hide-scrollbar px-4 ${compact ? 'py-1.5' : 'py-2.5'} ${darkMode ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
       {formats.map((f) => (
         <button
           key={f.type}
           onClick={() => onSelect(f.type)}
-          className={`flex flex-col items-center ${compact ? 'p-1.5' : 'p-2'} rounded-lg transition-all border ${
+          className={`snap-center shrink-0 min-w-[72px] flex flex-col items-center ${compact ? 'p-1.5' : 'p-2'} rounded-lg transition-all border ${
             selected === f.type 
-            ? 'border-[#FFCC00] bg-[#fffdf0] scale-105 shadow-sm' 
-            : darkMode 
-              ? 'border-transparent bg-[#252525] hover:border-[#FFCC00]'
-              : 'border-transparent bg-slate-50 hover:border-[#b22222]'
+            ? (darkMode ? 'border-yellow-500 bg-yellow-900/30 scale-105 shadow-sm' : 'border-red-500 bg-red-50 scale-105 shadow-sm')
+            : (darkMode 
+              ? 'border-transparent bg-neutral-800 hover:border-yellow-500/50'
+              : 'border-transparent bg-slate-100 hover:border-red-500/50')
           }`}
         >
-          <div className={`w-10 h-10 ${darkMode ? 'bg-[#333] text-[#FFCC00]' : f.color} rounded-lg flex items-center justify-center mb-1 shadow-sm transition-transform hover:scale-110`}>
+          <div className={`w-11 h-11 lg:w-10 lg:h-10 ${darkMode ? (selected === f.type ? 'bg-yellow-500 text-neutral-900' : 'bg-neutral-700 text-yellow-500') : (selected === f.type ? 'bg-red-600 text-white' : f.color)} rounded-lg flex items-center justify-center mb-1 shadow-sm transition-transform hover:scale-110`}>
             <i className={`fas ${f.icon} ${compact ? 'text-lg' : 'text-xl'}`}></i>
           </div>
-          <span className={`text-[7px] font-black text-center leading-tight uppercase w-full ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+          <span className={`text-[9px] lg:text-[7px] font-black text-center leading-tight uppercase w-full ${
+            selected === f.type 
+              ? (darkMode ? 'text-yellow-500' : 'text-red-700') 
+              : (darkMode ? 'text-slate-400' : 'text-slate-500')
+          }`}>
             {f.type}
           </span>
         </button>

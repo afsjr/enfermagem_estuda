@@ -521,7 +521,7 @@ const App: React.FC = () => {
         {/* Header Superior (Aligned h-16 with continuous borders) */}
         <header className="h-16 px-4 bg-[#b22222] text-white flex items-center justify-between shadow-md z-10 border-b-2 border-[#FFCC00] shrink-0">
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsHistoryOpen(true)} className="lg:hidden p-2 hover:bg-white/10 rounded-lg">
+            <button onClick={() => setIsHistoryOpen(true)} className="hidden p-2 hover:bg-white/10 rounded-lg">
               <i className="fas fa-bars"></i>
             </button>
             <div className="bg-[#FFCC00] p-1.5 rounded-lg text-[#003366] shadow-sm hidden sm:block">
@@ -539,6 +539,14 @@ const App: React.FC = () => {
           </div>
           <div className="flex items-center gap-4">
             {/* Persisted Evolution Progress Widget in Header */}
+            {/* Mobile compact XP */}
+            <div className="flex sm:hidden items-center gap-2 border-r border-white/20 pr-3 shrink-0">
+              <span className="text-[9px] font-black uppercase tracking-wider opacity-90">⚡ {stats.xp}</span>
+              <div className="w-12 bg-white/20 h-1 rounded-full overflow-hidden">
+                <div className="bg-[#FFCC00] h-full rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
+              </div>
+            </div>
+            {/* Desktop full XP widget */}
             <div className="hidden sm:flex gap-3.5 items-center border-r border-white/20 pr-4 shrink-0">
               <div className="text-right">
                 <span className="px-2 py-0.5 bg-[#FFCC00] text-[#003366] rounded-full text-[8px] font-black uppercase tracking-wider block leading-none">
@@ -644,7 +652,7 @@ const App: React.FC = () => {
                 activeMobileView === 'chat' ? 'flex' : 'hidden lg:flex'
               }`}>
                 {/* Chat Area */}
-                <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
+                <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-20 lg:pb-6 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
                   {messages.map(msg => (
                     <ChatMessage 
                       key={msg.id} 
@@ -668,7 +676,7 @@ const App: React.FC = () => {
 
                 {/* Action Bar (Format Selector) */}
                 {state.topic && !state.isGenerating && (
-                  <div className={`border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]`}>
+                  <div className={`border-t transition-colors duration-300 overflow-x-auto ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]`}>
                     <div className={`px-4 pt-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-center ${darkMode ? 'text-[#FFCC00]' : 'text-[#b22222]'}`}>
                       Formatos de Apoio Pedagógico
                     </div>
@@ -685,7 +693,7 @@ const App: React.FC = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Tire suas dúvidas clínicas (ex: como fazer sondagem nasogástrica)..."
+                        placeholder="Tire sua dúvida aqui..."
                         className={`w-full pl-4 pr-12 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all shadow-sm text-sm ${
                           darkMode 
                           ? 'bg-[#252525] border-[#333] text-white placeholder-slate-500' 
@@ -928,7 +936,7 @@ const App: React.FC = () => {
 
                     {/* Calculator Tab */}
                     {studioTab === 'calculator' && (
-                      <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                      <div className="h-full overflow-y-auto min-h-0 pb-20 lg:pb-0 bg-white dark:bg-[#1a1a1a]">
                         <DoseCalculator
                           onCompleteCalculation={handleCompleteCalculation}
                           darkMode={darkMode}
@@ -938,7 +946,7 @@ const App: React.FC = () => {
 
                     {/* Quiz Tab */}
                     {studioTab === 'quiz' && (
-                      <div className="h-full overflow-y-auto min-h-0 bg-white dark:bg-[#1a1a1a]">
+                      <div className="h-full overflow-y-auto min-h-0 pb-20 lg:pb-0 bg-white dark:bg-[#1a1a1a]">
                         <QuizView
                           onGenerateQuiz={handleGenerateQuiz}
                           onAwardXp={handleAwardXp}
@@ -1010,6 +1018,32 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t backdrop-blur-xl bg-white/80 dark:bg-[#1a1a1a]/90 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)]">
+        {[
+          { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
+          { id: 'tutor', icon: 'fa-comment-medical', label: 'Tutor' },
+          { id: 'calculator', icon: 'fa-calculator', label: 'Cálculos' },
+          { id: 'quiz', icon: 'fa-check-double', label: 'Quiz' },
+        ].map(item => {
+          const isActive = activeView === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveView(item.id as any)}
+              className={`flex flex-col items-center justify-center gap-0.5 py-2 px-3 transition-colors ${
+                isActive
+                  ? 'text-[#b22222]'
+                  : 'text-slate-400 dark:text-slate-500'
+              }`}
+            >
+              <i className={`fas ${item.icon} text-base`}></i>
+              <span className="text-[9px] font-bold uppercase tracking-wider">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 };

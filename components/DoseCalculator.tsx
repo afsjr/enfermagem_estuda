@@ -117,7 +117,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full">
+    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6">
       {/* Tabs Header */}
       <div className="flex border-b dark:border-[#333]">
         <button
@@ -151,20 +151,13 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
             </h3>
             
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume a infundir (mL)</label>
-                <div className="relative group cursor-help select-none">
-                  <span className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-[#333] hover:bg-[#b22222] hover:text-white flex items-center justify-center text-[8px] font-black transition-all text-slate-600 dark:text-slate-400">?</span>
-                  <span className="absolute hidden group-hover:block bg-slate-950 text-white text-[9px] p-2 rounded-md shadow-xl w-48 left-0 bottom-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-normal font-semibold">
-                    Insira o volume total da solução prescrita (ex: 500 mL de Soro Fisiológico 0.9%).
-                  </span>
-                </div>
-              </div>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume a infundir (mL)</label>
+              <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Insira o volume total da solução prescrita (ex: 500 mL de Soro Fisiológico 0.9%).</span>
               <input
                 type="number"
                 value={dripVolume}
                 onChange={(e) => setDripVolume(e.target.value)}
-                className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                className={`w-full p-3 rounded-lg border text-sm font-bold ${
                   darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                 }`}
                 placeholder="Ex: 500"
@@ -173,20 +166,13 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tempo</label>
-                  <div className="relative group cursor-help select-none">
-                    <span className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-[#333] hover:bg-[#b22222] hover:text-white flex items-center justify-center text-[8px] font-black transition-all text-slate-600 dark:text-slate-400">?</span>
-                    <span className="absolute hidden group-hover:block bg-slate-950 text-white text-[9px] p-2 rounded-md shadow-xl w-44 left-0 bottom-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-normal font-semibold">
-                      Insira o tempo de infusão indicado na prescrição médica.
-                    </span>
-                  </div>
-                </div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tempo</label>
+                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Insira o tempo de infusão indicado na prescrição médica.</span>
                 <input
                   type="number"
                   value={dripTime}
                   onChange={(e) => setDripTime(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
                     darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                   placeholder="Ex: 6"
@@ -197,7 +183,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
                 <select
                   value={dripTimeUnit}
                   onChange={(e) => setDripTimeUnit(e.target.value as 'hours' | 'minutes')}
-                  className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
                     darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                 >
@@ -293,20 +279,13 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
             </h3>
 
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Prescrição Médica (mg / UI)</label>
-                <div className="relative group cursor-help select-none">
-                  <span className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-[#333] hover:bg-[#b22222] hover:text-white flex items-center justify-center text-[8px] font-black transition-all text-slate-600 dark:text-slate-400">?</span>
-                  <span className="absolute hidden group-hover:block bg-slate-950 text-white text-[9px] p-2 rounded-md shadow-xl w-48 left-0 bottom-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-normal font-semibold">
-                    Dose receitada pelo médico que você deve administrar (ex: 150 mg).
-                  </span>
-                </div>
-              </div>
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Prescrição Médica (mg / UI)</label>
+              <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Dose receitada pelo médico que você deve administrar (ex: 150 mg).</span>
               <input
                 type="number"
                 value={prescribedDose}
                 onChange={(e) => setPrescribedDose(e.target.value)}
-                className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                className={`w-full p-3 rounded-lg border text-sm font-bold ${
                   darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                 }`}
                 placeholder="Ex: 150"
@@ -315,40 +294,26 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Disponível em Estoque</label>
-                  <div className="relative group cursor-help select-none">
-                    <span className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-[#333] hover:bg-[#b22222] hover:text-white flex items-center justify-center text-[8px] font-black transition-all text-slate-600 dark:text-slate-400">?</span>
-                    <span className="absolute hidden group-hover:block bg-slate-950 text-white text-[9px] p-2 rounded-md shadow-xl w-44 left-0 bottom-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-normal font-semibold">
-                      Dose existente no frasco-ampola ou comprimido disponível na farmácia (ex: 500 mg).
-                    </span>
-                  </div>
-                </div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Disponível em Estoque</label>
+                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Dose existente no frasco-ampola ou comprimido disponível na farmácia (ex: 500 mg).</span>
                 <input
                   type="number"
                   value={availableDose}
                   onChange={(e) => setAvailableDose(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
                     darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                   placeholder="Ex: 500"
                 />
               </div>
               <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume Diluente (mL)</label>
-                  <div className="relative group cursor-help select-none">
-                    <span className="w-3.5 h-3.5 rounded-full bg-slate-200 dark:bg-[#333] hover:bg-[#b22222] hover:text-white flex items-center justify-center text-[8px] font-black transition-all text-slate-600 dark:text-slate-400">?</span>
-                    <span className="absolute hidden group-hover:block bg-slate-950 text-white text-[9px] p-2 rounded-md shadow-xl w-44 left-0 bottom-5 z-50 normal-case tracking-normal border border-slate-700/50 leading-normal font-semibold">
-                      Quantidade de líquido usada para dissolver o pó do frasco (ex: 10 mL de água destilada).
-                    </span>
-                  </div>
-                </div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume Diluente (mL)</label>
+                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Quantidade de líquido usada para dissolver o pó do frasco (ex: 10 mL de água destilada).</span>
                 <input
                   type="number"
                   value={diluentVolume}
                   onChange={(e) => setDiluentVolume(e.target.value)}
-                  className={`w-full p-2.5 rounded-lg border text-sm font-bold ${
+                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
                     darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                   placeholder="Ex: 10"
