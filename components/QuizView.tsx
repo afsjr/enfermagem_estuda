@@ -173,7 +173,7 @@ const QuizView: React.FC<QuizViewProps> = ({
             <i className="fas fa-stethoscope text-2xl text-[#b22222] animate-pulse"></i>
           </div>
           <div className="text-center space-y-1">
-            <h4 className="font-bold text-sm uppercase tracking-widest text-[#b22222] dark:text-[#ff8888]">O CSM Tutor está preparando seu simulado...</h4>
+            <h4 className="font-bold text-sm uppercase tracking-widest text-[#b22222] dark:text-[#ff8888]">O MonicAI está preparando seu simulado...</h4>
             <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Aguarde a estruturação clínica das questões</p>
           </div>
         </div>

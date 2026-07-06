@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-07-05T12:00:00Z",
+  "project_root": "/Users/itouch/Documents/projetos_escola/enfassist---tutor-digital-para-estudantes-do-tecnico-em-enfermagem-csm",
+  "languages": [
+    { "name": "TypeScript", "extensions": [".ts", ".tsx"], "file_count": 15 },
+    { "name": "CSS", "extensions": [".css"], "file_count": 1 },
+    { "name": "HTML", "extensions": [".html"], "file_count": 1 },
+    { "name": "JSON", "extensions": [".json"], "file_count": 4 },
+    { "name": "Markdown", "extensions": [".md"], "file_count": 3 },
+    { "name": "SVG", "extensions": [".svg"], "file_count": 1 }
+  ],
+  "primary_language": "TypeScript",
+  "frameworks": [
+    { "name": "React", "version": "19.2.3", "source": "package.json" },
+    { "name": "Vite", "version": "6.2.0", "source": "package.json" },
+    { "name": "Tailwind CSS", "version": "CDN", "source": "index.html" },
+    { "name": "Font Awesome", "version": "6.4.0", "source": "index.html" }
+  ],
+  "package_manager": "npm",
+  "entry_points": [
+    { "path": "index.html", "type": "html_shell" },
+    { "path": "index.tsx", "type": "react_entry" },
+    { "path": "App.tsx", "type": "app_component" },
+    { "path": "supabase/functions/csm-tutor-proxy/index.ts", "type": "serverless_function" }
+  ],
+  "config_files": [
+    "tsconfig.json",
+    "vite.config.ts",
+    ".env.example",
+    ".env",
+    "public/manifest.webmanifest"
+  ],
+  "ci_cd": [],
+  "docker": {},
+  "database_hints": [
+    { "path": ".env.example", "type": "env_config" }
+  ],
+  "test_framework": null,
+  "test_file_count": 0,
+  "modules": [
+    "Chat (Tutor IA)",
+    "Dashboard",
+    "Calculadora Farmacológica",
+    "Quiz",
+    "Formatos Pedagógicos",
+    "Onboarding",
+    "Bloco de Notas",
+    "Gamificação",
+    "Telemetria Anônima",
+    "Segurança"
+  ],
+  "total_files": 30,
+  "organization_suggestion": {
+    "granularity": "feature",
+    "rationale": "O projeto é uma SPA React monolítica sem roteamento centralizado ou pastas por domínio. O fallback 'feature' captura melhor as funcionalidades identificadas.",
+    "signals": [],
+    "features": [
+      "chat",
+      "dashboard",
+      "calculator",
+      "quiz",
+      "onboarding",
+      "notes",
+      "gamification",
+      "telemetry",
+      "security",
+      "supabase-proxy"
+    ]
+  }
+}

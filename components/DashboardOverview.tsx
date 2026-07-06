@@ -96,7 +96,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         darkMode ? 'bg-[#252525] border-[#333] text-white' : 'bg-white border-slate-200 text-slate-800'
       }`}>
         <div className="space-y-2 text-center md:text-left flex-1">
-          <h2 className="text-lg md:text-2xl font-bold tracking-tight">Bem-vindo ao CSM Tutor! 👋</h2>
+          <h2 className="text-lg md:text-2xl font-bold tracking-tight">Bem-vindo ao MonicAI! 👋</h2>
           <p className={`text-xs md:text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
             Desenvolva suas habilidades práticas e teóricas de enfermagem com ajuda de IA e simuladores clínicos.
           </p>

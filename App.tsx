@@ -90,7 +90,7 @@ const App: React.FC = () => {
     {
       id: '1',
       role: 'assistant',
-      content: 'Bem-vindo ao CSM Tutor! 🎓 Sou seu assistente de estudos aqui no CSM Educação. Qual matéria técnica ou procedimento de saúde vamos revisar hoje?',
+      content: 'Bem-vindo ao MonicAI! 🎓 Sou seu assistente de estudos aqui no Colégio Santa Mônica, um projeto **100% gratuito** para alunos do técnico em enfermagem. Meu propósito é ajudar **exclusivamente** em temas de saúde e enfermagem. Qual matéria técnica ou procedimento vamos revisar hoje?',
       timestamp: new Date(),
     }
   ]);
@@ -113,7 +113,7 @@ const App: React.FC = () => {
 
   // Load stats and theme from localStorage
   useEffect(() => {
-    const savedStats = localStorage.getItem('enfassist_stats');
+    const savedStats = localStorage.getItem('monicai_stats');
     if (savedStats) {
       try {
         setStats(JSON.parse(savedStats));
@@ -121,11 +121,11 @@ const App: React.FC = () => {
         console.error(e);
       }
     }
-    const savedTheme = localStorage.getItem('enfassist_theme');
+    const savedTheme = localStorage.getItem('monicai_theme');
     if (savedTheme === 'dark') {
       setDarkMode(true);
     }
-    const savedNotes = localStorage.getItem('enfassist_notes');
+    const savedNotes = localStorage.getItem('monicai_notes');
     if (savedNotes) {
       setNotes(savedNotes);
     }
@@ -134,7 +134,7 @@ const App: React.FC = () => {
   const updateStats = (updater: (prev: typeof stats) => typeof stats) => {
     setStats(prev => {
       const next = updater(prev);
-      localStorage.setItem('enfassist_stats', JSON.stringify(next));
+      localStorage.setItem('monicai_stats', JSON.stringify(next));
       return next;
     });
   };
@@ -150,12 +150,12 @@ const App: React.FC = () => {
   const toggleTheme = () => {
     const nextMode = !darkMode;
     setDarkMode(nextMode);
-    localStorage.setItem('enfassist_theme', nextMode ? 'dark' : 'light');
+    localStorage.setItem('monicai_theme', nextMode ? 'dark' : 'light');
   };
 
   const handleSaveNotes = (newNotes: string) => {
     setNotes(newNotes);
-    localStorage.setItem('enfassist_notes', newNotes);
+    localStorage.setItem('monicai_notes', newNotes);
   };
 
   const handleAddToNotes = (text: string) => {
@@ -167,7 +167,7 @@ const App: React.FC = () => {
     // Append to existing notes or start a new notes text
     setNotes(prev => {
       const nextNotes = prev ? prev + noteEntry : noteEntry.trim();
-      localStorage.setItem('enfassist_notes', nextNotes);
+      localStorage.setItem('monicai_notes', nextNotes);
       return nextNotes;
     });
 
@@ -268,7 +268,7 @@ const App: React.FC = () => {
     const waitMessage: Message = {
       id: Date.now().toString(),
       role: 'assistant',
-      content: `O CSM Tutor está preparando seu ${format} sobre "${state.topic}"... Quase pronto! 🏥`,
+      content: `O MonicAI está preparando seu ${format} sobre "${state.topic}"... Quase pronto! 🏥`,
       timestamp: new Date(),
     };
     const updatedMessages = [...messages, waitMessage];
@@ -393,7 +393,7 @@ const App: React.FC = () => {
     
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', url);
-    downloadAnchor.setAttribute('download', `enfassist_progresso_${dateStr}.json`);
+    downloadAnchor.setAttribute('download', `monicai_progresso_${dateStr}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     document.body.removeChild(downloadAnchor);
@@ -411,7 +411,7 @@ const App: React.FC = () => {
         const parsed = JSON.parse(e.target?.result as string);
         if (parsed.stats) {
           setStats(parsed.stats);
-          localStorage.setItem('enfassist_stats', JSON.stringify(parsed.stats));
+          localStorage.setItem('monicai_stats', JSON.stringify(parsed.stats));
         }
         if (parsed.history) {
           setHistory(parsed.history);
@@ -422,7 +422,7 @@ const App: React.FC = () => {
         alert('🎉 Progresso importado com sucesso!');
       } catch (err) {
         console.error(err);
-        alert('❌ Arquivo de backup inválido. Certifique-se de carregar um arquivo gerado pelo EnfAssist.');
+        alert('❌ Arquivo de backup inválido. Certifique-se de carregar um arquivo gerado pelo MonicAI.');
       }
     };
     reader.readAsText(file);
@@ -447,9 +447,11 @@ const App: React.FC = () => {
         {/* Brand Header (Aligned h-16) */}
         <div className="h-16 px-4 border-b-2 border-[#FFCC00] flex items-center justify-between bg-[#b22222] text-white shrink-0">
           <div className="flex items-center gap-2">
-            <i className="fas fa-graduation-cap text-lg text-[#FFCC00]"></i>
-            <div>
-              <span className="font-bold text-sm tracking-widest uppercase block leading-none">CSM Tutor</span>
+            <div className="bg-white px-1.5 py-1 rounded shadow-sm flex items-center justify-center">
+              <img src="/logo.png" alt="CSM Logo" className="h-7 object-contain" />
+            </div>
+            <div className="ml-1">
+              <span className="font-bold text-sm tracking-widest uppercase block leading-none">MonicAI</span>
               <span className="text-[8px] text-[#FFCC00] font-bold uppercase tracking-wider">Excelência no Cuidado</span>
             </div>
           </div>
@@ -513,10 +515,12 @@ const App: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center p-4 text-center opacity-30 select-none">
-              <div>
-                <i className="fas fa-stethoscope text-3xl mb-2"></i>
-                <p className="text-[9px] font-bold uppercase tracking-wider leading-snug">CSM Educação<br/>Enfermagem Técnica</p>
+            <div className="flex-1 flex items-center justify-center p-4 text-center opacity-50 select-none">
+              <div className="flex flex-col items-center">
+                <div className="bg-white/50 p-2 rounded-lg mb-3">
+                  <img src="/logo.png" alt="CSM Logo" className="h-10 object-contain grayscale opacity-80 mix-blend-multiply dark:mix-blend-screen dark:opacity-100" />
+                </div>
+                <p className="text-[9px] font-bold uppercase tracking-wider leading-snug">Colégio Santa Mônica<br/>Enfermagem Técnica</p>
               </div>
             </div>
           )}
@@ -538,11 +542,11 @@ const App: React.FC = () => {
             <div>
               <h1 className="font-bold text-xs md:text-sm leading-tight tracking-tight">
                 {activeView === 'dashboard' && 'Painel de Estudos'}
-                {activeView === 'tutor' && 'CSM Tutor IA'}
+                {activeView === 'tutor' && 'MonicAI Tutor'}
                 {activeView === 'calculator' && 'Calculadora Farmacológica'}
                 {activeView === 'quiz' && 'Simulador de Quiz'}
               </h1>
-              <p className="text-[9px] text-[#FFCC00] font-bold uppercase tracking-wider">Estudante de Enfermagem CSM</p>
+              <p className="text-[9px] text-[#FFCC00] font-bold uppercase tracking-wider">Estudante de Enfermagem | Santa Mônica</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -725,7 +729,7 @@ const App: React.FC = () => {
                   </div>
                   <div className="text-center mt-2">
                     <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
-                      CSM EDUCAÇÃO • Ensino de Saúde Baseado em Evidências
+                      MONICAI • Ensino de Saúde Baseado em Evidências
                     </p>
                   </div>
                 </footer>

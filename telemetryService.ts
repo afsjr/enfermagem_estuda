@@ -1,5 +1,5 @@
 /**
- * Telemetry Service for EnfAssist
+ * Telemetry Service for MonicAI
  * 
  * Envia métricas de uso anônimas para o Supabase sem coletar dados pessoais (PII).
  */
@@ -18,10 +18,10 @@ class TelemetryService {
     this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
     this.supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-    let anonId = localStorage.getItem('enfassist_anon_id');
+    let anonId = localStorage.getItem('monicai_anon_id');
     if (!anonId) {
       anonId = this.generateUUID();
-      localStorage.setItem('enfassist_anon_id', anonId);
+      localStorage.setItem('monicai_anon_id', anonId);
     }
     this.anonymousId = anonId;
   }
@@ -38,7 +38,7 @@ class TelemetryService {
   }
 
   saveProfile(profile: StudentProfile): void {
-    localStorage.setItem('enfassist_profile', JSON.stringify(profile));
+    localStorage.setItem('monicai_profile', JSON.stringify(profile));
     
     this.logEvent({
       actionType: 'onboarding_completed',
@@ -47,7 +47,7 @@ class TelemetryService {
   }
 
   getProfile(): StudentProfile | null {
-    const saved = localStorage.getItem('enfassist_profile');
+    const saved = localStorage.getItem('monicai_profile');
     if (!saved) return null;
     try {
       return JSON.parse(saved);

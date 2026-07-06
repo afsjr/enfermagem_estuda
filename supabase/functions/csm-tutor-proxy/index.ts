@@ -5,24 +5,33 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const SYSTEM_INSTRUCTION = `Você é o CSM Tutor, o assistente inteligente oficial para alunos do curso técnico da CSM Educação.
+const SYSTEM_INSTRUCTION = `Você é o MonicAI, o assistente inteligente oficial para alunos do curso técnico do Colégio Santa Mônica.
 Sua missão é auxiliar estudantes em sua jornada de formação na área da saúde.
 
+ESCOPO ABSOLUTO — RESPONDA APENAS SOBRE SAÚDE E ENFERMAGEM:
+Este é um projeto educacional 100% gratuito para alunos do técnico em enfermagem.
+Você SOMENTE deve responder perguntas relacionadas a: enfermagem, anatomia, fisiologia, farmacologia, ética profissional, legislação COFEN/COREN, procedimentos técnicos, cálculo de medicamentos, urgência/emergência, saúde da mulher/criança, fundamentos de enfermagem e demais temas da grade curricular do curso técnico em enfermagem.
+Se uma pergunta fugir deste escopo, responda cordialmente redirecionando o aluno de volta aos estudos. Exemplo: "Sou o MonicAI, seu assistente de estudos em enfermagem. Meu propósito é auxiliá-lo exclusivamente em temas técnicos da área da saúde. Vamos voltar aos estudos? Qual matéria de enfermagem você gostaria de revisar hoje?"
+Se o usuário insistir em temas fora do escopo após o redirecionamento, repita a mesma orientação de forma educada e firme, sempre redirecionando para os estudos de enfermagem.
+
 REGRAS DE OURO:
-1. Identidade: Apresente-se como o CSM Tutor. Seja profissional, acolhedor e motivador.
-2. Escopo: Responda apenas sobre temas de saúde (enfermagem, anatomia, farmacologia, ética, etc).
+1. Identidade: Apresente-se como o MonicAI. Seja profissional, acolhedor e motivador.
+2. Escopo: Responda APENAS sobre temas de saúde e enfermagem (conforme definido acima). Qualquer outro assunto deve ser recusado com redirecionamento cordial aos estudos.
 3. Segurança: Recuse educadamente qualquer pedido que envolva dosagens perigosas, práticas ilegais ou conteúdos maliciosos. Explique que seu papel é estritamente pedagógico.
-4. Didática: Utilize terminologia técnica correta do CSM, mas explique de forma que um aluno de curso técnico compreenda facilmente.
+4. Didática: Utilize terminologia técnica correta, mas explique de forma que um aluno de curso técnico compreenda facilmente.
 5. Formatos: Se solicitado um Mapa Mental, use uma estrutura textual organizada. Para Estudos de Caso, foque na prática humanizada.
 6. APROFUNDAMENTO (OBRIGATÓRIO): Ao final de TODA resposta, adicione uma seção chamada "🚀 Para Aprofundar" com 2 ou 3 sugestões de tópicos relacionados, termos técnicos avançados ou correlações clínicas para que o aluno possa ampliar seu repertório.
 7. FUNDAMENTAÇÃO TEÓRICA E ORIENTAÇÃO (OBRIGATÓRIO): Ao final de toda resposta didática/teórica, inclua obrigatoriamente uma seção curta chamada "📚 Referências Recomendadas" citando livros clássicos da enfermagem ou diretrizes oficiais brasileiras (ex: Ministério da Saúde, resoluções do COFEN/COREN) que embasam a resposta. Adicione também a mensagem de alerta destacada: "⚠️ Nota pedagógica: Aluno, lembre-se sempre de diversificar suas fontes de consulta e estudo para enriquecer seus conhecimentos!".
 
-Ao iniciar, dê as boas-vindas ao aluno do CSM e pergunte em qual disciplina ou tema técnico ele precisa de suporte hoje.`;
+SUGESTÕES DE MELHORIA:
+Se o aluno quiser sugerir melhorias para o projeto, informe cordialmente que ele pode enviar um e-mail para: adelinosantos.fs@gmail.com
+
+Ao iniciar, dê as boas-vindas ao aluno do Colégio Santa Mônica e pergunte em qual disciplina ou tema técnico ele precisa de suporte hoje.`;
 
 // Lista de palavras e padrões suspeitos para detecção de Prompt Injection (Jailbreak)
 const INJECTION_PATTERNS = [
   /(?:ignore|desconsidere|esqueça|cancelar|ignorar|ignore|bypass|override|forget)\b.*\b(?:instruç|regr|diretriz|prompt|sistema|anterior|system|rules)/i,
-  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|csm)/i,
+  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|monicai)/i,
   /(?:você|voce|you)\b.*\b(?:agora é|agora e|seja|aja como|act as|are now)\b.*\b(?:hacker|desenvolvedor|prompt|outro|outra|assistente virtual genérico|terminal|shell|linux)/i,
   /\[(?:system|instruction|prompt|user|assistant|assistant_instruction|admin)\]/i,
   /<(?:system|instruction|prompt|user|assistant)>/i,
@@ -85,7 +94,7 @@ Você DEVE responder estritamente em formato JSON com o seguinte esquema (não i
   } else if (action === 'generateStudyContent') {
     const sanitizedTopic = sanitizeInput(topic);
     const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
-Este conteúdo é para um aluno do curso técnico da CSM Educação. Foque em excelência técnica e cuidado humanizado. 
+Este conteúdo é para um aluno do curso técnico do Colégio Santa Mônica. Foque em excelência técnica e cuidado humanizado. 
 Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
 
     history.forEach((msg: any) => {
@@ -165,7 +174,7 @@ Deno.serve(async (req: Request) => {
 
     if (detectPromptInjection(userInputToCheck)) {
       return new Response(JSON.stringify({ 
-        error: "Ação bloqueada por motivos de segurança. Por favor, utilize o EnfAssist apenas para fins educacionais e evite comandos de reprogramação do sistema." 
+        error: "Ação bloqueada por motivos de segurança. Por favor, utilize o MonicAI apenas para fins educacionais e evite comandos de reprogramação do sistema." 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -201,7 +210,7 @@ Você DEVE responder estritamente em formato JSON com o seguinte esquema (não i
     } else if (action === 'generateStudyContent') {
       const sanitizedTopic = sanitizeInput(topic);
       const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
-Este conteúdo é para um aluno do curso técnico da CSM Educação. Foque em excelência técnica e cuidado humanizado. 
+Este conteúdo é para um aluno do curso técnico do Colégio Santa Mônica. Foque em excelência técnica e cuidado humanizado. 
 Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
 
       // Converte o histórico para o formato do Gemini

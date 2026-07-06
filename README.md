@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🩺 CSM Tutor — Assistente Digital de Enfermagem
+# 🩺 MonicAI — Tutor Digital de Enfermagem
 
-**Tutor com Inteligência Artificial para estudantes do curso técnico em enfermagem do Colégio Santa Mônica (CSM).**
+**Tutor com Inteligência Artificial para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.**
 
 </div>
 

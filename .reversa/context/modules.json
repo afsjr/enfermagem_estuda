@@ -1,0 +1,264 @@
+{
+  "generated_at": "2026-07-05T12:00:00Z",
+  "modules": [
+    {
+      "name": "chat",
+      "path": "App.tsx, components/ChatMessage.tsx, components/FormatSelector.tsx",
+      "purpose": "Chat contextual com IA para tirar dúvidas de enfermagem",
+      "primary_files": [
+        "App.tsx",
+        "components/ChatMessage.tsx",
+        "components/FormatSelector.tsx",
+        "geminiService.ts",
+        "types.ts"
+      ],
+      "functions": [
+        { "name": "handleSend", "file": "App.tsx", "params": ["customMessage?: string"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "handleDeepDive", "file": "App.tsx", "params": ["topic: string"], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleFormatSelect", "file": "App.tsx", "params": ["format: StudyFormat"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "handleAddToNotes", "file": "App.tsx", "params": ["text: string"], "returns": "void", "confidence": "confirmed" },
+        { "name": "renderContent", "file": "components/ChatMessage.tsx", "params": ["text: string"], "returns": "JSX.Element", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "Message", "fields": [
+          { "name": "id", "type": "string", "required": true },
+          { "name": "role", "type": "'user' | 'assistant'", "required": true },
+          { "name": "content", "type": "string", "required": true },
+          { "name": "format", "type": "StudyFormat", "required": false },
+          { "name": "timestamp", "type": "Date", "required": true }
+        ], "confidence": "confirmed" },
+        { "name": "ChatState", "fields": [
+          { "name": "topic", "type": "string", "required": false },
+          { "name": "format", "type": "StudyFormat", "required": false },
+          { "name": "isGenerating", "type": "boolean", "required": true }
+        ], "confidence": "confirmed" },
+        { "name": "StudyFormat", "fields": [
+          { "name": "GUIDE", "type": "'Guia de Estudo'", "required": true },
+          { "name": "CASE", "type": "'Estudo de Caso'", "required": true },
+          { "name": "MINDMAP", "type": "'Mapa Mental (Texto)'", "required": true },
+          { "name": "SUMMARY", "type": "'Resumo Detalhado'", "required": true },
+          { "name": "QUIZ", "type": "'Quiz de Revisão'", "required": true }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Deep dive só funciona se mensagem contém '🚀 Para Aprofundar'", "location": "ChatMessage.tsx:41", "confidence": "confirmed" },
+        { "description": "Ao salvar nas notas, remove seção 'Para Aprofundar'", "location": "App.tsx:163", "confidence": "confirmed" },
+        { "description": "Histórico limitado a 20 itens", "location": "App.tsx:221", "confidence": "confirmed" }
+      ],
+      "dependencies": ["security", "telemetry", "supabase-proxy"],
+      "algorithms": [],
+      "complexity": "medium"
+    },
+    {
+      "name": "dashboard",
+      "path": "components/DashboardOverview.tsx",
+      "purpose": "Painel inicial com disciplinas, progresso e busca de tópicos",
+      "primary_files": ["components/DashboardOverview.tsx"],
+      "functions": [
+        { "name": "handleSearchSubmit", "file": "DashboardOverview.tsx", "params": ["e: FormEvent"], "returns": "void", "confidence": "confirmed" },
+        { "name": "getRankName", "file": "DashboardOverview.tsx", "params": ["level: number"], "returns": "string", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "6 disciplinas fixas no perfil pedagógico", "location": "DashboardOverview.tsx:35-77", "confidence": "confirmed" },
+        { "description": "Exportação gera JSON com stats + history + messages", "location": "App.tsx:383-401", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "calculator",
+      "path": "components/DoseCalculator.tsx",
+      "purpose": "Cálculos farmacológicos de gotejamento e diluição",
+      "primary_files": ["components/DoseCalculator.tsx"],
+      "functions": [
+        { "name": "handleCalculateDrip", "file": "DoseCalculator.tsx", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleCalculateRule3", "file": "DoseCalculator.tsx", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "DripResult", "fields": [
+          { "name": "rate", "type": "number", "required": true },
+          { "name": "formula", "type": "string", "required": true },
+          { "name": "stepByStep", "type": "string[]", "required": true }
+        ], "confidence": "confirmed" },
+        { "name": "Rule3Result", "fields": [
+          { "name": "volumeToAdminister", "type": "number", "required": true },
+          { "name": "stepByStep", "type": "string[]", "required": true }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Macrogotas: V/(T*3) para horas, (V*20)/T para minutos", "location": "DoseCalculator.tsx:47-52", "confidence": "confirmed" },
+        { "description": "Microgotas: V/T para horas, (V*60)/T para minutos", "location": "DoseCalculator.tsx:65-70", "confidence": "confirmed" },
+        { "description": "Regra de 3: X = (Prescrito * Diluente) / Disponível", "location": "DoseCalculator.tsx:101", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [
+        { "name": "gotejamento", "description": "Cálculo de gotas/microgotas por minuto com 4 variações", "confidence": "confirmed" },
+        { "name": "regra-de-3", "description": "Proporção direta para diluição de medicamentos", "confidence": "confirmed" }
+      ],
+      "complexity": "low"
+    },
+    {
+      "name": "quiz",
+      "path": "components/QuizView.tsx",
+      "purpose": "Simulador de quiz gerado por IA com 5 questões MCQA",
+      "primary_files": ["components/QuizView.tsx"],
+      "functions": [
+        { "name": "handleGenerate", "file": "QuizView.tsx", "params": ["topic: string"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "handleSelectOption", "file": "QuizView.tsx", "params": ["idx: number"], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleSubmitAnswer", "file": "QuizView.tsx", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleNext", "file": "QuizView.tsx", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "QuizQuestion", "fields": [
+          { "name": "question", "type": "string", "required": true },
+          { "name": "options", "type": "string[]", "required": true },
+          { "name": "answer", "type": "number", "required": true },
+          { "name": "explanation", "type": "string", "required": true }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Gera 5 questões por chamada à IA", "location": "supabase/functions/csm-tutor-proxy/index.ts:69", "confidence": "confirmed" },
+        { "description": "XP = acertos * 20", "location": "QuizView.tsx:100", "confidence": "confirmed" },
+        { "description": "6 tópicos sugeridos hardcoded", "location": "QuizView.tsx:40-46", "confidence": "confirmed" }
+      ],
+      "dependencies": ["supabase-proxy"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "onboarding",
+      "path": "components/OnboardingModal.tsx",
+      "purpose": "Modal de boas-vindas para coleta de perfil do aluno",
+      "primary_files": ["components/OnboardingModal.tsx"],
+      "functions": [
+        { "name": "handleNext", "file": "OnboardingModal.tsx", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleSubmit", "file": "OnboardingModal.tsx", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "StudentProfile", "fields": [
+          { "name": "courseSemester", "type": "string", "required": true },
+          { "name": "moduleInterest", "type": "string", "required": true }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "2 passos: módulo → interesse", "location": "OnboardingModal.tsx:30-43", "confidence": "confirmed" },
+        { "description": "4 opções de módulo, 6 de interesse", "location": "OnboardingModal.tsx:14-28", "confidence": "confirmed" }
+      ],
+      "dependencies": ["telemetry"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "notes",
+      "path": "App.tsx",
+      "purpose": "Bloco de notas persistido em localStorage",
+      "primary_files": ["App.tsx"],
+      "functions": [
+        { "name": "handleSaveNotes", "file": "App.tsx", "params": ["newNotes: string"], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleAddToNotes", "file": "App.tsx", "params": ["text: string"], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Persiste em localStorage('enfassist_notes')", "location": "App.tsx:129-131", "confidence": "confirmed" },
+        { "description": "Timestamp automático ao adicionar do chat", "location": "App.tsx:164", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "gamification",
+      "path": "App.tsx",
+      "purpose": "Sistema de XP, níveis e rankings para motivar o aluno",
+      "primary_files": ["App.tsx"],
+      "functions": [
+        { "name": "updateStats", "file": "App.tsx", "params": ["updater: function"], "returns": "void", "confidence": "confirmed" },
+        { "name": "getRankName", "file": "App.tsx", "params": ["level: number"], "returns": "string", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Chat = +5 XP, Material = +10 XP, Cálculo = +15 XP, Quiz acerto = +20 XP", "location": "App.tsx:243,310,340, QuizView.tsx:100", "confidence": "confirmed" },
+        { "description": "Nível = floor(xp / 100) + 1", "location": "App.tsx:77", "confidence": "confirmed" },
+        { "description": "5 rankings por nível", "location": "App.tsx:81-87", "confidence": "confirmed" },
+        { "description": "Persiste em localStorage('enfassist_stats')", "location": "App.tsx:137", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "telemetry",
+      "path": "telemetryService.ts",
+      "purpose": "Coleta anônima de métricas de uso via Supabase",
+      "primary_files": ["telemetryService.ts"],
+      "functions": [
+        { "name": "logEvent", "file": "telemetryService.ts", "params": ["params: object"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "saveProfile", "file": "telemetryService.ts", "params": ["profile: StudentProfile"], "returns": "void", "confidence": "confirmed" },
+        { "name": "getProfile", "file": "telemetryService.ts", "params": [], "returns": "StudentProfile|null", "confidence": "confirmed" },
+        { "name": "generateUUID", "file": "telemetryService.ts", "params": [], "returns": "string", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "StudentProfile", "fields": [
+          { "name": "courseSemester", "type": "string", "required": true },
+          { "name": "moduleInterest", "type": "string", "required": true }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "UUID anônimo gerado uma vez, persistido em localStorage", "location": "telemetryService.ts:21-26", "confidence": "confirmed" },
+        { "description": "Timeout de 4s com AbortController", "location": "telemetryService.ts:90-91", "confidence": "confirmed" },
+        { "description": "Falha silenciosa — não afeta UX", "location": "telemetryService.ts:108", "confidence": "confirmed" },
+        { "description": "Ignora se credenciais forem placeholders", "location": "telemetryService.ts:65-73", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "security",
+      "path": "security.ts",
+      "purpose": "Sanitização de input e detecção de Prompt Injection (duas camadas)",
+      "primary_files": ["security.ts"],
+      "functions": [
+        { "name": "sanitizeInput", "file": "security.ts", "params": ["text: string"], "returns": "string", "confidence": "confirmed" },
+        { "name": "detectPromptInjection", "file": "security.ts", "params": ["text: string"], "returns": "boolean", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Remove tags [system], [instruction], etc.", "location": "security.ts:32", "confidence": "confirmed" },
+        { "description": "Remove tags HTML simuladas", "location": "security.ts:35", "confidence": "confirmed" },
+        { "description": "Limita texto a 1000 caracteres", "location": "security.ts:38-40", "confidence": "confirmed" },
+        { "description": "5 padrões regex de Prompt Injection", "location": "security.ts:6-19", "confidence": "confirmed" },
+        { "description": "Normalização NFD remove acentos antes da detecção", "location": "security.ts:51", "confidence": "confirmed" },
+        { "description": "Mesma lógica replicada no servidor (Edge Function)", "location": "supabase/functions/csm-tutor-proxy/index.ts:32-47", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "supabase-proxy",
+      "path": "supabase/functions/csm-tutor-proxy/index.ts",
+      "purpose": "Edge Function do Supabase que faz proxy seguro para Gemini API com fallback Groq",
+      "primary_files": ["supabase/functions/csm-tutor-proxy/index.ts"],
+      "functions": [
+        { "name": "callGroqFallback", "file": "csm-tutor-proxy/index.ts", "params": ["action", "topic", "format", "history", "temperature", "responseMimeType"], "returns": "Promise<string>", "confidence": "confirmed" },
+        { "name": "detectPromptInjection", "file": "csm-tutor-proxy/index.ts", "params": ["text: string"], "returns": "boolean", "confidence": "confirmed" },
+        { "name": "sanitizeInput", "file": "csm-tutor-proxy/index.ts", "params": ["text: string"], "returns": "string", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "3 ações: chat, generateStudyContent, generateQuizJson", "location": "csm-tutor-proxy/index.ts:180-226", "confidence": "confirmed" },
+        { "description": "Fallback automático: Gemini → Groq (llama-3.3-70b)", "location": "csm-tutor-proxy/index.ts:261-296", "confidence": "confirmed" },
+        { "description": "System instruction obriga seções 'Para Aprofundar' e 'Referências Recomendadas'", "location": "csm-tutor-proxy/index.ts:8-19", "confidence": "confirmed" },
+        { "description": "Sanitização dupla: frontend + servidor", "location": "csm-tutor-proxy/index.ts:160-173", "confidence": "confirmed" },
+        { "description": "Modelo Gemini: gemini-2.5-flash-lite", "location": "csm-tutor-proxy/index.ts:229", "confidence": "confirmed" },
+        { "description": "Modelo Groq: llama-3.3-70b-versatile", "location": "csm-tutor-proxy/index.ts:112", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "medium"
+    }
+  ]
+}

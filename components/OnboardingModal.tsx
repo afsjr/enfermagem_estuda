@@ -53,12 +53,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ onComplete, darkMode 
           darkMode ? 'bg-[#1a1a1a] text-white' : 'bg-white text-slate-800'
         }`}
       >
-        {/* Header com a identidade do CSM */}
+        {/* Header com a identidade MonicAI */}
         <div className="bg-[#b22222] text-white p-5 border-b border-[#FFCC00]/30 text-center relative">
           <div className="w-12 h-12 bg-[#FFCC00] text-[#003366] rounded-full flex items-center justify-center mx-auto mb-2 text-xl shadow-md">
             <i className="fas fa-graduation-cap"></i>
           </div>
-          <h2 className="font-black text-sm uppercase tracking-wider">Boas-vindas ao CSM Tutor! 🩺</h2>
+          <h2 className="font-black text-sm uppercase tracking-wider">Boas-vindas ao MonicAI! 🩺</h2>
           <p className="text-[10px] text-[#FFCC00] uppercase font-bold tracking-widest mt-1">Excelência no Ensino de Saúde</p>
         </div>
 

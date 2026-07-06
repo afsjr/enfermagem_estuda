@@ -1,5 +1,5 @@
 /**
- * Utilitário de segurança para prevenção de Prompt Injection e sanitização de dados no EnfAssist.
+ * Utilitário de segurança para prevenção de Prompt Injection e sanitização de dados no MonicAI.
  */
 
 // Lista de palavras e padrões suspeitos para detecção de Prompt Injection (Jailbreak)

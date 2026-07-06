@@ -24,7 +24,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'CSM Tutor - Dica de Estudo',
+          title: 'MonicAI - Dica de Estudo',
           text: message.content,
         });
       } catch (err) {
@@ -98,7 +98,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, darkMode, onTopicCli
               <i className={`fas ${isAssistant ? 'fa-robot text-[#b22222]' : 'fa-user-graduate text-[#003366]'} text-[10px]`}></i>
             </div>
             <span className={`text-[10px] font-black uppercase tracking-widest opacity-80 ${isAssistant && darkMode ? 'text-[#FFCC00]' : ''}`}>
-              {isAssistant ? 'CSM Tutor' : 'Aluno CSM'}
+              {isAssistant ? 'MonicAI' : 'Aluno SM'}
             </span>
           </div>
           

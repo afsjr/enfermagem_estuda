@@ -1,6 +1,6 @@
 {
-  "name": "CSM Tutor — Assistente de Enfermagem",
-  "short_name": "CSM Tutor",
+  "name": "MonicAI — Tutor Digital de Enfermagem",
+  "short_name": "MonicAI",
   "description": "Tutor digital com IA para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.",
   "start_url": "/",
   "display": "standalone",
