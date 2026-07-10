@@ -197,7 +197,7 @@ export const InfusionPumpSimulator: React.FC<InfusionPumpSimulatorProps> = ({ on
 
             <div className="mt-4">
               <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div className="bg-cyan-400 h-full transition-all duration-300" style={{width: \`\${progressPercent}%\`}}></div>
+                <div className="bg-cyan-400 h-full transition-all duration-300" style={{width: `${progressPercent}%`}}></div>
               </div>
             </div>
 

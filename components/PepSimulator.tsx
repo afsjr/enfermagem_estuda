@@ -112,14 +112,14 @@ export const PepSimulator: React.FC<PepSimulatorProps> = ({ onAwardXp, darkMode 
     setIsEvaluating(true);
     setEvaluationFeedback(null);
     try {
-      const prompt = \`O aluno preencheu o seguinte Prontuário Eletrônico (PEP):\n
-Identificação: \${data.nome}, \${data.idade} anos. Alergias: \${data.alergias}
-Avaliação: \${data.sinaisVitais} | Exame: \${data.exameFisico} | Queixa: \${data.queixaPrincipal}
-Diagnóstico Enfermagem: \${data.diagnosticos}
-Intervenções: \${data.intervencoes}
-Evolução: \${data.evolucaoText}
+      const prompt = `O aluno preencheu o seguinte Prontuário Eletrônico (PEP):\n
+Identificação: ${data.nome}, ${data.idade} anos. Alergias: ${data.alergias}
+Avaliação: ${data.sinaisVitais} | Exame: ${data.exameFisico} | Queixa: ${data.queixaPrincipal}
+Diagnóstico Enfermagem: ${data.diagnosticos}
+Intervenções: ${data.intervencoes}
+Evolução: ${data.evolucaoText}
 
-Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando erros, omissões ou elogiando o preenchimento, baseado nas normas do COFEN (Res. 736/2024). Fale diretamente com o aluno.\`;
+Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando erros, omissões ou elogiando o preenchimento, baseado nas normas do COFEN (Res. 736/2024). Fale diretamente com o aluno.`;
 
       const response = await gemini.chat([{ role: 'user', content: prompt }]);
       setEvaluationFeedback(response);
@@ -135,7 +135,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
     if (!newScenarioDesc.trim()) return;
     setIsGeneratingScenario(true);
     try {
-      const prompt = \`Crie um cenário clínico para estudantes de enfermagem praticarem no PEP. Tema: \${newScenarioDesc}.
+      const prompt = `Crie um cenário clínico para estudantes de enfermagem praticarem no PEP. Tema: ${newScenarioDesc}.
       Retorne APENAS um JSON válido no formato:
       {
         "title": "título curto",
@@ -143,15 +143,15 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
         "prefill": {
           "nome": "nome fictício", "idade": "idade", "leito": "leito", "comorbidades": "...", "alergias": "...", "queixaPrincipal": "...", "sinaisVitais": "..."
         }
-      }\`;
+      }`;
       const response = await gemini.chat([{ role: 'user', content: prompt }]);
       
       // Attempt to parse JSON from markdown code block if present
       let jsonStr = response;
-      if (jsonStr.includes('\`\`\`json')) {
-        jsonStr = jsonStr.split('\`\`\`json')[1].split('\`\`\`')[0];
-      } else if (jsonStr.includes('\`\`\`')) {
-        jsonStr = jsonStr.split('\`\`\`')[1].split('\`\`\`')[0];
+      if (jsonStr.includes('```json')) {
+        jsonStr = jsonStr.split('```json')[1].split('```')[0];
+      } else if (jsonStr.includes('```')) {
+        jsonStr = jsonStr.split('```')[1].split('```')[0];
       }
 
       const parsed = JSON.parse(jsonStr.trim());
@@ -176,7 +176,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
   const completeness = calcCompleteness();
 
   return (
-    <div className={\`p-4 md:p-6 max-w-5xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6 \${darkMode ? 'text-white' : 'text-slate-800'}\`}>
+    <div className={`p-4 md:p-6 max-w-5xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
       
       {/* HEADER E CENÁRIOS */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-teal-900/10 p-4 rounded-xl border border-teal-600/20 mb-6 gap-4">
@@ -233,17 +233,17 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
           <span>{completeness}%</span>
         </div>
         <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-          <div className="bg-teal-500 h-full transition-all duration-300" style={{ width: \`\${completeness}%\` }}></div>
+          <div className="bg-teal-500 h-full transition-all duration-300" style={{ width: `${completeness}%` }}></div>
         </div>
       </div>
 
       {/* ABAS */}
       <div className="flex overflow-x-auto border-b dark:border-slate-700 mb-6 no-scrollbar pb-1">
-        <button onClick={() => setActiveStage('identificacao')} className={\`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all \${activeStage === 'identificacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}\`}>1. Identificação</button>
-        <button onClick={() => setActiveStage('avaliacao')} className={\`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all \${activeStage === 'avaliacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}\`}>2. Avaliação</button>
-        <button onClick={() => setActiveStage('diagnostico')} className={\`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all \${activeStage === 'diagnostico' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}\`}>3. Diagnóstico</button>
-        <button onClick={() => setActiveStage('planejamento')} className={\`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all \${activeStage === 'planejamento' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}\`}>4. Planejamento</button>
-        <button onClick={() => setActiveStage('evolucao')} className={\`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all \${activeStage === 'evolucao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}\`}>5. Evolução</button>
+        <button onClick={() => setActiveStage('identificacao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'identificacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>1. Identificação</button>
+        <button onClick={() => setActiveStage('avaliacao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'avaliacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>2. Avaliação</button>
+        <button onClick={() => setActiveStage('diagnostico')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'diagnostico' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>3. Diagnóstico</button>
+        <button onClick={() => setActiveStage('planejamento')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'planejamento' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>4. Planejamento</button>
+        <button onClick={() => setActiveStage('evolucao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'evolucao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>5. Evolução</button>
       </div>
 
       {/* FORMULÁRIOS POR ETAPA */}
