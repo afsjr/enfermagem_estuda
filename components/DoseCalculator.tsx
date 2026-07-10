@@ -122,20 +122,20 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
       <div className="flex border-b dark:border-[#333]">
         <button
           onClick={() => setActiveTab('drip')}
-          className={`flex-1 py-3 text-xs md:text-sm font-bold uppercase tracking-wider border-b-2 text-center transition-all ${
+          className={`flex-1 py-4 text-xs md:text-sm font-bold uppercase tracking-wider border-b-2 text-center transition-all min-h-[44px] ${
             activeTab === 'drip'
-              ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888]'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
+              ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-[#b22222]/5 dark:bg-[#2a2a2a]'
+              : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:hover:bg-[#252525]'
           }`}
         >
           💧 Gotejamento de Soro
         </button>
         <button
           onClick={() => setActiveTab('rule3')}
-          className={`flex-1 py-3 text-xs md:text-sm font-bold uppercase tracking-wider border-b-2 text-center transition-all ${
+          className={`flex-1 py-4 text-xs md:text-sm font-bold uppercase tracking-wider border-b-2 text-center transition-all min-h-[44px] ${
             activeTab === 'rule3'
-              ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888]'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
+              ? 'border-[#b22222] text-[#b22222] dark:text-[#ff8888] bg-[#b22222]/5 dark:bg-[#2a2a2a]'
+              : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:hover:bg-[#252525]'
           }`}
         >
           🧮 Regra de Três (Dosagem)
@@ -150,82 +150,73 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
               <i className="fas fa-tint"></i> Parâmetros Clínicos
             </h3>
             
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume a infundir (mL)</label>
-              <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Insira o volume total da solução prescrita (ex: 500 mL de Soro Fisiológico 0.9%).</span>
-              <input
-                type="number"
-                value={dripVolume}
-                onChange={(e) => setDripVolume(e.target.value)}
-                className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                  darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
-                }`}
-                placeholder="Ex: 500"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tempo</label>
-                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Insira o tempo de infusão indicado na prescrição médica.</span>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume a infundir (mL)</label>
                 <input
                   type="number"
-                  value={dripTime}
-                  onChange={(e) => setDripTime(e.target.value)}
-                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
+                  value={dripVolume}
+                  onChange={(e) => setDripVolume(e.target.value)}
+                  className={`w-full mt-1.5 p-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
                   }`}
-                  placeholder="Ex: 6"
+                  placeholder="Ex: 500"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Unidade</label>
-                <select
-                  value={dripTimeUnit}
-                  onChange={(e) => setDripTimeUnit(e.target.value as 'hours' | 'minutes')}
-                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
-                  }`}
-                >
-                  <option value="hours">Horas</option>
-                  <option value="minutes">Minutos</option>
-                </select>
+              <div>
+                <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Tempo de Infusão</label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={dripTime}
+                    onChange={(e) => setDripTime(e.target.value)}
+                    className={`flex-1 p-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                      darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
+                    }`}
+                    placeholder="Ex: 6"
+                  />
+                  <select
+                    value={dripTimeUnit}
+                    onChange={(e) => setDripTimeUnit(e.target.value as 'hours' | 'minutes')}
+                    className={`w-32 p-3.5 rounded-xl border-2 font-bold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                      darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
+                    }`}
+                  >
+                    <option value="hours">Horas (h)</option>
+                    <option value="minutes">Minutos (min)</option>
+                  </select>
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-1">Tipo de Gotejamento</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setDripType('macro')}
-                  className={`p-2.5 rounded-lg border text-xs font-bold transition-all ${
-                    dripType === 'macro'
-                      ? 'border-[#b22222] bg-[#b22222]/10 text-[#b22222] dark:text-[#ff8888]'
-                      : darkMode
-                        ? 'border-[#444] bg-[#1a1a1a] text-slate-400'
-                        : 'border-slate-200 bg-slate-50 text-slate-600'
-                  }`}
-                >
-                  💧 Macrogotas (Gotas)
-                </button>
-                <button
-                  onClick={() => setDripType('micro')}
-                  className={`p-2.5 rounded-lg border text-xs font-bold transition-all ${
-                    dripType === 'micro'
-                      ? 'border-[#b22222] bg-[#b22222]/10 text-[#b22222] dark:text-[#ff8888]'
-                      : darkMode
-                        ? 'border-[#444] bg-[#1a1a1a] text-slate-400'
-                        : 'border-slate-200 bg-slate-50 text-slate-600'
-                  }`}
-                >
-                  💦 Microgotas
-                </button>
+              <div>
+                <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Equipo Utilizado</label>
+                <div className="flex bg-slate-100 dark:bg-[#1a1a1a] p-1 rounded-xl border dark:border-[#333]">
+                  <button
+                    onClick={() => setDripType('macro')}
+                    className={`flex-1 py-3 text-xs md:text-sm font-bold rounded-lg transition-all min-h-[44px] ${
+                      dripType === 'macro'
+                        ? 'bg-white dark:bg-[#333] shadow-sm text-slate-800 dark:text-white'
+                        : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                    }`}
+                  >
+                    Macrogotas
+                  </button>
+                  <button
+                    onClick={() => setDripType('micro')}
+                    className={`flex-1 py-3 text-xs md:text-sm font-bold rounded-lg transition-all min-h-[44px] ${
+                      dripType === 'micro'
+                        ? 'bg-white dark:bg-[#333] shadow-sm text-slate-800 dark:text-white'
+                        : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                    }`}
+                  >
+                    Microgotas
+                  </button>
+                </div>
               </div>
             </div>
 
             <button
               onClick={handleCalculateDrip}
-              className="w-full py-3 bg-[#b22222] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#8b0000] shadow-md transition-all mt-4"
+              className="w-full py-4 mt-6 bg-[#b22222] hover:bg-[#8b0000] text-white font-bold rounded-xl text-sm uppercase tracking-wider transition-all shadow-md active:scale-95 min-h-[48px]"
             >
               Calcular Velocidade
             </button>
@@ -240,16 +231,13 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
                   <p className="text-3xl font-black text-emerald-700 dark:text-emerald-300 mt-1">
                     {dripResult.rate} <span className="text-sm font-bold uppercase">{dripType === 'macro' ? 'gotas/min' : 'microgotas/min'}</span>
                   </p>
-                  <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400/80 mt-1">
-                    Aproximadamente {Math.round(dripResult.rate)} {dripType === 'macro' ? 'gotas/min' : 'microgotas/min'}
-                  </p>
                 </div>
                 <div className="space-y-2">
                   <h5 className="text-[10px] font-black uppercase text-slate-400">Fórmula Usada:</h5>
                   <code className="block p-2 bg-slate-100 dark:bg-[#1a1a1a] rounded text-xs font-mono break-all font-bold text-[#b22222] dark:text-[#ff8888]">{dripResult.formula}</code>
                 </div>
                 <div className="space-y-2">
-                  <h5 className="text-[10px] font-black uppercase text-slate-400">Passo a Passo Matemático:</h5>
+                  <h5 className="text-[10px] font-black uppercase text-slate-400">Passo a Passo:</h5>
                   <ul className="text-xs space-y-1.5 list-none font-semibold">
                     {dripResult.stepByStep.map((s, idx) => (
                       <li key={idx} className="flex gap-2 items-start">
@@ -278,43 +266,39 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
               <i className="fas fa-pills"></i> Valores de Diluição
             </h3>
 
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Prescrição Médica (mg / UI)</label>
-              <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Dose receitada pelo médico que você deve administrar (ex: 150 mg).</span>
-              <input
-                type="number"
-                value={prescribedDose}
-                onChange={(e) => setPrescribedDose(e.target.value)}
-                className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                  darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
-                }`}
-                placeholder="Ex: 150"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Disponível em Estoque</label>
-                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Dose existente no frasco-ampola ou comprimido disponível na farmácia (ex: 500 mg).</span>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Prescrição Médica (mg / UI)</label>
+                <input
+                  type="number"
+                  value={prescribedDose}
+                  onChange={(e) => setPrescribedDose(e.target.value)}
+                  className={`w-full mt-1.5 p-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
+                  }`}
+                  placeholder="Ex: 150"
+                />
+              </div>
+              <div>
+                <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Dose Disponível (mg)</label>
                 <input
                   type="number"
                   value={availableDose}
                   onChange={(e) => setAvailableDose(e.target.value)}
-                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
+                  className={`w-full p-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
                   }`}
                   placeholder="Ex: 500"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Volume Diluente (mL)</label>
-                <span className="text-[9px] font-medium italic opacity-70 mt-0.5 block">Quantidade de líquido usada para dissolver o pó do frasco (ex: 10 mL de água destilada).</span>
+              <div>
+                <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Volume do Diluente (mL)</label>
                 <input
                   type="number"
                   value={diluentVolume}
                   onChange={(e) => setDiluentVolume(e.target.value)}
-                  className={`w-full p-3 rounded-lg border text-sm font-bold ${
-                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
+                  className={`w-full p-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                    darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
                   }`}
                   placeholder="Ex: 10"
                 />
@@ -323,7 +307,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
 
             <button
               onClick={handleCalculateRule3}
-              className="w-full py-3 bg-[#b22222] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#8b0000] shadow-md transition-all mt-4"
+              className="w-full py-4 mt-6 bg-[#b22222] hover:bg-[#8b0000] text-white font-bold rounded-xl text-sm uppercase tracking-wider transition-all shadow-md active:scale-95 min-h-[48px]"
             >
               Calcular Diluição
             </button>

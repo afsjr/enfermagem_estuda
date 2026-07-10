@@ -159,10 +159,10 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Ex: Sondagem nasogástrica, RCP..."
-                className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all ${
+                className={`w-full pl-10 pr-4 py-3.5 rounded-xl border-2 font-semibold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all ${
                   darkMode
-                    ? 'bg-[#1a1a1a] border-[#444] text-white placeholder-slate-650'
-                    : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'
+                    ? 'bg-[#1a1a1a] border-[#444] text-white placeholder-slate-500'
+                    : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
                 }`}
               />
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
@@ -320,7 +320,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                     onNavigate('tutor');
                     onSelectTopic(d.topic);
                   }}
-                  className="px-4 py-2.5 bg-[#b22222] text-white text-[11px] font-bold rounded-xl uppercase tracking-wider hover:bg-[#8b0000] active:scale-95 transition-all shadow-sm min-h-[44px] flex items-center"
+                  className="px-4 py-3 sm:py-2.5 bg-[#b22222] text-white text-[11px] md:text-[12px] font-bold rounded-xl uppercase tracking-wider hover:bg-[#8b0000] active:scale-95 transition-all shadow-sm min-h-[44px] flex items-center justify-center w-full"
                 >
                   Estudar Tópico <i className="fas fa-chevron-right ml-1"></i>
                 </button>

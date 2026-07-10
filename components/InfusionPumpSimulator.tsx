@@ -226,13 +226,13 @@ export const InfusionPumpSimulator: React.FC<InfusionPumpSimulatorProps> = ({ on
           <div className="space-y-4">
             <div className="group relative">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Vazão (mL/h)</label>
-              <input type="number" value={rate} onChange={e => setRate(e.target.value)} disabled={isRunning} className="w-full p-3 mt-1 rounded-lg border text-sm font-bold bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
+              <input type="number" value={rate} onChange={e => setRate(e.target.value)} disabled={isRunning} className="w-full p-3.5 mt-1 rounded-xl border-2 font-semibold text-base focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all min-h-[44px] bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
               <div className="absolute hidden group-hover:block bg-slate-800 text-white text-[10px] p-2 rounded-lg -top-8 right-0 w-48 shadow-lg z-20">Velocidade da infusão (mL por hora).</div>
             </div>
 
             <div className="group relative">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">VTBI (mL) - Volume Total</label>
-              <input type="number" value={vtbi} onChange={e => setVtbi(e.target.value)} disabled={isRunning} className="w-full p-3 mt-1 rounded-lg border text-sm font-bold bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
+              <input type="number" value={vtbi} onChange={e => setVtbi(e.target.value)} disabled={isRunning} className="w-full p-3.5 mt-1 rounded-xl border-2 font-semibold text-base focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all min-h-[44px] bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
               <div className="absolute hidden group-hover:block bg-slate-800 text-white text-[10px] p-2 rounded-lg -top-8 right-0 w-48 shadow-lg z-20">Volume Total a ser Infundido.</div>
             </div>
 
@@ -240,11 +240,11 @@ export const InfusionPumpSimulator: React.FC<InfusionPumpSimulatorProps> = ({ on
               <div className="grid grid-cols-2 gap-4 border-t border-slate-200 dark:border-[#333] pt-4 mt-4">
                 <div className="group relative">
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Bolus (mL)</label>
-                  <input type="number" value={pcaBolus} onChange={e => setPcaBolus(e.target.value)} disabled={isRunning} className="w-full p-2 mt-1 rounded-lg border text-sm font-bold bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
+                  <input type="number" value={pcaBolus} onChange={e => setPcaBolus(e.target.value)} disabled={isRunning} className="w-full p-3.5 mt-1 rounded-xl border-2 font-semibold text-base focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all min-h-[44px] bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
                 </div>
                 <div className="group relative">
                   <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Lockout (min)</label>
-                  <input type="number" value={pcaLockout} onChange={e => setPcaLockout(e.target.value)} disabled={isRunning} className="w-full p-2 mt-1 rounded-lg border text-sm font-bold bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
+                  <input type="number" value={pcaLockout} onChange={e => setPcaLockout(e.target.value)} disabled={isRunning} className="w-full p-3.5 mt-1 rounded-xl border-2 font-semibold text-base focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all min-h-[44px] bg-slate-50 dark:bg-[#1a1a1a] dark:border-[#444] dark:text-white" />
                 </div>
                 
                 <div className="col-span-2 bg-[#7c3aed]/10 p-3 rounded-lg border border-[#7c3aed]/20 mt-2">

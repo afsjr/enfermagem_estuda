@@ -714,24 +714,19 @@ const App: React.FC = () => {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                         placeholder="Tire sua dúvida aqui..."
-                        className={`w-full pl-4 pr-12 py-3 rounded-xl border-2 focus:outline-none focus:ring-2 focus:ring-[#FFCC00] transition-all shadow-sm text-sm ${
+                        className={`w-full pl-4 pr-14 py-3.5 rounded-xl border-2 focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all shadow-sm text-base font-medium ${
                           darkMode 
-                          ? 'bg-[#252525] border-[#333] text-white placeholder-slate-500' 
-                          : 'bg-[#b22222]/10 border-[#b22222]/20 text-[#b22222] placeholder-[#b22222]/60'
+                          ? 'bg-[#252525] border-[#444] text-white placeholder-slate-500' 
+                          : 'bg-white border-slate-300 text-slate-800 placeholder-slate-400'
                         }`}
                       />
-                      <style>{`
-                        input { 
-                          color: ${darkMode ? 'white' : '#b22222'} !important; 
-                        }
-                      `}</style>
                       
                       <button
                         onClick={() => handleSend()}
                         disabled={state.isGenerating || !input.trim()}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-[#FFCC00] text-[#003366] rounded-lg flex items-center justify-center hover:bg-[#b22222] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md"
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#b22222] text-white rounded-lg flex items-center justify-center hover:bg-[#8b0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
                       >
-                        <i className="fas fa-paper-plane text-xs"></i>
+                        <i className="fas fa-paper-plane text-sm"></i>
                       </button>
                     </div>
                   </div>

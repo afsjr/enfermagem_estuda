@@ -189,7 +189,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
         
         <div className="flex flex-col gap-2 w-full md:w-auto">
           <select 
-            className="p-2 rounded border bg-white dark:bg-slate-800 dark:border-slate-600 text-sm"
+            className="p-3 rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-600 text-base min-h-[44px]"
             value={activeScenarioId || ''}
             onChange={(e) => {
               const s = scenarios.find(x => x.id === e.target.value);
@@ -210,7 +210,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
         <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-200 dark:border-teal-800 mb-6 flex flex-col gap-3">
           <h4 className="font-bold text-sm text-teal-700 dark:text-teal-400"><i className="fas fa-magic"></i> Gerar Novo Cenário Fictício com IA</h4>
           <textarea 
-            className="w-full p-2 text-sm rounded border bg-white dark:bg-slate-800"
+            className="w-full p-3 text-base rounded-lg border bg-white dark:bg-slate-800 min-h-[44px]"
             rows={2}
             placeholder="Ex: Paciente pediátrico com asma exacerbada..."
             value={newScenarioDesc}
@@ -239,11 +239,11 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
 
       {/* ABAS */}
       <div className="flex overflow-x-auto border-b dark:border-slate-700 mb-6 no-scrollbar pb-1">
-        <button onClick={() => setActiveStage('identificacao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'identificacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>1. Identificação</button>
-        <button onClick={() => setActiveStage('avaliacao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'avaliacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>2. Avaliação</button>
-        <button onClick={() => setActiveStage('diagnostico')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'diagnostico' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>3. Diagnóstico</button>
-        <button onClick={() => setActiveStage('planejamento')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'planejamento' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>4. Planejamento</button>
-        <button onClick={() => setActiveStage('evolucao')} className={`whitespace-nowrap px-4 py-2 font-bold text-sm border-b-2 transition-all ${activeStage === 'evolucao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>5. Evolução</button>
+        <button onClick={() => setActiveStage('identificacao')} className={`whitespace-nowrap px-4 py-3 font-bold text-sm border-b-2 min-h-[44px] transition-all ${activeStage === 'identificacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>1. Identificação</button>
+        <button onClick={() => setActiveStage('avaliacao')} className={`whitespace-nowrap px-4 py-3 font-bold text-sm border-b-2 min-h-[44px] transition-all ${activeStage === 'avaliacao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>2. Avaliação</button>
+        <button onClick={() => setActiveStage('diagnostico')} className={`whitespace-nowrap px-4 py-3 font-bold text-sm border-b-2 min-h-[44px] transition-all ${activeStage === 'diagnostico' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>3. Diagnóstico</button>
+        <button onClick={() => setActiveStage('planejamento')} className={`whitespace-nowrap px-4 py-3 font-bold text-sm border-b-2 min-h-[44px] transition-all ${activeStage === 'planejamento' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>4. Planejamento</button>
+        <button onClick={() => setActiveStage('evolucao')} className={`whitespace-nowrap px-4 py-3 font-bold text-sm border-b-2 min-h-[44px] transition-all ${activeStage === 'evolucao' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent opacity-60'}`}>5. Evolução</button>
       </div>
 
       {/* FORMULÁRIOS POR ETAPA */}
@@ -255,30 +255,30 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold uppercase opacity-70">Nome do Paciente</label>
-                <input type="text" value={data.nome} onChange={e => handleInputChange('nome', e.target.value)} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+                <input type="text" value={data.nome} onChange={e => handleInputChange('nome', e.target.value)} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
                 <p className="text-[10px] mt-1 text-teal-600 dark:text-teal-400"><i className="fas fa-info-circle"></i> Regra de Ouro: Confirme com pulseira e documento.</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs font-bold uppercase opacity-70">Idade</label>
-                  <input type="text" value={data.idade} onChange={e => handleInputChange('idade', e.target.value)} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+                  <input type="text" value={data.idade} onChange={e => handleInputChange('idade', e.target.value)} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
                 </div>
                 <div>
                   <label className="text-xs font-bold uppercase opacity-70">Leito</label>
-                  <input type="text" value={data.leito} onChange={e => handleInputChange('leito', e.target.value)} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+                  <input type="text" value={data.leito} onChange={e => handleInputChange('leito', e.target.value)} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-bold uppercase opacity-70">Alergias</label>
-                <input type="text" value={data.alergias} onChange={e => handleInputChange('alergias', e.target.value)} placeholder="Ex: Nega alergias, alergia a penicilina" className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+                <input type="text" value={data.alergias} onChange={e => handleInputChange('alergias', e.target.value)} placeholder="Ex: Nega alergias, alergia a penicilina" className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
               </div>
               <div>
                 <label className="text-xs font-bold uppercase opacity-70">Comorbidades (Antecedentes)</label>
-                <input type="text" value={data.comorbidades} onChange={e => handleInputChange('comorbidades', e.target.value)} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+                <input type="text" value={data.comorbidades} onChange={e => handleInputChange('comorbidades', e.target.value)} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
               </div>
             </div>
             <div className="flex justify-end mt-4">
-              <button onClick={() => setActiveStage('avaliacao')} className="bg-teal-600 text-white px-4 py-2 rounded shadow font-bold text-sm">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
+              <button onClick={() => setActiveStage('avaliacao')} className="bg-teal-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm min-h-[44px] active:scale-95 transition-all">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
             </div>
           </div>
         )}
@@ -288,20 +288,20 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             <h3 className="font-bold text-lg mb-4 text-slate-700 dark:text-slate-300">Avaliação de Enfermagem (SOAP)</h3>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Subjetivo (Queixa Principal)</label>
-              <textarea value={data.queixaPrincipal} onChange={e => handleInputChange('queixaPrincipal', e.target.value)} rows={2} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" placeholder="O que o paciente relata..." />
+              <textarea value={data.queixaPrincipal} onChange={e => handleInputChange('queixaPrincipal', e.target.value)} rows={2} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" placeholder="O que o paciente relata..." />
               <p className="text-[10px] mt-1 text-teal-600 dark:text-teal-400"><i className="fas fa-info-circle"></i> Use aspas para citações diretas do paciente.</p>
             </div>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Objetivo (Sinais Vitais)</label>
-              <input type="text" value={data.sinaisVitais} onChange={e => handleInputChange('sinaisVitais', e.target.value)} placeholder="PA: __x__ | FC: __ | FR: __ | Tax: __ | SpO2: __" className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700 font-mono text-sm" />
+              <input type="text" value={data.sinaisVitais} onChange={e => handleInputChange('sinaisVitais', e.target.value)} placeholder="PA: __x__ | FC: __ | FR: __ | Tax: __ | SpO2: __" className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 font-mono text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
             </div>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Objetivo (Exame Físico / Cefalocaudal)</label>
-              <textarea value={data.exameFisico} onChange={e => handleInputChange('exameFisico', e.target.value)} rows={4} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" placeholder="Descreva neurológico, respiratório, cardiovascular, abdome, pele, acessos, sondas..." />
+              <textarea value={data.exameFisico} onChange={e => handleInputChange('exameFisico', e.target.value)} rows={4} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" placeholder="Descreva neurológico, respiratório, cardiovascular, abdome, pele, acessos, sondas..." />
             </div>
             <div className="flex justify-between mt-4">
               <button onClick={() => setActiveStage('identificacao')} className="text-slate-500 font-bold text-sm"><i className="fas fa-arrow-left mr-1"></i> Voltar</button>
-              <button onClick={() => setActiveStage('diagnostico')} className="bg-teal-600 text-white px-4 py-2 rounded shadow font-bold text-sm">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
+              <button onClick={() => setActiveStage('diagnostico')} className="bg-teal-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm min-h-[44px] active:scale-95 transition-all">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
             </div>
           </div>
         )}
@@ -311,7 +311,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             <h3 className="font-bold text-lg mb-4 text-slate-700 dark:text-slate-300">Diagnóstico de Enfermagem (NANDA-I)</h3>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Problema + Fator Relacionado + Característica Definidora</label>
-              <textarea value={data.diagnosticos} onChange={e => handleInputChange('diagnosticos', e.target.value)} rows={4} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" placeholder="Ex: Risco de infecção evidenciado por incisão cirúrgica..." />
+              <textarea value={data.diagnosticos} onChange={e => handleInputChange('diagnosticos', e.target.value)} rows={4} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" placeholder="Ex: Risco de infecção evidenciado por incisão cirúrgica..." />
               <div className="bg-teal-50 dark:bg-teal-900/20 p-3 mt-2 rounded border border-teal-100 dark:border-teal-800">
                 <p className="text-[11px] text-teal-800 dark:text-teal-300 font-semibold"><i className="fas fa-lightbulb text-amber-500"></i> Dica de Estrutura:</p>
                 <p className="text-[10px] text-teal-700 dark:text-teal-400 mt-1">Título do Diagnóstico + "relacionado a" (Causa) + "evidenciado por" (Sinal/Sintoma). No caso de diagnósticos de "Risco", não há "evidenciado por".</p>
@@ -319,7 +319,7 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             </div>
             <div className="flex justify-between mt-4">
               <button onClick={() => setActiveStage('avaliacao')} className="text-slate-500 font-bold text-sm"><i className="fas fa-arrow-left mr-1"></i> Voltar</button>
-              <button onClick={() => setActiveStage('planejamento')} className="bg-teal-600 text-white px-4 py-2 rounded shadow font-bold text-sm">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
+              <button onClick={() => setActiveStage('planejamento')} className="bg-teal-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm min-h-[44px] active:scale-95 transition-all">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
             </div>
           </div>
         )}
@@ -329,12 +329,12 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             <h3 className="font-bold text-lg mb-4 text-slate-700 dark:text-slate-300">Planejamento e Implementação (NIC)</h3>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Prescrição de Enfermagem e Cuidados</label>
-              <textarea value={data.intervencoes} onChange={e => handleInputChange('intervencoes', e.target.value)} rows={5} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" placeholder="1. Verificar SSVV a cada 4h (14h, 18h)&#10;2. Avaliar aspecto do curativo na incisão operatória...&#10;3. Realizar mudança de decúbito a cada 2h..." />
+              <textarea value={data.intervencoes} onChange={e => handleInputChange('intervencoes', e.target.value)} rows={5} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" placeholder="1. Verificar SSVV a cada 4h (14h, 18h)&#10;2. Avaliar aspecto do curativo na incisão operatória...&#10;3. Realizar mudança de decúbito a cada 2h..." />
               <p className="text-[10px] mt-1 text-teal-600 dark:text-teal-400"><i className="fas fa-info-circle"></i> Para cada diagnóstico levantado, deve haver pelo menos uma intervenção planejada. (Art. 5º da Res. COFEN 736/2024)</p>
             </div>
             <div className="flex justify-between mt-4">
               <button onClick={() => setActiveStage('diagnostico')} className="text-slate-500 font-bold text-sm"><i className="fas fa-arrow-left mr-1"></i> Voltar</button>
-              <button onClick={() => setActiveStage('evolucao')} className="bg-teal-600 text-white px-4 py-2 rounded shadow font-bold text-sm">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
+              <button onClick={() => setActiveStage('evolucao')} className="bg-teal-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm min-h-[44px] active:scale-95 transition-all">Próxima Etapa <i className="fas fa-arrow-right ml-1"></i></button>
             </div>
           </div>
         )}
@@ -344,18 +344,18 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             <h3 className="font-bold text-lg mb-4 text-slate-700 dark:text-slate-300">Evolução e Registro Diário</h3>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Evolução de Enfermagem</label>
-              <textarea value={data.evolucaoText} onChange={e => handleInputChange('evolucaoText', e.target.value)} rows={6} className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" placeholder="08:00 - Paciente segue no leito, consciente, verbalizando... Relata melhora da dor. Aceitou dieta parcial..." />
+              <textarea value={data.evolucaoText} onChange={e => handleInputChange('evolucaoText', e.target.value)} rows={6} className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" placeholder="08:00 - Paciente segue no leito, consciente, verbalizando... Relata melhora da dor. Aceitou dieta parcial..." />
             </div>
             <div>
               <label className="text-xs font-bold uppercase opacity-70">Assinatura Profissional</label>
-              <input type="text" value={data.assinatura} onChange={e => handleInputChange('assinatura', e.target.value)} placeholder="Nome completo, Categoria (TE) e nº COREN" className="w-full mt-1 p-2 border rounded bg-slate-50 dark:bg-[#252525] dark:border-slate-700" />
+              <input type="text" value={data.assinatura} onChange={e => handleInputChange('assinatura', e.target.value)} placeholder="Nome completo, Categoria (TE) e nº COREN" className="w-full mt-1.5 p-3.5 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-base focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all" />
             </div>
             <div className="flex justify-between mt-6 pt-4 border-t dark:border-slate-800">
               <button onClick={() => setActiveStage('planejamento')} className="text-slate-500 font-bold text-sm"><i className="fas fa-arrow-left mr-1"></i> Voltar</button>
               <button 
                 onClick={evaluatePep}
                 disabled={isEvaluating}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-lg font-black text-sm uppercase tracking-wide flex items-center gap-2 transition-all"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl shadow-lg font-black text-sm uppercase tracking-wide flex items-center gap-2 transition-all min-h-[48px] active:scale-95"
               >
                 {isEvaluating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check-double"></i>}
                 {isEvaluating ? 'Validando...' : 'Validar Prontuário com IA'}
