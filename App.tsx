@@ -6,12 +6,14 @@ import FormatSelector from './components/FormatSelector';
 import DashboardOverview from './components/DashboardOverview';
 import DoseCalculator from './components/DoseCalculator';
 import QuizView from './components/QuizView';
+import PepSimulator from './components/PepSimulator';
+import InfusionPumpSimulator from './components/InfusionPumpSimulator';
 import OnboardingModal from './components/OnboardingModal';
 import { telemetry, StudentProfile } from './telemetryService';
 import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion'>('dashboard');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const prevViewRef = useRef(activeView);
   const viewStartRef = useRef(Date.now());
@@ -431,6 +433,8 @@ const App: React.FC = () => {
   const navigationItems = [
     { id: 'dashboard', name: 'Painel Inicial', icon: 'fa-chart-pie' },
     { id: 'tutor', name: 'Tutor de IA', icon: 'fa-comment-medical' },
+    { id: 'pep', name: 'Simulador PEP', icon: 'fa-file-medical' },
+    { id: 'infusion', name: 'Bomba de Infusão', icon: 'fa-syringe' },
     { id: 'calculator', name: 'Cálculos Clínicos', icon: 'fa-calculator' },
     { id: 'quiz', name: 'Simulador de Quiz', icon: 'fa-check-double' }
   ];
@@ -543,6 +547,8 @@ const App: React.FC = () => {
               <h1 className="font-bold text-xs md:text-sm leading-tight tracking-tight">
                 {activeView === 'dashboard' && 'Painel de Estudos'}
                 {activeView === 'tutor' && 'MonicAI Tutor'}
+                {activeView === 'pep' && 'Simulador PEP'}
+                {activeView === 'infusion' && 'Bomba de Infusão'}
                 {activeView === 'calculator' && 'Calculadora Farmacológica'}
                 {activeView === 'quiz' && 'Simulador de Quiz'}
               </h1>
@@ -1030,6 +1036,20 @@ const App: React.FC = () => {
               darkMode={darkMode}
             />
           )}
+
+          {activeView === 'pep' && (
+            <PepSimulator
+              onAwardXp={handleAwardXp}
+              darkMode={darkMode}
+            />
+          )}
+
+          {activeView === 'infusion' && (
+            <InfusionPumpSimulator
+              onAwardXp={handleAwardXp}
+              darkMode={darkMode}
+            />
+          )}
         </div>
       </div>
 
@@ -1038,6 +1058,8 @@ const App: React.FC = () => {
         {[
           { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
           { id: 'tutor', icon: 'fa-comment-medical', label: 'Tutor' },
+          { id: 'pep', icon: 'fa-file-medical', label: 'PEP' },
+          { id: 'infusion', icon: 'fa-syringe', label: 'Bomba' },
           { id: 'calculator', icon: 'fa-calculator', label: 'Cálculos' },
           { id: 'quiz', icon: 'fa-check-double', label: 'Quiz' },
         ].map(item => {

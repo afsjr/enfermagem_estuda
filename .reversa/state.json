@@ -9,8 +9,15 @@
   "output_folder": "_reversa_sdd",
   "forward_folder": "_reversa_forward",
   "phase": "geracao",
-  "completed": ["reconhecimento", "escavacao", "interpretacao"],
-  "pending": ["geracao", "revisao"],
+  "completed": [
+    "reconhecimento",
+    "escavacao",
+    "interpretacao"
+  ],
+  "pending": [
+    "geracao",
+    "revisao"
+  ],
   "checkpoints": {
     "scout": {
       "completed_at": "2026-07-05T12:00:00Z",
@@ -21,7 +28,18 @@
       ]
     },
     "archaeologist": {
-      "modules_analyzed": ["chat", "dashboard", "calculator", "quiz", "onboarding", "notes", "gamification", "telemetry", "security", "supabase-proxy"],
+      "modules_analyzed": [
+        "chat",
+        "dashboard",
+        "calculator",
+        "quiz",
+        "onboarding",
+        "notes",
+        "gamification",
+        "telemetry",
+        "security",
+        "supabase-proxy"
+      ],
       "modules_pending": [],
       "completed_at": "2026-07-05T12:00:00Z",
       "files": [
@@ -185,5 +203,10 @@
     ".reversa/plan.md",
     ".reversa/version",
     ".reversa/_config/manifest.yaml"
-  ]
+  ],
+  "redator_progress": {
+    "current": 5,
+    "total": 33,
+    "last_completed": "dashboard/design.md"
+  }
 }
