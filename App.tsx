@@ -8,12 +8,13 @@ import DoseCalculator from './components/DoseCalculator';
 import QuizView from './components/QuizView';
 import PepSimulator from './components/PepSimulator';
 import InfusionPumpSimulator from './components/InfusionPumpSimulator';
+import PresentationView from './components/PresentationView';
 import OnboardingModal from './components/OnboardingModal';
 import { telemetry, StudentProfile } from './telemetryService';
 import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'presentation'>('dashboard');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const prevViewRef = useRef(activeView);
   const viewStartRef = useRef(Date.now());
@@ -546,6 +547,7 @@ const App: React.FC = () => {
             <div>
               <h1 className="font-bold text-xs md:text-sm leading-tight tracking-tight">
                 {activeView === 'dashboard' && 'Painel de Estudos'}
+                {activeView === 'presentation' && 'Guia de Uso MonicAI'}
                 {activeView === 'tutor' && 'MonicAI Tutor'}
                 {activeView === 'pep' && 'Simulador PEP'}
                 {activeView === 'infusion' && 'Bomba de Infusão'}
@@ -1050,11 +1052,18 @@ const App: React.FC = () => {
               darkMode={darkMode}
             />
           )}
+
+          {activeView === 'presentation' && (
+            <PresentationView
+              onBack={() => setActiveView('dashboard')}
+              darkMode={darkMode}
+            />
+          )}
         </div>
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t backdrop-blur-xl bg-white/80 dark:bg-[#1a1a1a]/90 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)]">
+      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center overflow-x-auto no-scrollbar justify-start px-2 gap-1 sm:justify-around border-t backdrop-blur-xl bg-white/95 dark:bg-[#1a1a1a]/95 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)]">
         {[
           { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
           { id: 'tutor', icon: 'fa-comment-medical', label: 'Tutor' },
@@ -1068,14 +1077,14 @@ const App: React.FC = () => {
             <button
               key={item.id}
               onClick={() => setActiveView(item.id as any)}
-              className={`flex flex-col items-center justify-center gap-0.5 py-2 px-3 transition-colors ${
+              className={`flex flex-col min-w-[64px] items-center justify-center gap-1 py-2 px-2 transition-colors ${
                 isActive
                   ? 'text-[#b22222]'
                   : 'text-slate-400 dark:text-slate-500'
               }`}
             >
-              <i className={`fas ${item.icon} text-base`}></i>
-              <span className="text-[9px] font-bold uppercase tracking-wider">{item.label}</span>
+              <i className={`fas ${item.icon} text-lg`}></i>
+              <span className="text-[8px] font-bold uppercase tracking-widest">{item.label}</span>
             </button>
           );
         })}

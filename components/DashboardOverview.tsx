@@ -7,7 +7,7 @@ interface DashboardOverviewProps {
     calculationsCompleted: number;
     studyMaterialsGenerated: number;
   };
-  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz') => void;
+  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'presentation') => void;
   onSelectTopic: (topic: string) => void;
   onExportBackup: () => void;
   onImportBackup: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -110,6 +110,14 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <span className="px-2.5 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 rounded-full text-[10px] font-bold uppercase tracking-wider">
               ⚡ {stats.xp} Total XP
             </span>
+          </div>
+          <div className="mt-4 flex justify-center md:justify-start">
+            <button 
+              onClick={() => onNavigate('presentation')}
+              className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all hover:scale-105"
+            >
+              <i className="fas fa-play-circle text-lg"></i> Como usar o MonicAI?
+            </button>
           </div>
         </div>
 
