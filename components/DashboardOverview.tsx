@@ -7,7 +7,7 @@ interface DashboardOverviewProps {
     calculationsCompleted: number;
     studyMaterialsGenerated: number;
   };
-  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'presentation') => void;
+  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation') => void;
   onSelectTopic: (topic: string) => void;
   onExportBackup: () => void;
   onImportBackup: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -255,7 +255,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </section>
 
       {/* Quick Access Tools */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button 
           onClick={() => onNavigate('calculator')}
           className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
@@ -286,6 +286,23 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <h3 className="font-bold text-sm uppercase tracking-wider text-purple-600 dark:text-purple-400">Simulador de Quiz por IA 📝</h3>
             <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Gere simulados dinâmicos e testes rápidos sobre qualquer tópico clínico. Responda interativamente e aprenda com o gabarito comentado fundamentado na literatura científica.
+            </p>
+          </div>
+        </button>
+
+        <button 
+          onClick={() => onNavigate('emergency')}
+          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+            darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <div className="w-12 h-12 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
+            <i className="fas fa-heartbeat"></i>
+          </div>
+          <div>
+            <h3 className="font-bold text-sm uppercase tracking-wider text-red-600 dark:text-red-400">Escalas de Emergência 🚨</h3>
+            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              Glasgow, NEWS, Dor, IMC e doses de emergência. Avalie rapidamente a gravidade do paciente com suporte de IA.
             </p>
           </div>
         </button>
