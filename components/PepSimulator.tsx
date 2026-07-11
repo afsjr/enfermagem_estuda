@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { GeminiService } from '../geminiService';
 
 interface PepSimulatorProps {
@@ -119,7 +122,8 @@ Diagnóstico Enfermagem: ${data.diagnosticos}
 Intervenções: ${data.intervencoes}
 Evolução: ${data.evolucaoText}
 
-Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando erros, omissões ou elogiando o preenchimento, baseado nas normas do COFEN (Res. 736/2024). Fale diretamente com o aluno.`;
+Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando erros, omissões ou elogiando o preenchimento, baseado nas normas do COFEN (Res. 736/2024). Fale diretamente com o aluno.
+Sua resposta deve usar a formatação Markdown (.md) para estruturar bem os títulos, tópicos e partes importantes.`;
 
       const response = await gemini.chat([{ role: 'user', content: prompt }]);
       setEvaluationFeedback(response);
@@ -175,6 +179,51 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
 
   const completeness = calcCompleteness();
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text('Prontuário Eletrônico do Paciente (PEP)', 14, 22);
+    
+    doc.setFontSize(11);
+    doc.text('Material gerado pelo Simulador Educacional PEP - MonicAI', 14, 30);
+    
+    autoTable(doc, {
+      startY: 40,
+      head: [['Seção', 'Conteúdo Registrado']],
+      body: [
+        ['Nome do Paciente', data.nome || ''],
+        ['Idade', data.idade || ''],
+        ['Leito', data.leito || ''],
+        ['Alergias', data.alergias || ''],
+        ['Comorbidades', data.comorbidades || ''],
+        ['Queixa Principal', data.queixaPrincipal || ''],
+        ['Sinais Vitais', data.sinaisVitais || ''],
+        ['Exame Físico', data.exameFisico || ''],
+        ['Diagnósticos de Enferm.', data.diagnosticos || ''],
+        ['Intervenções / Prescrição', data.intervencoes || ''],
+        ['Evolução', data.evolucaoText || ''],
+        ['Assinatura', data.assinatura || ''],
+      ],
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold' },
+        1: { cellWidth: 130 }
+      },
+      styles: { overflow: 'linebreak' },
+    });
+
+    if (evaluationFeedback) {
+      autoTable(doc, {
+        startY: (doc as any).lastAutoTable.finalY + 15,
+        head: [['Feedback do Tutor IA']],
+        body: [[evaluationFeedback.replace(/[*_]/g, '')]],
+        styles: { overflow: 'linebreak' },
+      });
+    }
+
+    doc.save(`PEP_${data.nome.replace(/\s+/g, '_') || 'Exercicio'}.pdf`);
+  };
+
   return (
     <div className={`p-4 md:p-6 max-w-5xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
       
@@ -188,18 +237,27 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
         </div>
         
         <div className="flex flex-col gap-2 w-full md:w-auto">
-          <select 
-            className="p-3 rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-600 text-base min-h-[44px]"
-            value={activeScenarioId || ''}
-            onChange={(e) => {
-              const s = scenarios.find(x => x.id === e.target.value);
-              if (s) loadScenario(s);
-              else if (e.target.value === 'empty') { setActiveScenarioId(null); setData(emptyPep); setEvaluationFeedback(null); }
-            }}
-          >
-            <option value="empty">Novo Prontuário Vazio</option>
-            {scenarios.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
-          </select>
+          <div className="flex gap-2 w-full">
+            <select 
+              className="p-3 rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-600 text-base min-h-[44px] flex-1"
+              value={activeScenarioId || ''}
+              onChange={(e) => {
+                const s = scenarios.find(x => x.id === e.target.value);
+                if (s) loadScenario(s);
+                else if (e.target.value === 'empty') { setActiveScenarioId(null); setData(emptyPep); setEvaluationFeedback(null); }
+              }}
+            >
+              <option value="empty">Novo Prontuário Vazio</option>
+              {scenarios.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+            </select>
+            <button 
+              onClick={generatePDF}
+              className="bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-lg font-bold shadow text-sm flex items-center justify-center gap-2 transition-all min-h-[44px] whitespace-nowrap"
+              title="Baixar PDF do Prontuário"
+            >
+              <i className="fas fa-file-pdf text-red-500"></i> PDF
+            </button>
+          </div>
           <button onClick={() => setTeacherMode(!teacherMode)} className="text-xs text-teal-600 underline text-right">
             {teacherMode ? 'Sair do Modo Professor' : 'Modo Professor: Adicionar Cenário IA'}
           </button>
@@ -374,7 +432,9 @@ Forneça um feedback construtivo e educacional (máximo 4 parágrafos) apontando
             </div>
             <h3 className="font-bold text-lg">Feedback do Tutor MonicAI</h3>
           </div>
-          <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: evaluationFeedback.replace(/\\n/g, '<br/>') }} />
+          <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-teal">
+            <ReactMarkdown>{evaluationFeedback}</ReactMarkdown>
+          </div>
         </div>
       )}
 
