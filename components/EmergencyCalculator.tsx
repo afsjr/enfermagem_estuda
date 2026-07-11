@@ -15,6 +15,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
   const [eyeOpening, setEyeOpening] = useState<number>(0);
   const [verbalResponse, setVerbalResponse] = useState<number>(0);
   const [motorResponse, setMotorResponse] = useState<number>(0);
+  const [pupilReactivity, setPupilReactivity] = useState<number>(-1);
   
   // --- NEWS STATE ---
   const [respRate, setRespRate] = useState<string>('');
@@ -46,13 +47,14 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
   // --- HANDLERS ---
   
   const calculateGlasgow = () => {
-    if (!eyeOpening || !verbalResponse || !motorResponse) return null;
-    const score = eyeOpening + verbalResponse + motorResponse;
+    if (!eyeOpening || !verbalResponse || !motorResponse || pupilReactivity === -1) return null;
+    const baseScore = eyeOpening + verbalResponse + motorResponse;
+    const score = baseScore - pupilReactivity;
     let severity = '';
     if (score <= 8) severity = 'Trauma Cranioencefálico Grave';
     else if (score <= 12) severity = 'Trauma Cranioencefálico Moderado';
     else severity = 'Trauma Cranioencefálico Leve';
-    return { score, severity };
+    return { score, severity, baseScore, pupilReactivity };
   };
 
   const getNewsScore = (value: number, type: string) => {
@@ -218,7 +220,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
         {activeTab === 'glasgow' && (
           <div className="space-y-6 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300">Escala de Coma de Glasgow (ECG)</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
                 <label className="text-xs font-bold uppercase opacity-70 mb-2 block">Abertura Ocular (1-4)</label>
                 <select value={eyeOpening} onChange={e => setEyeOpening(Number(e.target.value))} className="w-full p-3 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-sm">
@@ -252,15 +254,25 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
                   <option value={1}>Nenhuma (1)</option>
                 </select>
               </div>
+              <div>
+                <label className="text-xs font-bold uppercase opacity-70 mb-2 block">Reatividade Pupilar</label>
+                <select value={pupilReactivity} onChange={e => setPupilReactivity(Number(e.target.value))} className="w-full p-3 border rounded-xl bg-slate-50 dark:bg-[#252525] dark:border-slate-700 text-sm">
+                  <option value={-1}>Selecione...</option>
+                  <option value={0}>Ambas reagem (-0)</option>
+                  <option value={1}>Apenas uma reage (-1)</option>
+                  <option value={2}>Nenhuma reage (-2)</option>
+                </select>
+              </div>
             </div>
             
-            <button onClick={() => triggerCompletion('Glasgow')} disabled={!eyeOpening || !verbalResponse || !motorResponse} className="bg-red-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm w-full md:w-auto disabled:opacity-50">Calcular Glasgow</button>
+            <button onClick={() => triggerCompletion('Glasgow')} disabled={!eyeOpening || !verbalResponse || !motorResponse || pupilReactivity === -1} className="bg-red-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm w-full md:w-auto disabled:opacity-50">Calcular Glasgow</button>
             
             {calculateGlasgow() && (
               <div className="mt-4 space-y-4">
                 <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-center">
                   <div className="text-3xl font-black text-slate-800 dark:text-white">Score: {calculateGlasgow()?.score} / 15</div>
                   <div className="text-sm font-bold mt-1 text-red-600 dark:text-red-400">{calculateGlasgow()?.severity}</div>
+                  <div className="text-xs opacity-70 mt-1">GCS Base: {calculateGlasgow()?.baseScore} | Pupilas: -{calculateGlasgow()?.pupilReactivity}</div>
                 </div>
                 
                 {/* Dica Pedagógica do Tutor */}
@@ -269,11 +281,12 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
                     <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
                   </h4>
                   <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
+                    A Escala de Coma de Glasgow com Reatividade Pupilar (GCS-P) reflete com maior precisão o prognóstico. 
                     {calculateGlasgow()?.score! <= 8 
-                      ? "Score ≤ 8 indica trauma grave. Cuidado de Enfermagem crítico: Preparar material para intubação orotraqueal (proteção de via aérea) e notificar equipe médica imediatamente." 
+                      ? " Score ≤ 8 indica trauma grave. Cuidado de Enfermagem crítico: Preparar material para intubação orotraqueal (proteção de via aérea) e notificar equipe médica imediatamente." 
                       : calculateGlasgow()?.score! <= 12 
-                        ? "Score entre 9 e 12 indica trauma moderado. Monitorar nível de consciência frequentemente. Risco de deterioração neurológica rápida." 
-                        : "Score 13-15 indica trauma leve. Manter monitorização neurológica de rotina."}
+                        ? " Score entre 9 e 12 indica trauma moderado. Monitorar nível de consciência frequentemente. Risco de deterioração neurológica rápida." 
+                        : " Score 13-15 indica trauma leve. Manter monitorização neurológica de rotina."}
                   </p>
                 </div>
               </div>
