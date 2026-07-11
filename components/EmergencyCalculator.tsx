@@ -142,9 +142,13 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
   };
 
   const drugs = [
-    { id: 'epinefrina', name: 'Epinefrina (Adrenalina)', desc: 'PCR / Anafilaxia (0,01 mg/kg ped)', doseFormula: (w: number) => (w * 0.01).toFixed(2) + ' mg' },
+    { id: 'epinefrina_ped', name: 'Epinefrina Pediátrica', desc: 'PCR / Anafilaxia (0,01 mg/kg)', doseFormula: (w: number) => (w * 0.01).toFixed(2) + ' mg (Máx 1mg)' },
+    { id: 'epinefrina_adulto_pcr', name: 'Epinefrina Adulto (PCR)', desc: 'Parada Cardiorrespiratória', doseFormula: (w: number) => '1 mg a cada 3-5 min' },
+    { id: 'epinefrina_adulto_ana', name: 'Epinefrina Adulto (Anafilaxia)', desc: 'Anafilaxia (IM no vasto lateral)', doseFormula: (w: number) => '0.3 a 0.5 mg IM' },
     { id: 'atropina', name: 'Atropina', desc: 'Bradicardia (0,02 mg/kg ped)', doseFormula: (w: number) => (w * 0.02).toFixed(2) + ' mg' },
     { id: 'amiodarona', name: 'Amiodarona', desc: 'Arritmias (5 mg/kg ped)', doseFormula: (w: number) => (w * 5).toFixed(2) + ' mg' },
+    { id: 'diazepam', name: 'Diazepam', desc: 'Convulsão (0,1 a 0,3 mg/kg)', doseFormula: (w: number) => (w * 0.2).toFixed(2) + ' mg' },
+    { id: 'midazolam', name: 'Midazolam', desc: 'Convulsão (0,1 a 0,2 mg/kg IM/IV)', doseFormula: (w: number) => (w * 0.15).toFixed(2) + ' mg' },
     { id: 'glicose', name: 'Glicose 50%', desc: 'Hipoglicemia grave (1 a 2 g/kg)', doseFormula: (w: number) => (w * 1).toFixed(2) + ' a ' + (w * 2).toFixed(2) + ' g' }
   ];
 
@@ -186,7 +190,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-5xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-5xl mx-auto overflow-y-auto h-full pb-32 lg:pb-6">
       
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-red-900/10 p-4 rounded-xl border border-red-600/20 mb-6 gap-4">
@@ -253,9 +257,25 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
             <button onClick={() => triggerCompletion('Glasgow')} disabled={!eyeOpening || !verbalResponse || !motorResponse} className="bg-red-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm w-full md:w-auto disabled:opacity-50">Calcular Glasgow</button>
             
             {calculateGlasgow() && (
-              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl mt-4 text-center">
-                <div className="text-3xl font-black text-slate-800 dark:text-white">Score: {calculateGlasgow()?.score} / 15</div>
-                <div className="text-sm font-bold mt-1 text-red-600 dark:text-red-400">{calculateGlasgow()?.severity}</div>
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-center">
+                  <div className="text-3xl font-black text-slate-800 dark:text-white">Score: {calculateGlasgow()?.score} / 15</div>
+                  <div className="text-sm font-bold mt-1 text-red-600 dark:text-red-400">{calculateGlasgow()?.severity}</div>
+                </div>
+                
+                {/* Dica Pedagógica do Tutor */}
+                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl">
+                  <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
+                    <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                  </h4>
+                  <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
+                    {calculateGlasgow()?.score! <= 8 
+                      ? "Score ≤ 8 indica trauma grave. Cuidado de Enfermagem crítico: Preparar material para intubação orotraqueal (proteção de via aérea) e notificar equipe médica imediatamente." 
+                      : calculateGlasgow()?.score! <= 12 
+                        ? "Score entre 9 e 12 indica trauma moderado. Monitorar nível de consciência frequentemente. Risco de deterioração neurológica rápida." 
+                        : "Score 13-15 indica trauma leve. Manter monitorização neurológica de rotina."}
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -290,9 +310,25 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
             <button onClick={() => triggerCompletion('NEWS')} className="bg-red-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm w-full md:w-auto mt-4">Calcular NEWS2</button>
             
             {calculateNews() && (
-              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl mt-4 text-center">
-                <div className="text-3xl font-black text-slate-800 dark:text-white">Score: {calculateNews()?.score}</div>
-                <div className={`text-sm font-bold mt-1 ${calculateNews()?.color}`}>{calculateNews()?.risk}</div>
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-center">
+                  <div className="text-3xl font-black text-slate-800 dark:text-white">Score: {calculateNews()?.score}</div>
+                  <div className={`text-sm font-bold mt-1 ${calculateNews()?.color}`}>{calculateNews()?.risk}</div>
+                </div>
+
+                {/* Dica Pedagógica do Tutor */}
+                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl">
+                  <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
+                    <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                  </h4>
+                  <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
+                    {calculateNews()?.score! >= 7 
+                      ? "Score ≥ 7 indica alto risco clínico crônico. Acione o time de resposta rápida/equipe de emergência e inicie monitorização contínua dos sinais vitais." 
+                      : calculateNews()?.score! >= 5 
+                        ? "Score 5-6 indica médio risco. Aumentar a frequência de verificação dos sinais vitais (ex: a cada 1 hora) e notificar o enfermeiro/médico." 
+                        : "Score 0-4 indica baixo risco. Manter cuidados de rotina com avaliação a cada 12 horas ou conforme prescrição."}
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -344,15 +380,27 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
             <button onClick={() => triggerCompletion('IMC')} className="bg-red-600 text-white px-4 py-3 rounded-xl shadow font-bold text-sm w-full md:w-auto mt-4">Calcular IMC</button>
             
             {calculateIMC() && (
-              <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="text-center p-3">
-                  <div className="text-xs font-bold uppercase opacity-70">IMC Atual</div>
-                  <div className="text-3xl font-black text-slate-800 dark:text-white my-1">{calculateIMC()?.imc}</div>
-                  <div className="text-sm font-bold text-red-600 dark:text-red-400">{calculateIMC()?.category}</div>
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="text-center p-3">
+                    <div className="text-xs font-bold uppercase opacity-70">IMC Atual</div>
+                    <div className="text-3xl font-black text-slate-800 dark:text-white my-1">{calculateIMC()?.imc}</div>
+                    <div className="text-sm font-bold text-red-600 dark:text-red-400">{calculateIMC()?.category}</div>
+                  </div>
+                  <div className="text-center p-3 border-t md:border-t-0 md:border-l border-slate-300 dark:border-slate-600">
+                    <div className="text-xs font-bold uppercase opacity-70">Peso Ideal Estimado (Hamwi)</div>
+                    <div className="text-3xl font-black text-slate-800 dark:text-white my-1">{calculateIMC()?.idealWeight} kg</div>
+                  </div>
                 </div>
-                <div className="text-center p-3 border-t md:border-t-0 md:border-l border-slate-300 dark:border-slate-600">
-                  <div className="text-xs font-bold uppercase opacity-70">Peso Ideal Estimado (Hamwi)</div>
-                  <div className="text-3xl font-black text-slate-800 dark:text-white my-1">{calculateIMC()?.idealWeight} kg</div>
+
+                {/* Dica Pedagógica do Tutor */}
+                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl">
+                  <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
+                    <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                  </h4>
+                  <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
+                    Em situações de emergência (como ressuscitação), o cálculo de medicamentos para pacientes com obesidade (IMC > 30) frequentemente exige o uso do <strong>Peso Ideal</strong> ou Peso Ajustado em vez do Peso Real, para evitar toxicidade e subdosagem dependendo da lipossolubilidade do fármaco.
+                  </p>
                 </div>
               </div>
             )}

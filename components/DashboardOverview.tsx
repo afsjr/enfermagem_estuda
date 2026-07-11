@@ -7,7 +7,7 @@ interface DashboardOverviewProps {
     calculationsCompleted: number;
     studyMaterialsGenerated: number;
   };
-  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation') => void;
+  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols') => void;
   onSelectTopic: (topic: string) => void;
   onExportBackup: () => void;
   onImportBackup: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -255,7 +255,23 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </section>
 
       {/* Quick Access Tools */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button 
+          onClick={() => onNavigate('protocols')}
+          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+            darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
+          }`}
+        >
+          <div className="w-12 h-12 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
+            <i className="fas fa-clipboard-list"></i>
+          </div>
+          <div>
+            <h3 className="font-bold text-sm uppercase tracking-wider text-blue-600 dark:text-blue-400">Protocolos Clínicos 📋</h3>
+            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              Checklists iterativos e algoritmos de emergência guiados passo a passo (PCR, AVC, Sepse, etc).
+            </p>
+          </div>
+        </button>
         <button 
           onClick={() => onNavigate('calculator')}
           className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${

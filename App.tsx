@@ -11,11 +11,12 @@ import InfusionPumpSimulator from './components/InfusionPumpSimulator';
 import PresentationView from './components/PresentationView';
 import OnboardingModal from './components/OnboardingModal';
 import EmergencyCalculator from './components/EmergencyCalculator';
+import ClinicalProtocols from './components/ClinicalProtocols';
 import { telemetry, StudentProfile } from './telemetryService';
 import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols'>('dashboard');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const prevViewRef = useRef(activeView);
   const viewStartRef = useRef(Date.now());
@@ -439,6 +440,7 @@ const App: React.FC = () => {
     { id: 'infusion', name: 'Bomba de Infusão', icon: 'fa-syringe' },
     { id: 'calculator', name: 'Cálculos Clínicos', icon: 'fa-calculator' },
     { id: 'emergency', name: 'Escalas de Emergência', icon: 'fa-heartbeat' },
+    { id: 'protocols', name: 'Protocolos Clínicos', icon: 'fa-clipboard-list' },
     { id: 'quiz', name: 'Simulador de Quiz', icon: 'fa-check-double' }
   ];
 
@@ -555,6 +557,7 @@ const App: React.FC = () => {
                 {activeView === 'infusion' && 'Bomba de Infusão'}
                 {activeView === 'calculator' && 'Calculadora Farmacológica'}
                 {activeView === 'emergency' && 'Calculadora de Emergência'}
+                {activeView === 'protocols' && 'Protocolos Clínicos'}
                 {activeView === 'quiz' && 'Simulador de Quiz'}
               </h1>
               <p className="text-[9px] text-[#FFCC00] font-bold uppercase tracking-wider">Estudante de Enfermagem | Santa Mônica</p>
@@ -1058,6 +1061,12 @@ const App: React.FC = () => {
             />
           )}
 
+          {activeView === 'protocols' && (
+            <ClinicalProtocols
+              darkMode={darkMode}
+            />
+          )}
+
           {activeView === 'presentation' && (
             <PresentationView
               onBack={() => setActiveView('dashboard')}
@@ -1074,6 +1083,7 @@ const App: React.FC = () => {
           { id: 'tutor', icon: 'fa-comment-medical', label: 'Tutor' },
           { id: 'pep', icon: 'fa-file-medical', label: 'PEP' },
           { id: 'infusion', icon: 'fa-syringe', label: 'Bomba' },
+          { id: 'protocols', icon: 'fa-clipboard-list', label: 'Protocolos' },
           { id: 'calculator', icon: 'fa-calculator', label: 'Cálculos' },
           { id: 'quiz', icon: 'fa-check-double', label: 'Quiz' },
         ].map(item => {
