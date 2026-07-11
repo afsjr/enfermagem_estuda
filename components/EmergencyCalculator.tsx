@@ -399,7 +399,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
                     <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
                   </h4>
                   <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
-                    Em situações de emergência (como ressuscitação), o cálculo de medicamentos para pacientes com obesidade (IMC > 30) frequentemente exige o uso do <strong>Peso Ideal</strong> ou Peso Ajustado em vez do Peso Real, para evitar toxicidade e subdosagem dependendo da lipossolubilidade do fármaco.
+                    Em situações de emergência (como ressuscitação), o cálculo de medicamentos para pacientes com obesidade (IMC &gt; 30) frequentemente exige o uso do <strong>Peso Ideal</strong> ou Peso Ajustado em vez do Peso Real, para evitar toxicidade e subdosagem dependendo da lipossolubilidade do fármaco.
                   </p>
                 </div>
               </div>
