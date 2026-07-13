@@ -1,96 +1,61 @@
-<div align="center">
+# EnfAssist - Tutor digital para estudantes do técnico em Enfermagem CSM
 
-# 🩺 MonicAI — Tutor Digital de Enfermagem
+Aplicação web de apoio aos estudos com chat orientado por IA para estudantes da área da saúde.
 
-**Tutor com Inteligência Artificial para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.**
+## Visão geral
 
-</div>
+O EnfAssist foi pensado para ajudar alunos a tirar dúvidas, revisar conteúdos e gerar materiais de estudo em diferentes formatos. O foco principal é enfermagem, mas o sistema pode servir como apoio para temas correlatos da formação técnica em saúde.
 
----
+## Funcionalidades
 
-## ✨ Funcionalidades
+- Chat com resposta gerada por IA.
+- Histórico lateral com perguntas recentes.
+- Alternância entre modo claro e escuro.
+- Geração de materiais em formatos como:
+  - Guia de estudo
+  - Estudo de caso
+  - Mapa mental em texto
+  - Resumo detalhado
+  - Quiz de revisão
+- Bloco de aprofundamento com tópicos relacionados.
+- Ações rápidas para copiar ou compartilhar mensagens.
 
-- **Tutor de IA** — Chat inteligente com o Gemini para tirar dúvidas de enfermagem, anatomia, farmacologia e ética profissional.
-- **Simulador de Quiz** — Gera simulados de 5 questões com gabarito comentado e referências bibliográficas.
-- **Calculadora Farmacológica** — Cálculos de gotejamento (macro/microgotas) e diluição por Regra de Três com explicação passo a passo.
-- **Materiais de Estudo** — Geração de Guias de Estudo, Estudos de Caso, Mapas Mentais e Resumos Detalhados.
-- **Gamificação** — Sistema de XP e Níveis para motivar o progresso do aluno.
-- **Telemetria Anônima** — Coleta de métricas de uso (sem dados pessoais) via Supabase para análise pedagógica.
+## Tecnologias
 
----
+- React 19
+- TypeScript
+- Vite
+- Google GenAI
+- Tailwind via CDN
+- Font Awesome via CDN
 
-## 🚀 Como Rodar Localmente
+## Como executar localmente
 
-**Pré-requisitos:** Node.js 18+
+1. Instale as dependências:
+   `npm install`
+2. Crie o arquivo `.env` com base em [.env.example](.env.example).
+3. Defina a variável `VITE_GEMINI_API_KEY` com sua chave do Gemini.
+4. Inicie o projeto:
+   `npm run dev`
+
+## Variáveis de ambiente
+
+Exemplo:
 
 ```bash
-# 1. Instale as dependências
-npm install
-
-# 2. Configure as variáveis de ambiente
-cp .env.example .env
-# Edite o .env com a URL e Anon Key do seu projeto Supabase
-
-# 3. Rode o servidor de desenvolvimento
-npm run dev
+VITE_GEMINI_API_KEY=sua_chave_aqui
 ```
 
-O app estará disponível em `http://localhost:3000`.
+## Estrutura principal
 
----
+- [`App.tsx`](./App.tsx): fluxo principal do chat, histórico e seleção de formatos.
+- [`geminiService.ts`](./geminiService.ts): integração com a API do Gemini.
+- [`components/ChatMessage.tsx`](./components/ChatMessage.tsx): renderização das mensagens.
+- [`components/FormatSelector.tsx`](./components/FormatSelector.tsx): seleção de materiais de apoio.
+- [`types.ts`](./types.ts): tipos compartilhados da aplicação.
 
-## ⚙️ Configuração do Supabase
+## Observações importantes
 
-### Tabela de Telemetria
-Execute no **SQL Editor** do painel do Supabase:
-
-```sql
-create table csm_telemetry (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  anonymous_id uuid not null,
-  course_semester text,
-  module_interest text,
-  screen_name text,
-  action_type text not null,
-  action_detail text,
-  duration_seconds integer
-);
-
-alter table csm_telemetry enable row level security;
-create policy "Permitir inserções públicas para telemetria" on csm_telemetry
-  for insert with check (true);
-```
-
-### Edge Function (Proxy Seguro do Gemini)
-```bash
-# Registre a chave do Gemini como secret no Supabase
-npx supabase secrets set GEMINI_API_KEY=SUA_CHAVE --project-ref SEU_PROJECT_REF
-
-# Faça o deploy da função
-npx supabase functions deploy csm-tutor-proxy --no-verify-jwt --project-ref SEU_PROJECT_REF
-```
-
----
-
-## 🔐 Variáveis de Ambiente
-
-| Variável | Onde Fica | Descrição |
-|---|---|---|
-| `VITE_SUPABASE_URL` | `.env` (frontend) | URL pública do projeto Supabase |
-| `VITE_SUPABASE_ANON_KEY` | `.env` (frontend) | Chave anon pública do Supabase |
-| `GEMINI_API_KEY` | Supabase Secrets (servidor) | Chave secreta da API do Gemini — **nunca exposta no frontend** |
-
----
-
-## 🛡️ Segurança
-
-- **API Key oculta** — A chave do Gemini reside exclusivamente no servidor (Supabase Edge Function). O frontend nunca a acessa.
-- **Sanitização de Input** — Todas as entradas do usuário passam por limpeza de tags e detecção de Prompt Injection em duas camadas (frontend + servidor).
-- **Dados Anônimos** — A telemetria usa UUIDs gerados no navegador. Não são coletados nome, e-mail, matrícula ou quaisquer dados pessoais (LGPD).
-
----
-
-## 📄 Licença
-
-Projeto educacional desenvolvido para o Colégio Santa Mônica (CSM Educação).
+- A chave da API agora é lida por variável de ambiente local.
+- Como a chamada ainda acontece no front-end, uma proteção absoluta da chave exige um backend/proxy.
+- O arquivo [.env.example](./.env.example) deve ficar no repositório, mas o `.env` real não deve ser versionado.
