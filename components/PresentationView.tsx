@@ -17,7 +17,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onBack, dark
         <div className="relative z-10 max-w-2xl text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight drop-shadow-md">Bem-vindo ao MonicAI</h1>
           <p className="text-lg md:text-xl font-medium opacity-90 mb-8 leading-relaxed">
-            Seu tutor digital interativo e clínica simulada de bolso. Projetado para revolucionar o ensino técnico em enfermagem através da Inteligência Artificial.
+            Sua preceptoria digital interativa e clínica simulada de bolso. Projetado para revolucionar o ensino técnico em enfermagem através da Inteligência Artificial.
           </p>
           <button 
             onClick={onBack}
@@ -74,12 +74,12 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onBack, dark
             </ul>
           </div>
 
-          {/* Card 3: Tutor IA */}
+          {/* Card 3: Preceptoria */}
           <div className={`p-6 rounded-3xl border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${darkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-100 shadow-lg'}`}>
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center text-white text-2xl mb-6 shadow-lg shadow-rose-500/30">
               <i className="fas fa-robot"></i>
             </div>
-            <h3 className="text-xl font-bold mb-3">MonicAI Tutor</h3>
+            <h3 className="text-xl font-bold mb-3">MonicAI Preceptoria</h3>
             <p className="opacity-70 text-sm leading-relaxed mb-4">
               Tire dúvidas clínicas a qualquer hora. Nosso motor Gemini está configurado para não alucinar e basear-se estritamente na literatura de enfermagem.
             </p>

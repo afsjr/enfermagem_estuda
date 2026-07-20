@@ -146,7 +146,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
             
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl mt-6">
               <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
-                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica da Preceptoria)
               </h4>
               <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
                 Se 1 de 3 sinais do FAST estiver presente, a probabilidade de AVC é de 72%. Não atrase o atendimento. A Escala NIHSS será usada pela equipe médica no hospital para quantificar a gravidade do déficit neurológico antes da trombólise.
@@ -178,7 +178,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
             
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl mt-6">
               <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
-                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica da Preceptoria)
               </h4>
               <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
                 Um qSOFA ≥ 2 indica alto risco de desfecho ruim. Lembre-se: O tempo é crítico na Sepse. A cada hora de atraso no antibiótico, a mortalidade aumenta significativamente.
@@ -296,7 +296,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
 
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl">
               <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-1 text-sm flex items-center gap-2">
-                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica do Tutor)
+                <i className="fas fa-lightbulb"></i> Interpretação Clínica (Dica da Preceptoria)
               </h4>
               <p className="text-xs text-indigo-700 dark:text-indigo-400 leading-relaxed font-medium">
                 <strong>ATENÇÃO:</strong> A 10ª edição do ATLS recomenda agora o uso de <strong>2 mL/kg/%SCQ</strong> de Ringer Lactato para queimaduras térmicas em adultos (antigamente usava-se 4 mL). O tempo de infusão é calculado a partir do <strong>momento da queimadura</strong>, e não da chegada ao hospital. A meta é manter o débito urinário em 0,5 mL/kg/h.

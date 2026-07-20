@@ -1,7 +1,7 @@
 {
-  "name": "MonicAI — Tutor Digital de Enfermagem",
+  "name": "MonicAI — Preceptoria de Enfermagem",
   "short_name": "MonicAI",
-  "description": "Tutor digital com IA para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.",
+  "description": "Preceptoria interativa para estudantes do curso técnico em enfermagem do Colégio Santa Mônica.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

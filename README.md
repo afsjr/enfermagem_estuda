@@ -1,4 +1,4 @@
-# EnfAssist - Tutor digital para estudantes do técnico em Enfermagem CSM
+# EnfAssist - Preceptoria digital para estudantes do técnico em Enfermagem CSM
 
 Aplicação web de apoio aos estudos com chat orientado por IA para estudantes da área da saúde.
 

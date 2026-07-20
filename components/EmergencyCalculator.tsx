@@ -454,7 +454,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
                     className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-2 transition-all disabled:opacity-50"
                   >
                     {isExplaining ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-robot"></i>}
-                    {isExplaining ? 'Tutor IA analisando...' : 'Explicar Farmacologia e Cuidados com IA'}
+                    {isExplaining ? 'Preceptoria analisando...' : 'Explicar Farmacologia e Cuidados com IA'}
                   </button>
                 </div>
               </div>
@@ -463,7 +463,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
             {drugExplanation && (
               <div className="p-5 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl shadow-inner mt-4 animate-fadeIn">
                 <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-2 flex items-center gap-2">
-                  <i className="fas fa-chalkboard-teacher"></i> Explicação do Tutor MonicAI
+                  <i className="fas fa-chalkboard-teacher"></i> Explicação da Preceptoria MonicAI
                 </h4>
                 <div className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: drugExplanation.replace(/\\n/g, '<br/>') }} />
               </div>

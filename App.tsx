@@ -435,7 +435,7 @@ const App: React.FC = () => {
 
   const navigationItems = [
     { id: 'dashboard', name: 'Painel Inicial', icon: 'fa-chart-pie' },
-    { id: 'tutor', name: 'Tutor de IA', icon: 'fa-comment-medical' },
+    { id: 'tutor', name: 'Preceptoria', icon: 'fa-comment-medical' },
     { id: 'pep', name: 'Simulador PEP', icon: 'fa-file-medical' },
     { id: 'infusion', name: 'Bomba de Infusão', icon: 'fa-syringe' },
     { id: 'calculator', name: 'Cálculos Clínicos', icon: 'fa-calculator' },
@@ -552,7 +552,7 @@ const App: React.FC = () => {
               <h1 className="font-bold text-xs md:text-sm leading-tight tracking-tight">
                 {activeView === 'dashboard' && 'Painel de Estudos'}
                 {activeView === 'presentation' && 'Guia de Uso MonicAI'}
-                {activeView === 'tutor' && 'MonicAI Tutor'}
+                {activeView === 'tutor' && 'MonicAI Preceptoria'}
                 {activeView === 'pep' && 'Simulador PEP'}
                 {activeView === 'infusion' && 'Bomba de Infusão'}
                 {activeView === 'calculator' && 'Calculadora Farmacológica'}
@@ -1080,7 +1080,7 @@ const App: React.FC = () => {
       <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center overflow-x-auto no-scrollbar justify-start px-2 gap-1 sm:justify-around border-t backdrop-blur-xl bg-white/95 dark:bg-[#1a1a1a]/95 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)]">
         {[
           { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
-          { id: 'tutor', icon: 'fa-comment-medical', label: 'Tutor' },
+          { id: 'tutor', icon: 'fa-comment-medical', label: 'Preceptoria' },
           { id: 'pep', icon: 'fa-file-medical', label: 'PEP' },
           { id: 'infusion', icon: 'fa-syringe', label: 'Bomba' },
           { id: 'protocols', icon: 'fa-clipboard-list', label: 'Protocolos' },

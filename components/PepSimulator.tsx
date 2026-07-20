@@ -215,7 +215,7 @@ Sua resposta deve usar a formatação Markdown (.md) para estruturar bem os tít
     if (evaluationFeedback) {
       autoTable(doc, {
         startY: (doc as any).lastAutoTable.finalY + 15,
-        head: [['Feedback do Tutor IA']],
+        head: [['Feedback da Preceptoria']],
         body: [[evaluationFeedback.replace(/[*_]/g, '')]],
         styles: { overflow: 'linebreak' },
       });
@@ -430,7 +430,7 @@ Sua resposta deve usar a formatação Markdown (.md) para estruturar bem os tít
             <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-800 flex items-center justify-center text-xl shadow">
               <i className="fas fa-robot"></i>
             </div>
-            <h3 className="font-bold text-lg">Feedback do Tutor MonicAI</h3>
+            <h3 className="font-bold text-lg">Feedback da Preceptoria MonicAI</h3>
           </div>
           <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-teal">
             <ReactMarkdown>{evaluationFeedback}</ReactMarkdown>

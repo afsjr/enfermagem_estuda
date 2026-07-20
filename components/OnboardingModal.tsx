@@ -69,7 +69,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ onComplete, darkMode 
               <div className="text-center space-y-1.5">
                 <h3 className="font-bold text-sm uppercase tracking-wide">Qual é o seu Módulo/Semestre atual?</h3>
                 <p className={`text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Para ajustarmos o nível didático das respostas do tutor.
+                  Para ajustarmos o nível didático das respostas da preceptoria.
                 </p>
               </div>
 

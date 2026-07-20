@@ -8,7 +8,7 @@ const INJECTION_PATTERNS = [
   /(?:ignore|desconsidere|esqueça|cancelar|ignorar|ignore|bypass|override|forget)\b.*\b(?:instruç|regr|diretriz|prompt|sistema|anterior|system|rules)/i,
   
   // Tentativas de mudar o papel do bot
-  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|csm)/i,
+  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|csm|preceptoria)/i,
   /(?:você|voce|you)\b.*\b(?:agora é|agora e|seja|aja como|act as|are now)\b.*\b(?:hacker|desenvolvedor|prompt|outro|outra|assistente virtual genérico|terminal|shell|linux)/i,
   
   // Tentativas de simular tags do sistema ou logs de conversas

@@ -31,7 +31,7 @@ Ao iniciar, dê as boas-vindas ao aluno do Colégio Santa Mônica e pergunte em 
 // Lista de palavras e padrões suspeitos para detecção de Prompt Injection (Jailbreak)
 const INJECTION_PATTERNS = [
   /(?:ignore|desconsidere|esqueça|cancelar|ignorar|ignore|bypass|override|forget)\b.*\b(?:instruç|regr|diretriz|prompt|sistema|anterior|system|rules)/i,
-  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|monicai)/i,
+  /(?:você|voce|you)\b.*\b(?:não é mais|nao e mais|deixou de ser|is no longer)\b.*\b(?:tutor|monicai|preceptoria)/i,
   /(?:você|voce|you)\b.*\b(?:agora é|agora e|seja|aja como|act as|are now)\b.*\b(?:hacker|desenvolvedor|prompt|outro|outra|assistente virtual genérico|terminal|shell|linux)/i,
   /\[(?:system|instruction|prompt|user|assistant|assistant_instruction|admin)\]/i,
   /<(?:system|instruction|prompt|user|assistant)>/i,

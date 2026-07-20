@@ -149,7 +149,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <i className="fas fa-search text-sm"></i> O que você quer estudar hoje?
             </h3>
             <p className={`text-xs font-semibold ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              Digite qualquer assunto clínico ou procedimento técnico para iniciar seu tutor inteligente de IA imediatamente.
+              Digite qualquer assunto clínico ou procedimento técnico para iniciar sua preceptoria inteligente imediatamente.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 max-w-3xl">
