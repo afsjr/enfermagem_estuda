@@ -92,48 +92,58 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   return (
     <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6">
       {/* Welcome & Gamification Header */}
-      <section className={`p-6 rounded-2xl border transition-all shadow-sm flex flex-col md:flex-row items-center gap-6 justify-between ${
-        darkMode ? 'bg-[#252525] border-[#333] text-white' : 'bg-white border-slate-200 text-slate-800'
-      }`}>
-        <div className="space-y-2 text-center md:text-left flex-1">
-          <h2 className="text-lg md:text-2xl font-bold tracking-tight">Bem-vindo ao MonicAI! 👋</h2>
-          <p className={`text-xs md:text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-            Desenvolva suas habilidades práticas e teóricas de enfermagem com ajuda de IA e simuladores clínicos.
-          </p>
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-4 mt-2">
-            <span className="px-2.5 py-1 bg-red-100 dark:bg-[#b22222]/20 text-[#b22222] dark:text-[#ff8888] rounded-full text-[10px] font-bold uppercase tracking-wider">
+      <section className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 md:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center gap-8 justify-between text-white mb-6 transition-all hover:shadow-2xl">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-pink-500 opacity-20 rounded-full blur-2xl"></div>
+        
+        <div className="relative z-10 space-y-4 text-center md:text-left flex-1">
+          <div className="flex flex-col md:flex-row items-center gap-4 mb-2">
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center border border-white/30 hidden md:flex">
+              <i className="fas fa-heartbeat text-3xl text-white"></i>
+            </div>
+            <div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">Bem-vindo ao MonicAI</h2>
+              <p className="text-sm md:text-base font-medium opacity-90 mt-1 max-w-xl leading-relaxed">
+                Sua preceptoria digital interativa. Desenvolva suas habilidades práticas e teóricas de enfermagem com ajuda de Inteligência Artificial e simuladores clínicos de bolso.
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mt-4">
+            <span className="px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider border border-white/20 shadow-sm">
               {getRankName(currentLevel)}
             </span>
-            <span className="px-2.5 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 rounded-full text-[10px] font-bold uppercase tracking-wider">
+            <span className="px-3 py-1.5 bg-yellow-400/20 backdrop-blur-md text-yellow-200 rounded-full text-xs font-bold uppercase tracking-wider border border-yellow-400/30 shadow-sm">
               🏆 Nível {currentLevel}
             </span>
-            <span className="px-2.5 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 rounded-full text-[10px] font-bold uppercase tracking-wider">
+            <span className="px-3 py-1.5 bg-indigo-400/30 backdrop-blur-md text-indigo-100 rounded-full text-xs font-bold uppercase tracking-wider border border-indigo-400/30 shadow-sm">
               ⚡ {stats.xp} Total XP
             </span>
           </div>
-          <div className="mt-4 flex justify-center md:justify-start">
+          <div className="mt-6 flex justify-center md:justify-start">
             <button 
               onClick={() => onNavigate('presentation')}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all hover:scale-105"
+              className="px-6 py-3 bg-white text-purple-700 hover:bg-slate-100 rounded-full text-xs font-black uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
             >
-              <i className="fas fa-play-circle text-lg"></i> Como usar o MonicAI?
+              <i className="fas fa-play-circle text-lg"></i> Conhecer as Ferramentas
             </button>
           </div>
         </div>
 
         {/* Level Progress Bar */}
-        <div className="w-full md:w-64 space-y-1.5 border-t md:border-t-0 md:border-l border-slate-200 dark:border-[#333] pt-4 md:pt-0 md:pl-6">
-          <div className="flex justify-between text-xs font-bold uppercase tracking-wider opacity-70">
-            <span>Progresso do Nível</span>
+        <div className="relative z-10 w-full md:w-72 space-y-2 bg-black/20 p-5 rounded-2xl backdrop-blur-sm border border-white/10 shrink-0 shadow-lg">
+          <div className="flex justify-between text-xs font-bold uppercase tracking-wider opacity-90 mb-1">
+            <span>Progresso</span>
             <span>{progressPercent}%</span>
           </div>
-          <div className="w-full bg-slate-200 dark:bg-[#333] h-3 rounded-full overflow-hidden shadow-inner">
+          <div className="w-full bg-black/30 h-3.5 rounded-full overflow-hidden shadow-inner p-0.5">
             <div 
-              className="bg-[#FFCC00] h-full rounded-full transition-all duration-500 shadow-md"
+              className="bg-gradient-to-r from-yellow-400 to-amber-300 h-full rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(250,204,21,0.6)]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <p className="text-[10px] opacity-50 font-semibold text-right">
+          <p className="text-[10px] opacity-70 font-semibold text-right pt-1">
             {100 - xpInCurrentLevel} XP para o próximo nível
           </p>
         </div>
