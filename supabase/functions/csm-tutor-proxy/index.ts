@@ -55,20 +55,12 @@ function sanitizeInput(text: string): string {
   return sanitized.trim();
 }
 
-async function callGroqFallback(
+function buildOpenAiMessages(
   action: string,
   topic: string,
   format: string,
-  history: any[],
-  temperature: number,
-  responseMimeType: string
-): Promise<string> {
-  const groqApiKey = Deno.env.get('GROQ_API_KEY');
-  if (!groqApiKey) {
-    throw new Error("GROQ_API_KEY não configurada no Supabase.");
-  }
-
-  // 1. Prepare messages in OpenAI/Groq Chat format
+  history: any[]
+): any[] {
   const messages: any[] = [
     { role: 'system', content: SYSTEM_INSTRUCTION }
   ];
@@ -115,7 +107,68 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
     });
   }
 
-  // 2. Fetch Groq API
+  return messages;
+}
+
+async function callOpenRouter(
+  action: string,
+  topic: string,
+  format: string,
+  history: any[],
+  temperature: number,
+  responseMimeType: string
+): Promise<string> {
+  const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
+  if (!openRouterApiKey) {
+    throw new Error("OPENROUTER_API_KEY não configurada no Supabase.");
+  }
+
+  const messages = buildOpenAiMessages(action, topic, format, history);
+  const openRouterUrl = 'https://openrouter.ai/api/v1/chat/completions';
+  const requestBody: any = {
+    model: 'deepseek/deepseek-chat',
+    messages: messages,
+    temperature: temperature
+  };
+
+  if (responseMimeType === 'application/json') {
+    requestBody.response_format = { type: 'json_object' };
+  }
+
+  const response = await fetch(openRouterUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openRouterApiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://github.com/afsjr/enfermagem_estuda',
+      'X-Title': 'EnfAssist'
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Erro na API do OpenRouter: ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || '';
+}
+
+async function callGroqFallback(
+  action: string,
+  topic: string,
+  format: string,
+  history: any[],
+  temperature: number,
+  responseMimeType: string
+): Promise<string> {
+  const groqApiKey = Deno.env.get('GROQ_API_KEY');
+  if (!groqApiKey) {
+    throw new Error("GROQ_API_KEY não configurada no Supabase.");
+  }
+
+  const messages = buildOpenAiMessages(action, topic, format, history);
   const groqUrl = 'https://api.groq.com/openai/v1/chat/completions';
   const requestBody: any = {
     model: 'llama-3.3-70b-versatile',
@@ -123,7 +176,6 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
     temperature: temperature
   };
 
-  // If json formatting is requested, ask Groq for JSON output format
   if (responseMimeType === 'application/json') {
     requestBody.response_format = { type: 'json_object' };
   }
@@ -154,14 +206,6 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { action, topic, format, history = [] } = await req.json();
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY não configurada no Supabase." }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
 
     // 1. Validação e Sanitização do Input do Estudante com base na Ação
     let userInputToCheck = '';
@@ -181,14 +225,48 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // 2. Montagem da chamada para a API do Gemini
-    let contents = [];
+    // 2. Configurações base
     let responseMimeType = "text/plain";
     let temperature = 0.7;
 
     if (action === 'generateQuizJson') {
-      const sanitizedTopic = sanitizeInput(topic);
-      const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
+      responseMimeType = "application/json";
+      temperature = 0.5;
+    }
+
+    // Estrutura de payloads e controle
+    let responseText = '';
+    let usedProvider = '';
+
+    // A. Tentar primeiro o OpenRouter (DeepSeek)
+    const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
+    if (openRouterApiKey) {
+      try {
+        responseText = await callOpenRouter(
+          action,
+          topic,
+          format,
+          history,
+          temperature,
+          responseMimeType
+        );
+        usedProvider = 'openrouter';
+        console.info("Resposta gerada via OpenRouter (DeepSeek).");
+      } catch (openRouterError: any) {
+        console.warn("OpenRouter (DeepSeek) falhou. Tentando Gemini...", openRouterError.message);
+      }
+    }
+
+    // B. Se falhar ou não houver chave do OpenRouter, tentar Gemini
+    if (!usedProvider) {
+      const apiKey = Deno.env.get('GEMINI_API_KEY');
+      if (apiKey) {
+        try {
+          // Prepara payloads específicos para o Gemini
+          let contents = [];
+          if (action === 'generateQuizJson') {
+            const sanitizedTopic = sanitizeInput(topic);
+            const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
 Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
 Você DEVE responder estritamente em formato JSON com o seguinte esquema (não inclua blocos markdown de código, retorne apenas o JSON bruto):
@@ -202,74 +280,66 @@ Você DEVE responder estritamente em formato JSON com o seguinte esquema (não i
     }
   ]
 }`;
-
-      contents = [{ role: 'user', parts: [{ text: prompt }] }];
-      responseMimeType = "application/json";
-      temperature = 0.5;
-
-    } else if (action === 'generateStudyContent') {
-      const sanitizedTopic = sanitizeInput(topic);
-      const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
+            contents = [{ role: 'user', parts: [{ text: prompt }] }];
+          } else if (action === 'generateStudyContent') {
+            const sanitizedTopic = sanitizeInput(topic);
+            const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
 Este conteúdo é para um aluno do curso técnico do Colégio Santa Mônica. Foque em excelência técnica e cuidado humanizado. 
 Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
+            const formattedHistory = history.map((msg: any) => ({
+              role: msg.role === 'user' ? 'user' : 'model',
+              parts: [{ text: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content }]
+            }));
+            contents = [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }];
+          } else if (action === 'chat') {
+            contents = history.map((msg: any) => ({
+              role: msg.role === 'user' ? 'user' : 'model',
+              parts: [{ text: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content }]
+            }));
+          } else {
+            return new Response(JSON.stringify({ error: `Ação inválida: ${action}` }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
 
-      // Converte o histórico para o formato do Gemini
-      const formattedHistory = history.map((msg: any) => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content }]
-      }));
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
+          const requestBody = {
+            contents: contents,
+            systemInstruction: {
+              parts: [{ text: SYSTEM_INSTRUCTION }]
+            },
+            generationConfig: {
+              temperature: temperature,
+              responseMimeType: responseMimeType
+            }
+          };
 
-      contents = [...formattedHistory, { role: 'user', parts: [{ text: prompt }] }];
+          const response = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          });
 
-    } else if (action === 'chat') {
-      // Converte o histórico inteiro
-      contents = history.map((msg: any) => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.role === 'user' ? `<student_query>${sanitizeInput(msg.content)}</student_query>` : msg.content }]
-      }));
-    } else {
-      return new Response(JSON.stringify({ error: `Ação inválida: ${action}` }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Gemini status code ${response.status}: ${errorText}`);
+          }
+
+          const geminiData = await response.json();
+          responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          usedProvider = 'gemini';
+          console.info("Resposta gerada via Gemini.");
+        } catch (geminiError: any) {
+          console.warn("Gemini falhou. Tentando Groq...", geminiError.message);
+        }
+      }
     }
 
-    // 3. Execução da chamada HTTP para a API do Gemini com Fallback para Groq
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
-    
-    const requestBody = {
-      contents: contents,
-      systemInstruction: {
-        parts: [{ text: SYSTEM_INSTRUCTION }]
-      },
-      generationConfig: {
-        temperature: temperature,
-        responseMimeType: responseMimeType
-      }
-    };
-
-    let responseText = '';
-    let usedFallback = false;
-
-    try {
-      const response = await fetch(geminiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Gemini status code ${response.status}: ${errorText}`);
-      }
-
-      const geminiData = await response.json();
-      responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    } catch (geminiError: any) {
-      console.warn("Gemini falhou. Tentando fallback para Groq...", geminiError.message);
-      
+    // C. Se falhar ou não houver chaves anteriores, tentar Groq como fallback final
+    if (!usedProvider) {
       const groqApiKey = Deno.env.get('GROQ_API_KEY');
       if (groqApiKey) {
         try {
@@ -281,14 +351,13 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
             temperature,
             responseMimeType
           );
-          usedFallback = true;
-          console.info("Fallback para Groq concluído com sucesso!");
+          usedProvider = 'groq';
+          console.info("Resposta gerada via Groq (Fallback).");
         } catch (groqError: any) {
-          console.error("Fallback para Groq também falhou:", groqError.message);
+          console.error("Groq falhou também:", groqError.message);
           return new Response(JSON.stringify({ 
-            error: "Erro na API do Gemini (e o fallback para Groq também falhou)", 
-            details: geminiError.message,
-            groqDetails: groqError.message
+            error: "Todos os provedores de IA (OpenRouter, Gemini, Groq) falharam ou não estão configurados.",
+            details: groqError.message
           }), {
             status: 502,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -296,8 +365,7 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
         }
       } else {
         return new Response(JSON.stringify({ 
-          error: "Erro na API do Gemini", 
-          details: geminiError.message 
+          error: "Nenhum provedor de IA configurado ou disponível (tentativas falharam)."
         }), {
           status: 502,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -305,7 +373,11 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
       }
     }
 
-    return new Response(JSON.stringify({ text: responseText, fallback: usedFallback }), {
+    return new Response(JSON.stringify({ 
+      text: responseText, 
+      fallback: usedProvider !== 'openrouter', // retrocompatibilidade
+      provider: usedProvider
+    }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
