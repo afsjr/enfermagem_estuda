@@ -192,7 +192,7 @@ const EmergencyCalculator: React.FC<EmergencyCalculatorProps> = ({ onCompleteCal
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-5xl mx-auto overflow-y-auto h-full pb-32 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-5xl mx-auto overflow-y-auto h-full pb-20 lg:pb-6">
       
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-red-900/10 p-4 rounded-xl border border-red-600/20 mb-6 gap-4">

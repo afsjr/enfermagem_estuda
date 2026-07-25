@@ -447,7 +447,7 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className={`flex h-screen max-w-full mx-auto transition-colors duration-300 ${darkMode ? 'bg-[#121212] text-white' : 'bg-slate-100 text-slate-800'}`}>
+    <div className={`flex h-[100dvh] max-w-full mx-auto transition-colors duration-300 ${darkMode ? 'bg-[#121212] text-white' : 'bg-slate-100 text-slate-800'}`}>
       
       {showOnboarding && (
         <OnboardingModal onComplete={handleOnboardingComplete} darkMode={darkMode} />
@@ -559,7 +559,7 @@ const App: React.FC = () => {
       </aside>
 
       {/* Container Principal */}
-      <div className={`flex flex-col flex-1 h-screen relative shadow-2xl transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+      <div className={`flex flex-col flex-1 h-[100dvh] min-w-0 relative shadow-2xl transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
         
         {/* Header Superior (Aligned h-16 with continuous borders) */}
         <header className="h-16 px-4 bg-[#b22222] text-white flex items-center justify-between shadow-md z-10 border-b-2 border-[#FFCC00] shrink-0">
@@ -652,7 +652,8 @@ const App: React.FC = () => {
         </header>
 
         {/* Conteúdo Dinâmico com base na View Ativa */}
-        <div className="flex-1 min-h-0 pb-20 lg:pb-0">
+        {/* On mobile: subtract header (64px) + bottom nav (64px) = 128px. On desktop: only header (64px) */}
+        <div className="flex-1 min-h-0 overflow-hidden">
           {activeView === 'dashboard' && (
             <DashboardOverview
               stats={stats}
@@ -707,7 +708,7 @@ const App: React.FC = () => {
                 activeMobileView === 'chat' ? 'flex' : 'hidden lg:flex'
               }`}>
                 {/* Chat Area */}
-                <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-20 lg:pb-6 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
+                <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-4 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
                   {messages.map(msg => (
                     <ChatMessage 
                       key={msg.id} 
@@ -740,7 +741,7 @@ const App: React.FC = () => {
                 )}
 
                 {/* Input Area */}
-                <footer className={`p-4 border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} sticky bottom-0`}>
+                <footer className={`p-4 pb-[76px] lg:pb-4 border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shrink-0`}>
                   <div className="flex items-center gap-2 max-w-4xl mx-auto font-semibold">
                     <div className="relative flex-1">
                       <input
@@ -1099,7 +1100,7 @@ const App: React.FC = () => {
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center overflow-x-auto no-scrollbar justify-start px-2 gap-1 sm:justify-around border-t backdrop-blur-xl bg-white/95 dark:bg-[#1a1a1a]/95 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)]">
+      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center overflow-x-auto no-scrollbar justify-start px-2 gap-1 sm:justify-around border-t backdrop-blur-xl bg-white/95 dark:bg-[#1a1a1a]/95 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)] min-h-[60px]">
         {[
           { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
           { id: 'tutor', icon: 'fa-comment-medical', label: 'Preceptoria' },

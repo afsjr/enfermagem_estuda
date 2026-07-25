@@ -112,7 +112,7 @@ const QuizView: React.FC<QuizViewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col pb-6 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col pb-20 lg:pb-6">
       {questions.length === 0 && !loading && (
         // Setup State
         <div className={`p-6 rounded-2xl border text-center space-y-6 ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>

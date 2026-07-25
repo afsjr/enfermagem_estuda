@@ -225,7 +225,7 @@ Sua resposta deve usar a formatação Markdown (.md) para estruturar bem os tít
   };
 
   return (
-    <div className={`p-4 md:p-6 max-w-5xl mx-auto overflow-y-auto h-full pb-6 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+    <div className={`p-4 md:p-6 max-w-5xl mx-auto overflow-y-auto h-full pb-20 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
       
       {/* HEADER E CENÁRIOS */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-teal-900/10 p-4 rounded-xl border border-teal-600/20 mb-6 gap-4">

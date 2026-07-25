@@ -90,7 +90,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-6xl mx-auto overflow-y-auto h-full pb-6 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 w-full max-w-full overflow-y-auto h-full pb-20 lg:pb-6">
       {/* Welcome & Gamification Header */}
       <section className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 md:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center gap-8 justify-between text-white mb-6 transition-all hover:shadow-2xl">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>

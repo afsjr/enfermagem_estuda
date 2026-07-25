@@ -117,7 +117,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-6 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-20 lg:pb-6">
       {/* Tabs Header */}
       <div className="flex border-b dark:border-[#333]">
         <button
@@ -178,7 +178,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
                   <select
                     value={dripTimeUnit}
                     onChange={(e) => setDripTimeUnit(e.target.value as 'hours' | 'minutes')}
-                    className={`w-32 p-3.5 rounded-xl border-2 font-bold text-base focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
+                    className={`min-w-[80px] w-auto p-3.5 rounded-xl border-2 font-bold text-sm focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all min-h-[44px] ${
                       darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-white border-slate-300'
                     }`}
                   >
