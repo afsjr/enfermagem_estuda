@@ -652,7 +652,7 @@ const App: React.FC = () => {
         </header>
 
         {/* Conteúdo Dinâmico com base na View Ativa */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 pb-20 lg:pb-0">
           {activeView === 'dashboard' && (
             <DashboardOverview
               stats={stats}

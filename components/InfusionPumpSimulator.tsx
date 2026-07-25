@@ -134,7 +134,7 @@ export const InfusionPumpSimulator: React.FC<InfusionPumpSimulatorProps> = ({ on
   const rm = Math.floor((remainingTimeHours - rh) * 60);
 
   return (
-    <div className={`p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+    <div className={`p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-6 lg:pb-6 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
       
       <div className="flex border-b dark:border-[#333]">
         <button onClick={() => {setActiveTab('volumetric'); handleStop();}} className={`flex-1 py-3 text-xs md:text-sm font-bold uppercase tracking-wider border-b-2 transition-all ${activeTab === 'volumetric' ? 'border-[#7c3aed] text-[#7c3aed]' : 'border-transparent text-slate-500'}`}>💧 Volumétrica</button>

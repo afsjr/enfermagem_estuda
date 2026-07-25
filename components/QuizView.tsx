@@ -112,7 +112,7 @@ const QuizView: React.FC<QuizViewProps> = ({
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col pb-24 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto overflow-y-auto h-full flex flex-col pb-6 lg:pb-6">
       {questions.length === 0 && !loading && (
         // Setup State
         <div className={`p-6 rounded-2xl border text-center space-y-6 ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>
@@ -332,7 +332,7 @@ const QuizView: React.FC<QuizViewProps> = ({
       )}
 
       {/* Mandatory citation footer as required */}
-      <section className={`p-4 rounded-xl border text-[11px] leading-relaxed font-semibold mt-auto ${
+      <section className={`p-4 rounded-xl border text-[11px] leading-relaxed font-semibold mt-6 ${
         darkMode ? 'bg-[#1e1e1e] border-[#333] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
       }`}>
         <p className="text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">

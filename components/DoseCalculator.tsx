@@ -117,7 +117,7 @@ const DoseCalculator: React.FC<DoseCalculatorProps> = ({ onCompleteCalculation, 
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-24 lg:pb-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto overflow-y-auto h-full pb-6 lg:pb-6">
       {/* Tabs Header */}
       <div className="flex border-b dark:border-[#333]">
         <button

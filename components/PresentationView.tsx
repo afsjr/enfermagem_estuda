@@ -7,7 +7,7 @@ interface PresentationViewProps {
 
 export const PresentationView: React.FC<PresentationViewProps> = ({ onBack, darkMode }) => {
   return (
-    <div className={`p-4 md:p-8 max-w-7xl mx-auto overflow-y-auto h-full pb-24 lg:pb-8 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+    <div className={`p-4 md:p-8 max-w-7xl mx-auto overflow-y-auto h-full pb-6 lg:pb-8 ${darkMode ? 'text-white' : 'text-slate-800'}`}>
       
       {/* HEADER HERO NOVO */}
       <div className="relative overflow-hidden bg-gradient-to-r from-rose-600 via-[#b22222] to-orange-500 p-8 md:p-12 rounded-3xl shadow-2xl mb-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 animate-fadeIn">
