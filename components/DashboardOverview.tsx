@@ -265,35 +265,35 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </section>
 
       {/* Quick Access Tools */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <button 
           onClick={() => onNavigate('protocols')}
-          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+          className={`h-full p-5 rounded-2xl border flex flex-col items-center gap-4 transition-all shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-[#b22222] ${
             darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
           }`}
         >
           <div className="w-12 h-12 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
             <i className="fas fa-clipboard-list"></i>
           </div>
-          <div>
-            <h3 className="font-bold text-sm uppercase tracking-wider text-blue-600 dark:text-blue-400">Protocolos Clínicos 📋</h3>
-            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+          <div className="flex-1 flex flex-col w-full text-center">
+            <h3 className="font-bold text-sm uppercase tracking-wider text-blue-600 dark:text-blue-400">Protocolos <span className="whitespace-nowrap">Clínicos 📋</span></h3>
+            <p className={`text-xs mt-2 leading-normal text-justify ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Checklists iterativos e algoritmos de emergência guiados passo a passo (PCR, AVC, Sepse, etc).
             </p>
           </div>
         </button>
         <button 
           onClick={() => onNavigate('calculator')}
-          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+          className={`h-full p-5 rounded-2xl border flex flex-col items-center gap-4 transition-all shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-[#b22222] ${
             darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
           }`}
         >
           <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
             <i className="fas fa-calculator"></i>
           </div>
-          <div>
+          <div className="flex-1 flex flex-col w-full text-center">
             <h3 className="font-bold text-sm uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Calculadora de Medicamentos 🧮</h3>
-            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className={`text-xs mt-2 leading-normal text-justify ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Calcule taxas de infusão (gotas/min, microgotas/min) e diluição de doses via Regra de Três, com explicação matemática e a fundamentação teórica segundo o COFEN.
             </p>
           </div>
@@ -301,16 +301,16 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
         <button 
           onClick={() => onNavigate('quiz')}
-          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+          className={`h-full p-5 rounded-2xl border flex flex-col items-center gap-4 transition-all shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-[#b22222] ${
             darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
           }`}
         >
           <div className="w-12 h-12 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
             <i className="fas fa-check-double"></i>
           </div>
-          <div>
+          <div className="flex-1 flex flex-col w-full text-center">
             <h3 className="font-bold text-sm uppercase tracking-wider text-purple-600 dark:text-purple-400">Simulador de Quiz por IA 📝</h3>
-            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className={`text-xs mt-2 leading-normal text-justify ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Gere simulados dinâmicos e testes rápidos sobre qualquer tópico clínico. Responda interativamente e aprenda com o gabarito comentado fundamentado na literatura científica.
             </p>
           </div>
@@ -318,16 +318,16 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
         <button 
           onClick={() => onNavigate('emergency')}
-          className={`p-5 rounded-2xl border text-left flex items-start gap-4 transition-all shadow-sm hover:shadow-md hover:border-[#b22222] ${
+          className={`h-full p-5 rounded-2xl border flex flex-col items-center gap-4 transition-all shadow-sm hover:-translate-y-1 hover:shadow-md hover:border-[#b22222] ${
             darkMode ? 'bg-[#252525] border-[#333] hover:bg-[#2d2d2d]' : 'bg-white border-slate-200 hover:bg-slate-50'
           }`}
         >
           <div className="w-12 h-12 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-inner">
             <i className="fas fa-heartbeat"></i>
           </div>
-          <div>
+          <div className="flex-1 flex flex-col w-full text-center">
             <h3 className="font-bold text-sm uppercase tracking-wider text-red-600 dark:text-red-400">Escalas de Emergência 🚨</h3>
-            <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className={`text-xs mt-2 leading-normal text-justify ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Glasgow, NEWS, Dor, IMC e doses de emergência. Avalie rapidamente a gravidade do paciente com suporte de IA.
             </p>
           </div>

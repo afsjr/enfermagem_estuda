@@ -12,12 +12,14 @@ import PresentationView from './components/PresentationView';
 import OnboardingModal from './components/OnboardingModal';
 import EmergencyCalculator from './components/EmergencyCalculator';
 import ClinicalProtocols from './components/ClinicalProtocols';
+import FeedbackModal from './components/FeedbackModal';
 import { telemetry, StudentProfile } from './telemetryService';
 import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols'>('dashboard');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const prevViewRef = useRef(activeView);
   const viewStartRef = useRef(Date.now());
 
@@ -451,6 +453,10 @@ const App: React.FC = () => {
         <OnboardingModal onComplete={handleOnboardingComplete} darkMode={darkMode} />
       )}
 
+      {isFeedbackModalOpen && (
+        <FeedbackModal onClose={() => setIsFeedbackModalOpen(false)} darkMode={darkMode} />
+      )}
+
       {/* Sidebar de Navegação & Histórico */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${isHistoryOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out border-r shadow-xl ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} flex flex-col`}>
         {/* Brand Header (Aligned h-16) */}
@@ -494,6 +500,22 @@ const App: React.FC = () => {
               </button>
             );
           })}
+          
+          {/* Feedback Button */}
+          <button
+            onClick={() => {
+              setIsFeedbackModalOpen(true);
+              if (window.innerWidth < 1024) setIsHistoryOpen(false);
+            }}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all mt-2 border-2 border-dashed ${
+              darkMode
+                ? 'border-[#333] text-slate-400 hover:bg-[#252525] hover:text-slate-300'
+                : 'border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+            }`}
+          >
+            <i className="fas fa-lightbulb text-sm opacity-65"></i>
+            <span>Deixar Sugestão</span>
+          </button>
         </div>
 
         {/* Context-aware Chat History in Sidebar */}
