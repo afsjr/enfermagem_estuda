@@ -123,19 +123,19 @@ const QuizView: React.FC<QuizViewProps> = ({
             </p>
           </div>
 
-          <div className="flex gap-2 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto w-full">
             <input
               type="text"
               value={topicInput}
               onChange={(e) => setTopicInput(e.target.value)}
               placeholder="Digite um assunto técnico..."
-              className={`flex-1 p-3 rounded-xl border text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#FFCC00] ${
+              className={`flex-1 w-full p-3 rounded-xl border text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#FFCC00] ${
                 darkMode ? 'bg-[#1a1a1a] border-[#444] text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
               }`}
             />
             <button
               onClick={() => handleGenerate(topicInput)}
-              className="px-5 py-3 bg-[#b22222] hover:bg-[#8b0000] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md shrink-0"
+              className="w-full sm:w-auto px-5 py-3 bg-[#b22222] hover:bg-[#8b0000] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md shrink-0"
             >
               Criar Quiz
             </button>
