@@ -39,7 +39,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
     return { total: totalVolume, first8h, next16h };
   };
 
-  const renderChecklistItem = (id: string, text: string, detail?: string) => (
+  const renderChecklistItem = (id: string, text: string, detail?: string, imageSrc?: string) => (
     <div 
       className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
         checkedItems[id] 
@@ -53,11 +53,16 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
       }`}>
         {checkedItems[id] && <i className="fas fa-check text-xs"></i>}
       </div>
-      <div>
+      <div className="flex-1">
         <p className={`font-bold text-sm ${checkedItems[id] ? 'text-emerald-800 dark:text-emerald-400 line-through opacity-70' : 'text-slate-700 dark:text-slate-300'}`}>
           {text}
         </p>
         {detail && <p className="text-xs text-slate-500 mt-1">{detail}</p>}
+        {imageSrc && (
+          <div className="mt-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white max-w-sm">
+            <img src={imageSrc} alt={text} className="w-full h-auto object-contain max-h-48" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -105,9 +110,9 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
           <div className="space-y-4 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Algoritmo de Parada Cardiorrespiratória (Adulto)</h3>
             <div className="space-y-2">
-              {renderChecklistItem('pcr_1', 'Reconhecer PCR e Pedir Ajuda', 'Verificar responsividade, respiração (ausente ou gasping) e pulso central (máx 10 seg). Chamar equipe e solicitar desfibrilador/carrinho de emergência.')}
-              {renderChecklistItem('pcr_2', 'Iniciar RCP de Alta Qualidade', '30 compressões : 2 ventilações. Frequência 100-120/min. Profundidade de 5cm. Permitir retorno total do tórax.')}
-              {renderChecklistItem('pcr_3', 'Analisar o Ritmo (Chegada do DEA/Monitor)', 'Se ritmo chocável (FV/TV sem pulso): Aplicar choque. Se não chocável (Assistolia/AESP): Retomar RCP imediatamente.')}
+              {renderChecklistItem('pcr_1', 'Reconhecer PCR e Pedir Ajuda', 'Verificar responsividade, respiração (ausente ou gasping) e pulso central (máx 10 seg). Chamar equipe e solicitar desfibrilador/carrinho de emergência.', '/images/protocols/pcr_1.png')}
+              {renderChecklistItem('pcr_2', 'Iniciar RCP de Alta Qualidade', '30 compressões : 2 ventilações. Frequência 100-120/min. Profundidade de 5cm. Permitir retorno total do tórax.', '/images/protocols/pcr_2.png')}
+              {renderChecklistItem('pcr_3', 'Analisar o Ritmo (Chegada do DEA/Monitor)', 'Se ritmo chocável (FV/TV sem pulso): Aplicar choque. Se não chocável (Assistolia/AESP): Retomar RCP imediatamente.', '/images/protocols/pcr_3.png')}
               {renderChecklistItem('pcr_4', 'Obter Acesso IV/IO e Administrar Epinefrina', 'Epinefrina 1 mg a cada 3 a 5 minutos.')}
               {renderChecklistItem('pcr_5', 'Considerar Via Aérea Avançada', 'Após via aérea avançada, 1 ventilação a cada 6 segundos (10/min) sem pausar compressões.')}
               {renderChecklistItem('pcr_6', 'Identificar Causas Reversíveis (5Hs e 5Ts)', 'Hipovolemia, Hipóxia, H+ (acidose), Hipo/Hipercalemia, Hipotermia. Tensão no tórax (pneumotórax), Tamponamento, Toxinas, Trombose pulmonar, Trombose coronária.')}
@@ -120,7 +125,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
           <div className="space-y-4 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Infarto Agudo do Miocárdio (Triagem e MONAC)</h3>
             <div className="space-y-2">
-              {renderChecklistItem('iam_1', 'Realizar ECG em até 10 minutos', 'Tempo porta-ECG ideal é < 10 minutos. Procurar por supradesnivelamento do segmento ST.')}
+              {renderChecklistItem('iam_1', 'Realizar ECG em até 10 minutos', 'Tempo porta-ECG ideal é < 10 minutos. Procurar por supradesnivelamento do segmento ST.', '/images/protocols/iam_1.png')}
               {renderChecklistItem('iam_2', 'M - Morfina', 'Se dor não for aliviada com nitrato. Cuidado com hipotensão.')}
               {renderChecklistItem('iam_3', 'O - Oxigênio', 'Apenas se saturação < 90% ou desconforto respiratório.')}
               {renderChecklistItem('iam_4', 'N - Nitrato', 'Vasodilatador sublingual. Contraindicado se uso recente de inibidores da fosfodiesterase (Sildenafil) ou infarto de VD.')}
@@ -136,8 +141,8 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
           <div className="space-y-4 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Acidente Vascular Cerebral (Triagem FAST)</h3>
             <div className="space-y-2">
-              {renderChecklistItem('avc_1', 'F - Face (Rosto)', 'Pedir para o paciente sorrir. Avaliar assimetria (boca torta).')}
-              {renderChecklistItem('avc_2', 'A - Arms (Braços)', 'Pedir para elevar os dois braços. Avaliar se um braço cai ou não tem força.')}
+              {renderChecklistItem('avc_1', 'F - Face (Rosto)', 'Pedir para o paciente sorrir. Avaliar assimetria (boca torta).', '/images/protocols/avc_1.png')}
+              {renderChecklistItem('avc_2', 'A - Arms (Braços)', 'Pedir para elevar os dois braços. Avaliar se um braço cai ou não tem força.', '/images/protocols/avc_2.png')}
               {renderChecklistItem('avc_3', 'S - Speech (Fala)', 'Pedir para repetir uma frase simples. Avaliar fala arrastada, incompreensível ou afasia.')}
               {renderChecklistItem('avc_4', 'T - Time (Tempo)', 'Identificar a hora exata do início dos sintomas. Janela para trombólise é de até 4,5 horas.')}
               {renderChecklistItem('avc_5', 'Glicemia Capilar', 'Descartar hipoglicemia, que pode simular sintomas de AVC.')}
@@ -170,7 +175,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
             <h4 className="font-bold text-sm text-slate-600 dark:text-slate-400 mt-6 mb-2">Bundle de 1 Hora (Ações Imediatas)</h4>
             <div className="space-y-2">
               {renderChecklistItem('sep_b1', 'Medir Nível de Lactato', 'Se lactato inicial > 2 mmol/L, remensurar em 2 a 4 horas.')}
-              {renderChecklistItem('sep_b2', 'Coletar Hemoculturas', 'Sempre coletar ANTES da administração do antibiótico, se não atrasar significativamente (>45min).')}
+              {renderChecklistItem('sep_b2', 'Coletar Hemoculturas', 'Sempre coletar ANTES da administração do antibiótico, se não atrasar significativamente (>45min).', '/images/protocols/sep_b2.png')}
               {renderChecklistItem('sep_b3', 'Administrar Antibiótico de Amplo Espectro', 'Iniciar na primeira hora do reconhecimento.')}
               {renderChecklistItem('sep_b4', 'Administrar Cristaloides (30 mL/kg)', 'Indicado para hipotensão ou lactato ≥ 4 mmol/L.')}
               {renderChecklistItem('sep_b5', 'Aplicar Vasopressores', 'Se paciente continuar hipotenso após reposição volêmica, visando PAM ≥ 65 mmHg.')}
@@ -192,7 +197,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
           <div className="space-y-4 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Abordagem ao Trauma (ABCDE)</h3>
             <div className="space-y-2">
-              {renderChecklistItem('trauma_a', 'A - Airway (Vias Aéreas)', 'Garantir permeabilidade das vias aéreas com controle cervical (colar cervical).')}
+              {renderChecklistItem('trauma_a', 'A - Airway (Vias Aéreas)', 'Garantir permeabilidade das vias aéreas com controle cervical (colar cervical).', '/images/protocols/trauma_a.png')}
               {renderChecklistItem('trauma_b', 'B - Breathing (Respiração)', 'Avaliar expansibilidade, ausculta e administrar O2 se necessário. Identificar pneumotórax.')}
               {renderChecklistItem('trauma_c', 'C - Circulation (Circulação)', 'Controlar hemorragias compressíveis. Obter 2 acessos venosos calibrosos. Avaliar pulso e perfusão.')}
               {renderChecklistItem('trauma_d', 'D - Disability (Disfunção Neurológica)', 'Avaliar Escala de Coma de Glasgow (ECG) e reação pupilar.')}
@@ -277,6 +282,9 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
 
                 {calculateParkland() && (
                   <div className="mt-4 flex-1 flex flex-col justify-center space-y-2 text-sm">
+                    <div className="w-full flex justify-center mb-2">
+                      <img src="/images/protocols/queimaduras_iv.png" alt="Ringer Lactato" className="h-24 w-auto rounded-lg border dark:border-slate-700 bg-white" />
+                    </div>
                     <div className="flex justify-between p-2 border-b dark:border-slate-600">
                       <span>Volume Total (24h):</span>
                       <span className="font-bold">{calculateParkland()?.total} mL</span>
