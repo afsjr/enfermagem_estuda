@@ -5,6 +5,7 @@ export interface QuizQuestion {
   options: string[];
   answer: number; // Index of correct option (0 to 3)
   explanation: string;
+  exact_quote?: string;
 }
 
 interface QuizViewProps {
@@ -266,6 +267,17 @@ const QuizView: React.FC<QuizViewProps> = ({
                 <p className={`text-xs leading-relaxed font-semibold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                   <strong>Explicação Clínica:</strong> {questions[currentIdx].explanation}
                 </p>
+                {questions[currentIdx].exact_quote && (
+                  <div className={`mt-3 p-3 rounded-xl text-[11px] border flex gap-2 items-start ${
+                    darkMode ? 'bg-[#1a1a1a] border-[#333] text-slate-400' : 'bg-white border-slate-200 text-slate-500'
+                  }`}>
+                    <i className="fas fa-shield-check text-green-500 mt-0.5" title="Verificado pelo Guardrail"></i>
+                    <div>
+                      <strong className="block text-green-600 dark:text-green-400 mb-1">Citação Exata (Guardrail)</strong>
+                      <span className="italic">"{questions[currentIdx].exact_quote}"</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

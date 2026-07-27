@@ -72,12 +72,14 @@ Foque na prática clínica e na segurança do paciente sob a perspectiva do téc
 Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
 Você DEVE responder estritamente em formato JSON com o seguinte esquema (não inclua blocos markdown de código, retorne apenas o JSON bruto):
 {
+  "base_text": "Texto base educativo detalhado gerado por você sobre o tema, contendo TODAS as respostas para as perguntas abaixo.",
   "questions": [
     {
       "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
-      "explanation": "Explicação detalhada e fundamentação teórica baseada em literaturas científicas brasileiras (ex: Potter, Brunner & Suddarth, resoluções do COFEN/COREN, manuais do Ministério da Saúde)."
+      "explanation": "Explicação detalhada e fundamentação teórica baseada em literaturas científicas brasileiras.",
+      "exact_quote": "A CITAÇÃO EXATA do 'base_text' que justifica a resposta correta. Deve ser obrigatoriamente uma cópia fiel (substring exata) do texto base. O sistema irá realizar um .includes() para validar."
     }
   ]
 }`;

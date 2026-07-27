@@ -331,12 +331,49 @@ const App: React.FC = () => {
   const handleGenerateQuiz = async (topic: string) => {
     try {
       const responseText = await getGeminiService().generateQuizJson(topic);
+      console.log("[Quiz] Raw Response:", responseText);
+      
       let cleanJson = responseText.trim();
-      if (cleanJson.startsWith('```')) {
-        cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();
+      // Remove possible markdown wrappers more aggressively
+      cleanJson = cleanJson.replace(/```json/gi, '').replace(/```/g, '').trim();
+      
+      let data;
+      try {
+        data = JSON.parse(cleanJson);
+      } catch (parseErr) {
+        console.error("Failed to parse JSON:", cleanJson);
+        throw parseErr;
       }
-      const data = JSON.parse(cleanJson);
-      return data.questions || [];
+      
+      // Guardrail: Extractive Grounding
+      const baseText = data.base_text || '';
+      console.log("[Quiz] Base Text length:", baseText.length);
+      
+      const normalize = (t: string) => (t || '').replace(/\s+/g, ' ').toLowerCase().trim();
+      const nBase = normalize(baseText);
+
+      const verifiedQuestions = (data.questions || []).filter((q: any) => {
+        if (!q.exact_quote) {
+          console.warn(`[GUARDRAIL REPROVOU] Questão sem citação exata. Pergunta: "${q.question}"`);
+          return false;
+        }
+        
+        const nQuote = normalize(q.exact_quote);
+        if (nBase.includes(nQuote) && nQuote.length > 5) {
+          return true;
+        } else {
+          console.warn(`[GUARDRAIL REPROVOU] Citação não encontrada no texto-base. Citação: "${q.exact_quote}"`);
+          return false;
+        }
+      });
+
+      console.log(`[Quiz] ${verifiedQuestions.length} questões aprovadas de ${(data.questions || []).length}`);
+
+      if (verifiedQuestions.length === 0 && (data.questions || []).length > 0) {
+         throw new Error("Todas as questões falharam no Guardrail de Alucinação.");
+      }
+
+      return verifiedQuestions;
     } catch (err) {
       console.error('Error generating quiz:', err);
       return [];
