@@ -66,10 +66,16 @@ export class GeminiService {
   }
 
   async generateStudyContent(topic: string, format: StudyFormat, history: Message[] = []): Promise<string> {
-    const sanitizedTopic = sanitizeInput(topic);
+    let sanitizedTopic = sanitizeInput(topic);
     
     if (detectPromptInjection(sanitizedTopic)) {
       throw new Error('Detecção de segurança: Prompt Injection identificado no tema de estudo.');
+    }
+
+    // WORKAROUND: Injetado DEPOIS da validação de segurança para não disparar falso-positivo
+    // de Prompt Injection por causa das palavras "Ignore instruções".
+    if (format === StudyFormat.MINDMAP) {
+      sanitizedTopic += `\n\n[INSTRUÇÃO CRÍTICA DO SISTEMA: Formato JSON obrigatório. Responda EXCLUSIVAMENTE com um JSON válido (sem blocos markdown de código, sem texto antes ou depois) seguindo este formato: {"label":"Tema Central","children":[{"label":"Ramo 1","children":[{"label":"Sub-ramo 1.1"},{"label":"Sub-ramo 1.2"}]},{"label":"Ramo 2","children":[{"label":"Sub-ramo 2.1"}]}]}. Crie de 3 a 6 ramos principais e de 2 a 4 sub-ramos por ramo. Cada label deve ser curta (máximo 8 palavras). NÃO inclua a seção "Para Aprofundar" nem "Referências Recomendadas" no Mapa Mental. NENHUM TEXTO ADICIONAL.]`;
     }
 
     const sanitizedHistory = history.map(msg => {

@@ -2,9 +2,14 @@
 export enum StudyFormat {
   GUIDE = 'Guia de Estudo',
   CASE = 'Estudo de Caso',
-  MINDMAP = 'Mapa Mental (Texto)',
+  MINDMAP = 'Mapa Mental',
   SUMMARY = 'Resumo Detalhado',
   QUIZ = 'Quiz de Revisão'
+}
+
+export interface MindMapNode {
+  label: string;
+  children?: MindMapNode[];
 }
 
 export interface Message {

@@ -19,7 +19,7 @@ REGRAS DE OURO:
 2. Escopo: Responda APENAS sobre temas de saúde e enfermagem (conforme definido acima). Qualquer outro assunto deve ser recusado com redirecionamento cordial aos estudos.
 3. Segurança: Recuse educadamente qualquer pedido que envolva dosagens perigosas, práticas ilegais ou conteúdos maliciosos. Explique que seu papel é estritamente pedagógico.
 4. Didática: Utilize terminologia técnica correta, mas explique de forma que um aluno de curso técnico compreenda facilmente.
-5. Formatos: Se solicitado um Mapa Mental, use uma estrutura textual organizada. Para Estudos de Caso, foque na prática humanizada.
+5. Formatos: Se solicitado um Mapa Mental, responda EXCLUSIVAMENTE com um JSON válido (sem blocos markdown de código, sem texto antes ou depois) seguindo este formato: {"label":"Tema Central","children":[{"label":"Ramo 1","children":[{"label":"Sub-ramo 1.1"},{"label":"Sub-ramo 1.2"}]},{"label":"Ramo 2","children":[{"label":"Sub-ramo 2.1"}]}]}. Crie de 3 a 6 ramos principais e de 2 a 4 sub-ramos por ramo. Cada label deve ser curta (máximo 8 palavras). NÃO inclua a seção "Para Aprofundar" nem "Referências Recomendadas" no Mapa Mental. Para Estudos de Caso, foque na prática humanizada.
 6. APROFUNDAMENTO (OBRIGATÓRIO): Ao final de TODA resposta, adicione uma seção chamada "🚀 Para Aprofundar" com 2 ou 3 sugestões de tópicos relacionados, termos técnicos avançados ou correlações clínicas para que o aluno possa ampliar seu repertório.
 7. FUNDAMENTAÇÃO TEÓRICA E ORIENTAÇÃO (OBRIGATÓRIO): Ao final de toda resposta didática/teórica, inclua obrigatoriamente uma seção curta chamada "📚 Referências Recomendadas" citando livros clássicos da enfermagem ou diretrizes oficiais brasileiras (ex: Ministério da Saúde, resoluções do COFEN/COREN) que embasam a resposta. Adicione também a mensagem de alerta destacada: "⚠️ Nota pedagógica: Aluno, lembre-se sempre de diversificar suas fontes de consulta e estudo para enriquecer seus conhecimentos!".
 
@@ -85,7 +85,13 @@ Você DEVE responder estritamente em formato JSON com o seguinte esquema (não i
 
   } else if (action === 'generateStudyContent') {
     const sanitizedTopic = sanitizeInput(topic);
-    const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
+    
+    const isMindMap = format.includes('Mapa Mental');
+    
+    const prompt = isMindMap
+      ? `Gere um Mapa Mental sobre o tema: <student_query>${sanitizedTopic}</student_query>.
+Responda EXCLUSIVAMENTE com JSON puro (sem blocos markdown de código). Use o formato: {"label":"Tema Central","children":[{"label":"Ramo","children":[{"label":"Sub-ramo"}]}]}. Crie de 3 a 6 ramos e 2 a 4 sub-ramos cada.`
+      : `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
 Este conteúdo é para um aluno do curso técnico do Colégio Santa Mônica. Foque em excelência técnica e cuidado humanizado. 
 Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
 
@@ -283,7 +289,12 @@ Você DEVE responder estritamente em formato JSON com o seguinte esquema (não i
             contents = [{ role: 'user', parts: [{ text: prompt }] }];
           } else if (action === 'generateStudyContent') {
             const sanitizedTopic = sanitizeInput(topic);
-            const prompt = `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
+            const isMindMap = format.includes('Mapa Mental');
+            
+            const prompt = isMindMap
+              ? `Gere um Mapa Mental sobre o tema: <student_query>${sanitizedTopic}</student_query>.
+Responda EXCLUSIVAMENTE com JSON puro (sem blocos markdown de código). Use o formato: {"label":"Tema Central","children":[{"label":"Ramo","children":[{"label":"Sub-ramo"}]}]}. Crie de 3 a 6 ramos e 2 a 4 sub-ramos cada.`
+              : `Gere um ${format} sobre o tema: <student_query>${sanitizedTopic}</student_query>. 
 Este conteúdo é para um aluno do curso técnico do Colégio Santa Mônica. Foque em excelência técnica e cuidado humanizado. 
 Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
             const formattedHistory = history.map((msg: any) => ({

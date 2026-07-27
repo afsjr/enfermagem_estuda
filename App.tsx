@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StudyFormat, Message, ChatState } from './types';
+import { StudyFormat, Message, ChatState, MindMapNode } from './types';
 import { GeminiService } from './geminiService';
+import MindMapView from './components/MindMapView';
 import ChatMessage from './components/ChatMessage';
 import FormatSelector from './components/FormatSelector';
 import DashboardOverview from './components/DashboardOverview';
@@ -433,6 +434,28 @@ const App: React.FC = () => {
       }
     };
     reader.readAsText(file);
+  };
+
+  /**
+   * Tenta extrair JSON de mapa mental da resposta da IA.
+   * Retorna o objeto MindMapNode ou null se falhar (fallback para Markdown).
+   */
+  const parseMindMapJson = (content: string): MindMapNode | null => {
+    try {
+      // Limpa possíveis blocos markdown de código
+      let clean = content.trim();
+      if (clean.startsWith('```')) {
+        clean = clean.replace(/^```(?:json)?\s*/, '').replace(/```\s*$/, '').trim();
+      }
+      const parsed = JSON.parse(clean);
+      // Validação mínima: precisa ter label e children
+      if (parsed && typeof parsed.label === 'string' && Array.isArray(parsed.children)) {
+        return parsed as MindMapNode;
+      }
+      return null;
+    } catch {
+      return null;
+    }
   };
 
   const navigationItems = [
@@ -972,16 +995,26 @@ const App: React.FC = () => {
                               </div>
                             </div>
                             
-                            {/* Sheet of Paper layout for document reading */}
-                            <div className={`flex-1 overflow-y-auto p-6 rounded-xl border shadow-inner ${
-                              darkMode 
-                                ? 'bg-[#222] border-[#333] text-slate-100' 
-                                : 'bg-amber-50/10 border-slate-200 text-slate-800'
-                            }`}>
-                              <div className="prose max-w-none text-xs md:text-sm leading-relaxed font-medium">
-                                <ReactMarkdown>{generatedDoc.content}</ReactMarkdown>
+                            {/* Renderização condicional: Mapa Mental Visual vs Markdown */}
+                            {generatedDoc.format === StudyFormat.MINDMAP && parseMindMapJson(generatedDoc.content) ? (
+                              <div className={`flex-1 overflow-auto rounded-xl border shadow-inner ${
+                                darkMode 
+                                  ? 'bg-[#1a1a1a] border-[#333]' 
+                                  : 'bg-slate-50 border-slate-200'
+                              }`}>
+                                <MindMapView data={parseMindMapJson(generatedDoc.content)!} darkMode={darkMode} />
                               </div>
-                            </div>
+                            ) : (
+                              <div className={`flex-1 overflow-y-auto p-6 rounded-xl border shadow-inner ${
+                                darkMode 
+                                  ? 'bg-[#222] border-[#333] text-slate-100' 
+                                  : 'bg-amber-50/10 border-slate-200 text-slate-800'
+                              }`}>
+                                <div className="prose max-w-none text-xs md:text-sm leading-relaxed font-medium">
+                                  <ReactMarkdown>{generatedDoc.content}</ReactMarkdown>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
