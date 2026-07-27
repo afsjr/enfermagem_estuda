@@ -68,22 +68,21 @@ function buildOpenAiMessages(
   if (action === 'generateQuizJson') {
     const sanitizedTopic = sanitizeInput(topic);
     const prompt = `ATENÇÃO: Sua tarefa principal é ESCREVER UM TEXTO BASE educativo sobre o tema: ${sanitizedTopic}.
-Depois de escrever o texto base, crie um quiz de 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
+Depois de escrever o texto base, crie um quiz de EXATAMENTE 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
 
-Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON.
+Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON. Certifique-se de gerar todas as 5 perguntas no array 'questions'.
 
 {
-  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
+  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as 5 perguntas.",
   "questions": [
     {
-      "question": "Texto da pergunta 1?",
+      "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
       "explanation": "Explicação detalhada.",
       "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
-    },
-    // GERE EXATAMENTE 5 OBJETOS DE PERGUNTA AQUI (Pergunta 2, 3, 4 e 5)
+    }
   ]
 }`;
     messages.push({ role: 'user', content: prompt });
@@ -314,28 +313,53 @@ Deno.serve(async (req: Request) => {
         try {
           // Prepara payloads específicos para o Gemini
           let contents = [];
+          let geminiResponseSchema = undefined;
           if (action === 'generateQuizJson') {
             const sanitizedTopic = sanitizeInput(topic);
             const prompt = `ATENÇÃO: Sua tarefa principal é ESCREVER UM TEXTO BASE educativo sobre o tema: ${sanitizedTopic}.
-Depois de escrever o texto base, crie um quiz de 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
+Depois de escrever o texto base, crie um quiz de EXATAMENTE 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
 
-Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON.
+Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON. Certifique-se de gerar todas as 5 perguntas no array 'questions'.
 
 {
-  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
+  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as 5 perguntas.",
   "questions": [
     {
-      "question": "Texto da pergunta 1?",
+      "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
       "explanation": "Explicação detalhada.",
       "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
-    },
-    // GERE EXATAMENTE 5 OBJETOS DE PERGUNTA AQUI (Pergunta 2, 3, 4 e 5)
+    }
   ]
 }`;
             contents = [{ role: 'user', parts: [{ text: prompt }] }];
+            geminiResponseSchema = {
+              type: "object",
+              properties: {
+                base_text: {
+                  type: "string",
+                  description: "Texto educativo extenso e detalhado gerado sobre o tema, que contém todas as respostas."
+                },
+                questions: {
+                  type: "array",
+                  description: "Exatamente 5 perguntas de múltipla escolha.",
+                  items: {
+                    type: "object",
+                    properties: {
+                      question: { type: "string" },
+                      options: { type: "array", items: { type: "string" } },
+                      answer: { type: "integer" },
+                      explanation: { type: "string" },
+                      exact_quote: { type: "string" }
+                    },
+                    required: ["question", "options", "answer", "explanation", "exact_quote"]
+                  }
+                }
+              },
+              required: ["base_text", "questions"]
+            };
           } else if (action === 'generateStudyContent') {
             const sanitizedTopic = sanitizeInput(topic);
             const isMindMap = format.includes('Mapa Mental');
@@ -371,7 +395,8 @@ Ao final, inclua a seção "Para Aprofundar" com temas correlatos.`;
             },
             generationConfig: {
               temperature: temperature,
-              responseMimeType: responseMimeType
+              responseMimeType: responseMimeType,
+              responseSchema: geminiResponseSchema
             }
           };
 
