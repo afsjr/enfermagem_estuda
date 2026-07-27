@@ -70,7 +70,9 @@ function buildOpenAiMessages(
     const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
 Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
-Você DEVE responder estritamente em formato JSON com o seguinte esquema (não inclua blocos markdown de código, retorne apenas o JSON bruto):
+Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura.
+ATENÇÃO: A chave "base_text" é OBRIGATÓRIA na raiz do JSON. A chave "exact_quote" é OBRIGATÓRIA em cada questão. Se você omitir qualquer uma dessas chaves, o sistema vai quebrar.
+
 {
   "base_text": "Texto base educativo detalhado gerado por você sobre o tema, contendo TODAS as respostas para as perguntas abaixo.",
   "questions": [
