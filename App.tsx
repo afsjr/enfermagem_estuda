@@ -442,11 +442,22 @@ const App: React.FC = () => {
    */
   const parseMindMapJson = (content: string): MindMapNode | null => {
     try {
-      // Limpa possíveis blocos markdown de código
-      let clean = content.trim();
-      if (clean.startsWith('```')) {
-        clean = clean.replace(/^```(?:json)?\s*/, '').replace(/```\s*$/, '').trim();
+      let clean = content;
+      // Procura bloco markdown de json
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (jsonMatch && jsonMatch[1]) {
+        clean = jsonMatch[1].trim();
+      } else {
+        // Fallback para procurar as chaves no texto livre
+        const startIndex = content.indexOf('{');
+        const endIndex = content.lastIndexOf('}');
+        if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+          clean = content.substring(startIndex, endIndex + 1).trim();
+        } else {
+          clean = content.trim();
+        }
       }
+      
       const parsed = JSON.parse(clean);
       // Validação mínima: precisa ter label e children
       if (parsed && typeof parsed.label === 'string' && Array.isArray(parsed.children)) {
