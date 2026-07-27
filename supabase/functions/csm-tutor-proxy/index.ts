@@ -67,21 +67,21 @@ function buildOpenAiMessages(
 
   if (action === 'generateQuizJson') {
     const sanitizedTopic = sanitizeInput(topic);
-    const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
+    const prompt = `ATENÇÃO: Sua tarefa principal é ESCREVER UM TEXTO BASE educativo sobre o tema: ${sanitizedTopic}.
+Depois de escrever o texto base, crie um quiz de 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
-Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
-Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura.
-ATENÇÃO: A chave "base_text" é OBRIGATÓRIA na raiz do JSON. A chave "exact_quote" é OBRIGATÓRIA em cada questão. Se você omitir qualquer uma dessas chaves, o sistema vai quebrar.
+
+Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON.
 
 {
-  "base_text": "Texto base educativo detalhado gerado por você sobre o tema, contendo TODAS as respostas para as perguntas abaixo.",
+  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
   "questions": [
     {
       "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
-      "explanation": "Explicação detalhada e fundamentação teórica baseada em literaturas científicas brasileiras.",
-      "exact_quote": "A CITAÇÃO EXATA do 'base_text' que justifica a resposta correta. Deve ser obrigatoriamente uma cópia fiel (substring exata) do texto base. O sistema irá realizar um .includes() para validar."
+      "explanation": "Explicação detalhada.",
+      "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
     }
   ]
 }`;
@@ -142,7 +142,44 @@ async function callOpenRouter(
   };
 
   if (responseMimeType === 'application/json') {
-    requestBody.response_format = { type: 'json_object' };
+    if (action === 'generateQuizJson') {
+      requestBody.response_format = {
+        type: "json_schema",
+        json_schema: {
+          name: "quiz_schema",
+          strict: true,
+          schema: {
+            type: "object",
+            properties: {
+              base_text: {
+                type: "string",
+                description: "Texto educativo extenso e detalhado gerado sobre o tema, que contém todas as respostas."
+              },
+              questions: {
+                type: "array",
+                description: "Exatamente 5 perguntas de múltipla escolha.",
+                items: {
+                  type: "object",
+                  properties: {
+                    question: { type: "string" },
+                    options: { type: "array", items: { type: "string" } },
+                    answer: { type: "number" },
+                    explanation: { type: "string" },
+                    exact_quote: { type: "string" }
+                  },
+                  required: ["question", "options", "answer", "explanation", "exact_quote"],
+                  additionalProperties: false
+                }
+              }
+            },
+            required: ["base_text", "questions"],
+            additionalProperties: false
+          }
+        }
+      };
+    } else {
+      requestBody.response_format = { type: 'json_object' };
+    }
   }
 
   const response = await fetch(openRouterUrl, {
@@ -276,17 +313,21 @@ Deno.serve(async (req: Request) => {
           let contents = [];
           if (action === 'generateQuizJson') {
             const sanitizedTopic = sanitizeInput(topic);
-            const prompt = `Gere um quiz com exatamente 5 perguntas de múltipla escolha sobre o tema: ${sanitizedTopic}.
+            const prompt = `ATENÇÃO: Sua tarefa principal é ESCREVER UM TEXTO BASE educativo sobre o tema: ${sanitizedTopic}.
+Depois de escrever o texto base, crie um quiz de 5 perguntas de múltipla escolha baseadas EXATAMENTE no texto que você escreveu.
 Foque na prática clínica e na segurança do paciente sob a perspectiva do técnico em enfermagem no Brasil.
-Cada pergunta deve ter exatamente 4 alternativas e apenas 1 resposta correta.
-Você DEVE responder estritamente em formato JSON com o seguinte esquema (não inclua blocos markdown de código, retorne apenas o JSON bruto):
+
+Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estrutura. Não adicione markdown fora do JSON.
+
 {
+  "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
   "questions": [
     {
       "question": "Texto da pergunta?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
-      "explanation": "Explicação detalhada e fundamentação teórica baseada em literaturas científicas brasileiras (ex: Potter, Brunner & Suddarth, resoluções do COFEN/COREN, manuais do Ministério da Saúde)."
+      "explanation": "Explicação detalhada.",
+      "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
     }
   ]
 }`;
