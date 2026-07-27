@@ -77,12 +77,13 @@ Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estru
   "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
   "questions": [
     {
-      "question": "Texto da pergunta?",
+      "question": "Texto da pergunta 1?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
       "explanation": "Explicação detalhada.",
       "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
-    }
+    },
+    // GERE EXATAMENTE 5 OBJETOS DE PERGUNTA AQUI (Pergunta 2, 3, 4 e 5)
   ]
 }`;
     messages.push({ role: 'user', content: prompt });
@@ -158,6 +159,8 @@ async function callOpenRouter(
               questions: {
                 type: "array",
                 description: "Exatamente 5 perguntas de múltipla escolha.",
+                minItems: 5,
+                maxItems: 5,
                 items: {
                   type: "object",
                   properties: {
@@ -323,12 +326,13 @@ Você DEVE responder estritamente em formato JSON seguindo EXATAMENTE esta estru
   "base_text": "Seu texto base detalhado e completo aqui. Deve conter as respostas para todas as perguntas.",
   "questions": [
     {
-      "question": "Texto da pergunta?",
+      "question": "Texto da pergunta 1?",
       "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
       "answer": 0,
       "explanation": "Explicação detalhada.",
       "exact_quote": "A CITAÇÃO EXATA (substring fiel) retirada do 'base_text' que justifica a resposta."
-    }
+    },
+    // GERE EXATAMENTE 5 OBJETOS DE PERGUNTA AQUI (Pergunta 2, 3, 4 e 5)
   ]
 }`;
             contents = [{ role: 'user', parts: [{ text: prompt }] }];
