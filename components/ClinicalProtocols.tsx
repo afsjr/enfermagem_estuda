@@ -142,7 +142,7 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Acidente Vascular Cerebral (Triagem FAST)</h3>
             <div className="space-y-2">
               {renderChecklistItem('avc_1', 'F - Face (Rosto)', 'Pedir para o paciente sorrir. Avaliar assimetria (boca torta).')}
-              {renderChecklistItem('avc_2', 'A - Arms (Braços)', 'Pedir para elevar os dois braços. Avaliar se um braço cai ou não tem força.', '/images/protocols/avc_2.png')}
+              {renderChecklistItem('avc_2', 'A - Arms (Braços)', 'Pedir para elevar os dois braços. Avaliar se um braço cai ou não tem força.')}
               {renderChecklistItem('avc_3', 'S - Speech (Fala)', 'Pedir para repetir uma frase simples. Avaliar fala arrastada, incompreensível ou afasia.', '/images/protocols/avc_3.png')}
               {renderChecklistItem('avc_4', 'T - Time (Tempo)', 'Identificar a hora exata do início dos sintomas. Janela para trombólise é de até 4,5 horas.', '/images/protocols/avc_4.png')}
               {renderChecklistItem('avc_5', 'Glicemia Capilar', 'Descartar hipoglicemia, que pode simular sintomas de AVC.')}
