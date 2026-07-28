@@ -59,8 +59,8 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
         </p>
         {detail && <p className="text-xs text-slate-500 mt-1">{detail}</p>}
         {imageSrc && (
-          <div className="mt-3 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white max-w-sm">
-            <img src={imageSrc} alt={text} className="w-full h-auto object-contain max-h-48" />
+          <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white w-full max-w-[280px] aspect-square">
+            <img src={imageSrc} alt={text} className="w-full h-full object-cover" />
           </div>
         )}
       </div>
@@ -126,12 +126,12 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Infarto Agudo do Miocárdio (Triagem e MONAC)</h3>
             <div className="space-y-2">
               {renderChecklistItem('iam_1', 'Realizar ECG em até 10 minutos', 'Tempo porta-ECG ideal é < 10 minutos. Procurar por supradesnivelamento do segmento ST.', '/images/protocols/iam_1.png')}
-              {renderChecklistItem('iam_2', 'M - Morfina', 'Se dor não for aliviada com nitrato. Cuidado com hipotensão.')}
+              {renderChecklistItem('iam_2', 'M - Morfina', 'Se dor não for aliviada com nitrato. Cuidado com hipotensão.', '/images/protocols/iam_2.png')}
               {renderChecklistItem('iam_3', 'O - Oxigênio', 'Apenas se saturação < 90% ou desconforto respiratório.')}
               {renderChecklistItem('iam_4', 'N - Nitrato', 'Vasodilatador sublingual. Contraindicado se uso recente de inibidores da fosfodiesterase (Sildenafil) ou infarto de VD.')}
-              {renderChecklistItem('iam_5', 'A - Aspirina (AAS)', '160 a 325 mg mastigados.')}
-              {renderChecklistItem('iam_6', 'C - Clopidogrel', 'Dose de ataque (geralmente 300 a 600 mg) conforme protocolo institucional.')}
-              {renderChecklistItem('iam_7', 'Atenção ao Tempo Porta-Balão', 'Meta < 90 minutos para Intervenção Coronária Percutânea (Cateterismo) em hospital com hemodinâmica.')}
+              {renderChecklistItem('iam_5', 'A - Aspirina (AAS)', '160 a 325 mg mastigados.', '/images/protocols/iam_5.png')}
+              {renderChecklistItem('iam_6', 'C - Clopidogrel', 'Dose de ataque (geralmente 300 a 600 mg) conforme protocolo institucional.', '/images/protocols/iam_6.png')}
+              {renderChecklistItem('iam_7', 'Atenção ao Tempo Porta-Balão', 'Meta < 90 minutos para Intervenção Coronária Percutânea (Cateterismo) em hospital com hemodinâmica.', '/images/protocols/iam_7.png')}
             </div>
           </div>
         )}
@@ -141,12 +141,12 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
           <div className="space-y-4 animate-fadeIn">
             <h3 className="font-bold text-lg text-slate-700 dark:text-slate-300 mb-4">Acidente Vascular Cerebral (Triagem FAST)</h3>
             <div className="space-y-2">
-              {renderChecklistItem('avc_1', 'F - Face (Rosto)', 'Pedir para o paciente sorrir. Avaliar assimetria (boca torta).', '/images/protocols/avc_1.png')}
+              {renderChecklistItem('avc_1', 'F - Face (Rosto)', 'Pedir para o paciente sorrir. Avaliar assimetria (boca torta).')}
               {renderChecklistItem('avc_2', 'A - Arms (Braços)', 'Pedir para elevar os dois braços. Avaliar se um braço cai ou não tem força.', '/images/protocols/avc_2.png')}
-              {renderChecklistItem('avc_3', 'S - Speech (Fala)', 'Pedir para repetir uma frase simples. Avaliar fala arrastada, incompreensível ou afasia.')}
-              {renderChecklistItem('avc_4', 'T - Time (Tempo)', 'Identificar a hora exata do início dos sintomas. Janela para trombólise é de até 4,5 horas.')}
+              {renderChecklistItem('avc_3', 'S - Speech (Fala)', 'Pedir para repetir uma frase simples. Avaliar fala arrastada, incompreensível ou afasia.', '/images/protocols/avc_3.png')}
+              {renderChecklistItem('avc_4', 'T - Time (Tempo)', 'Identificar a hora exata do início dos sintomas. Janela para trombólise é de até 4,5 horas.', '/images/protocols/avc_4.png')}
               {renderChecklistItem('avc_5', 'Glicemia Capilar', 'Descartar hipoglicemia, que pode simular sintomas de AVC.')}
-              {renderChecklistItem('avc_6', 'Encaminhar para TC de Crânio', 'Tempo porta-TC ideal é < 25 minutos.')}
+              {renderChecklistItem('avc_6', 'Encaminhar para TC de Crânio', 'Tempo porta-TC ideal é < 25 minutos.', '/images/protocols/avc_6.png')}
             </div>
             
             <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-xl mt-6">
