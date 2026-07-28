@@ -113,8 +113,8 @@ const ClinicalProtocols: React.FC<ClinicalProtocolsProps> = ({ darkMode }) => {
               {renderChecklistItem('pcr_1', 'Reconhecer PCR e Pedir Ajuda', 'Verificar responsividade, respiração (ausente ou gasping) e pulso central (máx 10 seg). Chamar equipe e solicitar desfibrilador/carrinho de emergência.', '/images/protocols/pcr_1.png')}
               {renderChecklistItem('pcr_2', 'Iniciar RCP de Alta Qualidade', '30 compressões : 2 ventilações. Frequência 100-120/min. Profundidade de 5cm. Permitir retorno total do tórax.', '/images/protocols/pcr_2.png')}
               {renderChecklistItem('pcr_3', 'Analisar o Ritmo (Chegada do DEA/Monitor)', 'Se ritmo chocável (FV/TV sem pulso): Aplicar choque. Se não chocável (Assistolia/AESP): Retomar RCP imediatamente.', '/images/protocols/pcr_3.png')}
-              {renderChecklistItem('pcr_4', 'Obter Acesso IV/IO e Administrar Epinefrina', 'Epinefrina 1 mg a cada 3 a 5 minutos.')}
-              {renderChecklistItem('pcr_5', 'Considerar Via Aérea Avançada', 'Após via aérea avançada, 1 ventilação a cada 6 segundos (10/min) sem pausar compressões.')}
+              {renderChecklistItem('pcr_4', 'Obter Acesso IV/IO e Administrar Epinefrina', 'Epinefrina 1 mg a cada 3 a 5 minutos.', '/images/protocols/pcr_4.png')}
+              {renderChecklistItem('pcr_5', 'Considerar Via Aérea Avançada', 'Após via aérea avançada, 1 ventilação a cada 6 segundos (10/min) sem pausar compressões.', '/images/protocols/pcr_5.png')}
               {renderChecklistItem('pcr_6', 'Identificar Causas Reversíveis (5Hs e 5Ts)', 'Hipovolemia, Hipóxia, H+ (acidose), Hipo/Hipercalemia, Hipotermia. Tensão no tórax (pneumotórax), Tamponamento, Toxinas, Trombose pulmonar, Trombose coronária.')}
             </div>
           </div>
