@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { toJpeg } from 'html-to-image';
 import { MindMapNode } from '../types';
 
 interface MindMapViewProps {
@@ -122,7 +123,7 @@ const MindMapView: React.FC<MindMapViewProps> = ({ data, darkMode }) => {
           .attr('transform', d => `translate(${source.y0},${source.x0})`)
           .attr('fill-opacity', 0)
           .attr('stroke-opacity', 0)
-          .on('click', (event, d) => {
+          .on('click', (event, d: any) => {
             // Toggle children on click
             if (d.children) {
                 d._children = d.children;
@@ -146,7 +147,7 @@ const MindMapView: React.FC<MindMapViewProps> = ({ data, darkMode }) => {
           .style('display', 'flex')
           .style('align-items', 'center')
           .style('justify-content', 'center')
-          .html((d) => {
+          .html((d: any) => {
             const colors = getColorsForLevel(d.depth, darkMode);
             const hasChildren = d._children || d.children;
             const isCollapsed = !d.children;
@@ -239,10 +240,36 @@ const MindMapView: React.FC<MindMapViewProps> = ({ data, darkMode }) => {
     
   }, [JSON.stringify(data), darkMode]); // Usar stringify previne re-render loops se a referência de data mudar
 
+  const handleDownload = () => {
+    if (containerRef.current) {
+      toJpeg(containerRef.current, { quality: 0.95, backgroundColor: darkMode ? '#1a1a1a' : '#f8fafc' })
+        .then((dataUrl) => {
+          const link = document.createElement('a');
+          link.download = `mapa-mental-${Date.now()}.jpg`;
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch((err) => {
+          console.error('Error exporting image:', err);
+          alert('Erro ao exportar a imagem.');
+        });
+    }
+  };
+
   // Using the outer div to pass "dark" class to the foreignObject CSS scope
   return (
-    <div ref={containerRef} className={`w-full h-full min-h-[500px] overflow-hidden rounded-xl cursor-grab active:cursor-grabbing ${darkMode ? 'dark bg-[#1a1a1a]' : 'bg-slate-50'}`}>
-      <svg ref={svgRef} className="w-full h-full" />
+    <div className="relative w-full h-full min-h-[500px]">
+      <div ref={containerRef} className={`w-full h-full min-h-[500px] overflow-hidden rounded-xl cursor-grab active:cursor-grabbing ${darkMode ? 'dark bg-[#1a1a1a]' : 'bg-slate-50'}`}>
+        <svg ref={svgRef} className="w-full h-full" />
+      </div>
+      <button
+        onClick={handleDownload}
+        className="absolute bottom-4 right-4 px-3 py-2 text-xs font-bold uppercase tracking-wider bg-white dark:bg-[#252525] border border-slate-200 dark:border-[#333] rounded-lg shadow-md hover:bg-slate-50 dark:hover:bg-[#333] text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-2 z-10"
+        title="Baixar Imagem"
+      >
+        <i className="fas fa-camera"></i>
+        Exportar JPG
+      </button>
     </div>
   );
 };

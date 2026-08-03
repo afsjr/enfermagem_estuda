@@ -14,11 +14,12 @@ import OnboardingModal from './components/OnboardingModal';
 import EmergencyCalculator from './components/EmergencyCalculator';
 import ClinicalProtocols from './components/ClinicalProtocols';
 import FeedbackModal from './components/FeedbackModal';
+import VersionSurvey from './components/VersionSurvey';
 import { telemetry, StudentProfile } from './telemetryService';
 import ReactMarkdown from 'react-markdown';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols' | 'survey'>('tutor');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const prevViewRef = useRef(activeView);
@@ -94,14 +95,7 @@ const App: React.FC = () => {
     return 'Líder do Cuidado Clínico 🏆';
   };
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Bem-vindo ao MonicAI! 🎓 Sou seu assistente de estudos aqui no Colégio Santa Mônica, um projeto **100% gratuito** para alunos do técnico em enfermagem. Meu propósito é ajudar **exclusivamente** em temas de saúde e enfermagem. Qual matéria técnica ou procedimento vamos revisar hoje?',
-      timestamp: new Date(),
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [state, setState] = useState<ChatState>({ isGenerating: false });
   const [darkMode, setDarkMode] = useState(false);
@@ -136,6 +130,14 @@ const App: React.FC = () => {
     const savedNotes = localStorage.getItem('monicai_notes');
     if (savedNotes) {
       setNotes(savedNotes);
+    }
+    const savedHistory = localStorage.getItem('monicai_history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, []);
 
@@ -226,7 +228,11 @@ const App: React.FC = () => {
 
     // Adiciona ao histórico se for uma nova dúvida principal (não vinda de botões de aprofundar)
     if (!customMessage) {
-      setHistory(prev => [{id: userMessage.id, topic: textToSend}, ...prev.slice(0, 19)]);
+      setHistory(prev => {
+        const newHistory = [{id: userMessage.id, topic: textToSend}, ...prev.slice(0, 19)];
+        localStorage.setItem('monicai_history', JSON.stringify(newHistory));
+        return newHistory;
+      });
     }
 
     const updatedMessages = [...messages, userMessage];
@@ -506,9 +512,12 @@ const App: React.FC = () => {
     }
   };
 
-  const navigationItems = [
-    { id: 'dashboard', name: 'Painel Inicial', icon: 'fa-chart-pie' },
-    { id: 'tutor', name: 'Preceptoria', icon: 'fa-comment-medical' },
+  const mainItems = [
+    { id: 'tutor', name: 'Nova Preceptoria', icon: 'fa-plus' },
+    { id: 'dashboard', name: 'Painel Inicial', icon: 'fa-chart-pie' }
+  ];
+
+  const toolItems = [
     { id: 'pep', name: 'Simulador PEP', icon: 'fa-file-medical' },
     { id: 'infusion', name: 'Bomba de Infusão', icon: 'fa-syringe' },
     { id: 'calculator', name: 'Cálculos Clínicos', icon: 'fa-calculator' },
@@ -516,6 +525,8 @@ const App: React.FC = () => {
     { id: 'protocols', name: 'Protocolos Clínicos', icon: 'fa-clipboard-list' },
     { id: 'quiz', name: 'Simulador de Quiz', icon: 'fa-check-double' }
   ];
+
+  const surveyItem = { id: 'survey', name: 'Pesquisa de Versão', icon: 'fa-poll' };
 
   return (
     <div className={`flex h-[100dvh] max-w-full mx-auto transition-colors duration-300 ${darkMode ? 'bg-[#121212] text-white' : 'bg-slate-100 text-slate-800'}`}>
@@ -548,14 +559,16 @@ const App: React.FC = () => {
 
         {/* Navigation Tabs */}
         <div className="p-3 space-y-1 border-b dark:border-[#333]">
-          <span className="text-[8px] font-black tracking-widest uppercase opacity-40 px-3 block mb-1">Navegação</span>
-          {navigationItems.map(item => {
+          {mainItems.map(item => {
             const isSelected = activeView === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => {
                   setActiveView(item.id as any);
+                  if (item.id === 'tutor') {
+                    setMessages([]);
+                  }
                   if (window.innerWidth < 1024) setIsHistoryOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
@@ -571,8 +584,61 @@ const App: React.FC = () => {
               </button>
             );
           })}
-          
-          {/* Feedback Button */}
+        </div>
+
+        <div className="p-3 space-y-1 border-b dark:border-[#333]">
+          <span className="text-[8px] font-black tracking-widest uppercase opacity-40 px-3 block mb-1">Ferramentas</span>
+          {toolItems.map(item => {
+            const isSelected = activeView === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveView(item.id as any);
+                  if (window.innerWidth < 1024) setIsHistoryOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${
+                  isSelected
+                    ? 'text-[#b22222] bg-[#b22222]/10 dark:text-[#ff8888] dark:bg-[#b22222]/20'
+                    : darkMode
+                      ? 'text-slate-400 hover:bg-[#252525] hover:text-slate-200'
+                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                }`}
+              >
+                <i className={`fas ${item.icon} opacity-50`}></i>
+                <span>{item.name}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Survey Button */}
+        <div className="px-3">
+          <button
+            onClick={() => {
+              setActiveView(surveyItem.id as any);
+              if (window.innerWidth < 1024) setIsHistoryOpen(false);
+            }}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border-2 border-dashed mt-1 ${
+              activeView === 'survey'
+                ? 'bg-[#b22222] text-white border-[#b22222] shadow-md'
+                : darkMode
+                  ? 'border-[#444] text-amber-400 hover:bg-[#252525] hover:text-amber-300'
+                  : 'border-amber-300 text-amber-700 hover:bg-amber-50 hover:text-amber-800'
+            }`}
+          >
+            <i className={`fas ${surveyItem.icon} text-sm ${activeView === 'survey' ? 'text-[#FFCC00]' : ''}`}></i>
+            <span>{surveyItem.name}</span>
+            <span className={`ml-auto px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-wider ${
+              activeView === 'survey'
+                ? 'bg-[#FFCC00] text-[#003366]'
+                : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400'
+            }`}>Novo</span>
+          </button>
+        </div>
+
+        {/* Feedback Button */}
+        <div className="px-3 pb-3">
           <button
             onClick={() => {
               setIsFeedbackModalOpen(true);
@@ -596,7 +662,7 @@ const App: React.FC = () => {
               <div className="p-3 pt-4 flex items-center justify-between opacity-40">
                 <span className="text-[8px] font-black tracking-widest uppercase px-3">Histórico de Chat</span>
                 {history.length > 0 && (
-                  <button onClick={() => setHistory([])} className="text-[8px] font-black uppercase hover:underline text-[#b22222] dark:text-[#ff8888] px-3">Limpar</button>
+                  <button onClick={() => { setHistory([]); localStorage.removeItem('monicai_history'); }} className="text-[8px] font-black uppercase hover:underline text-[#b22222] dark:text-[#ff8888] px-3">Limpar</button>
                 )}
               </div>
               <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-1">
@@ -652,6 +718,7 @@ const App: React.FC = () => {
                 {activeView === 'emergency' && 'Calculadora de Emergência'}
                 {activeView === 'protocols' && 'Protocolos Clínicos'}
                 {activeView === 'quiz' && 'Simulador de Quiz'}
+                {activeView === 'survey' && 'Pesquisa de Versão'}
               </h1>
               <p className="text-[9px] text-[#FFCC00] font-bold uppercase tracking-wider">Estudante de Enfermagem | Santa Mônica</p>
             </div>
@@ -780,15 +847,51 @@ const App: React.FC = () => {
               }`}>
                 {/* Chat Area */}
                 <main className={`flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-4 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'}`}>
-                  {messages.map(msg => (
-                    <ChatMessage 
-                      key={msg.id} 
-                      message={msg} 
-                      darkMode={darkMode} 
-                      onTopicClick={handleDeepDive} 
-                      onAddToNotes={handleAddToNotes}
-                    />
-                  ))}
+                  {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center px-4 animate-[fadeIn_0.5s_ease-out]">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#b22222] to-[#ff4d4d] rounded-3xl flex items-center justify-center mb-6 shadow-2xl">
+                         <i className="fas fa-stethoscope text-4xl text-white"></i>
+                      </div>
+                      <h2 className={`text-2xl sm:text-3xl font-black mb-3 ${darkMode ? 'text-white' : 'text-[#b22222]'}`}>
+                        Como posso ajudar hoje?
+                      </h2>
+                      <p className={`text-sm sm:text-base mb-10 max-w-md ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Sou o MonicAI. Escolha um dos temas abaixo para começarmos ou digite sua própria dúvida.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+                        {[
+                          { icon: 'fa-heartbeat', text: 'Revisar Sinais Vitais' },
+                          { icon: 'fa-syringe', text: 'Cálculo de Medicamentos' },
+                          { icon: 'fa-file-medical', text: 'Anotação de Enfermagem' },
+                          { icon: 'fa-hands-helping', text: 'Primeiros Socorros' }
+                        ].map((suggestion, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSend(suggestion.text)}
+                            className={`flex flex-col items-start p-5 rounded-2xl border-2 transition-all text-left shadow-sm hover:shadow-md ${
+                              darkMode 
+                                ? 'border-[#333] hover:border-[#b22222] bg-[#252525]' 
+                                : 'border-slate-200 hover:border-[#b22222] bg-white'
+                            }`}
+                          >
+                            <i className={`fas ${suggestion.icon} text-xl mb-3 ${darkMode ? 'text-[#ff8888]' : 'text-[#b22222]'}`}></i>
+                            <span className={`text-sm font-bold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>{suggestion.text}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {messages.map(msg => (
+                        <ChatMessage 
+                          key={msg.id} 
+                          message={msg} 
+                          darkMode={darkMode} 
+                          onTopicClick={handleDeepDive} 
+                          onAddToNotes={handleAddToNotes}
+                        />
+                      ))}
                   {state.isGenerating && (
                     <div className="flex flex-col gap-1 ml-4">
                       <div className={`flex items-center gap-1.5 p-3 rounded-2xl border shadow-sm w-20 justify-center ${darkMode ? 'bg-[#252525] border-[#333]' : 'bg-white border-slate-200'}`}>
@@ -798,7 +901,9 @@ const App: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  <div ref={messagesEndRef} />
+                      <div ref={messagesEndRef} />
+                    </>
+                  )}
                 </main>
 
                 {/* Action Bar (Format Selector) */}
@@ -812,7 +917,7 @@ const App: React.FC = () => {
                 )}
 
                 {/* Input Area */}
-                <footer className={`p-4 pb-[76px] lg:pb-4 border-t transition-colors duration-300 ${darkMode ? 'bg-[#1a1a1a] border-[#333]' : 'bg-white border-slate-200'} shrink-0`}>
+                <footer className={`p-4 pb-[76px] lg:pb-6 transition-colors duration-300 ${darkMode ? 'bg-[#121212]' : 'bg-[#f8fafc]'} shrink-0`}>
                   <div className="flex items-center gap-2 max-w-4xl mx-auto font-semibold">
                     <div className="relative flex-1">
                       <input
@@ -820,26 +925,26 @@ const App: React.FC = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Tire sua dúvida aqui..."
-                        className={`w-full pl-4 pr-14 py-3.5 rounded-xl border-2 focus:outline-none focus:border-[#b22222] focus:ring-1 focus:ring-[#b22222] transition-all shadow-sm text-base font-medium ${
+                        placeholder="Pergunte ao MonicAI..."
+                        className={`w-full pl-6 pr-16 py-4 rounded-full border focus:outline-none focus:border-[#b22222] focus:ring-4 focus:ring-[#b22222]/20 transition-all shadow-lg text-base font-medium ${
                           darkMode 
-                          ? 'bg-[#252525] border-[#444] text-white placeholder-slate-500' 
-                          : 'bg-white border-slate-300 text-slate-800 placeholder-slate-400'
+                          ? 'bg-[#1e1e1e] border-[#333] text-white placeholder-slate-500' 
+                          : 'bg-white border-transparent text-slate-800 placeholder-slate-400 hover:border-slate-200'
                         }`}
                       />
                       
                       <button
                         onClick={() => handleSend()}
                         disabled={state.isGenerating || !input.trim()}
-                        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#b22222] text-white rounded-lg flex items-center justify-center hover:bg-[#8b0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#b22222] text-white rounded-full flex items-center justify-center hover:bg-[#8b0000] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md hover:scale-105 active:scale-95"
                       >
-                        <i className="fas fa-paper-plane text-sm"></i>
+                        <i className="fas fa-arrow-up text-sm"></i>
                       </button>
                     </div>
                   </div>
-                  <div className="text-center mt-2">
-                    <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
-                      MONICAI • Ensino de Saúde Baseado em Evidências
+                  <div className="text-center mt-3">
+                    <p className={`text-[9px] font-bold tracking-widest uppercase ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                      MonicAI pode cometer erros. Verifique informações médicas.
                     </p>
                   </div>
                 </footer>
@@ -1171,6 +1276,13 @@ const App: React.FC = () => {
             />
           )}
 
+          {activeView === 'survey' && (
+            <VersionSurvey
+              darkMode={darkMode}
+              onNavigate={(view: string) => setActiveView(view as any)}
+            />
+          )}
+
           {activeView === 'presentation' && (
             <PresentationView
               onBack={() => setActiveView('dashboard')}
@@ -1180,34 +1292,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <nav className="safe-area-bottom lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center overflow-x-auto no-scrollbar justify-start px-2 gap-1 sm:justify-around border-t backdrop-blur-xl bg-white/95 dark:bg-[#1a1a1a]/95 border-slate-200/60 dark:border-[#333] pb-[env(safe-area-inset-bottom)] min-h-[60px]">
-        {[
-          { id: 'dashboard', icon: 'fa-chart-pie', label: 'Painel' },
-          { id: 'tutor', icon: 'fa-comment-medical', label: 'Preceptoria' },
-          { id: 'pep', icon: 'fa-file-medical', label: 'PEP' },
-          { id: 'infusion', icon: 'fa-syringe', label: 'Bomba' },
-          { id: 'protocols', icon: 'fa-clipboard-list', label: 'Protocolos' },
-          { id: 'calculator', icon: 'fa-calculator', label: 'Cálculos' },
-          { id: 'quiz', icon: 'fa-check-double', label: 'Quiz' },
-        ].map(item => {
-          const isActive = activeView === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveView(item.id as any)}
-              className={`flex flex-col min-w-[64px] items-center justify-center gap-1 py-2 px-2 transition-colors ${
-                isActive
-                  ? 'text-[#b22222]'
-                  : 'text-slate-400 dark:text-slate-500'
-              }`}
-            >
-              <i className={`fas ${item.icon} text-lg`}></i>
-              <span className="text-[8px] font-bold uppercase tracking-widest">{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+      {/* Mobile Bottom Navigation Bar Removed */}
+
     </div>
   );
 };

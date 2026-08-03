@@ -7,7 +7,7 @@ interface DashboardOverviewProps {
     calculationsCompleted: number;
     studyMaterialsGenerated: number;
   };
-  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols') => void;
+  onNavigate: (view: 'dashboard' | 'tutor' | 'calculator' | 'quiz' | 'pep' | 'infusion' | 'emergency' | 'presentation' | 'protocols' | 'survey') => void;
   onSelectTopic: (topic: string) => void;
   onExportBackup: () => void;
   onImportBackup: (event: React.ChangeEvent<HTMLInputElement>) => void;
