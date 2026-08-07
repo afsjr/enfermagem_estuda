@@ -1,6 +1,7 @@
 ---
 name: reversa-plan
-description: Esboça a abordagem técnica como delta sobre o legado, gerando roadmap, investigation, data-delta, onboarding e interfaces da feature ativa. Use quando o usuário digitar "/reversa-plan", "reversa-plan", "esboçar plano técnico" ou pedir para virar requirements em desenho de solução. Terceiro skill do ciclo forward, depois de `/reversa-requirements` e (opcionalmente) `/reversa-clarify`.
+description: Esboça a abordagem técnica como delta sobre o legado, gerando roadmap, investigation, data-delta, onboarding e interfaces da feature ativa. Terceiro skill do ciclo forward, depois de `/reversa-requirements` e (opcionalmente) `/reversa-clarify`.
+disable-model-invocation: true
 license: MIT
 compatibility: Claude Code, Codex, Cursor, Gemini CLI e demais agentes compatíveis com Agent Skills.
 metadata:
@@ -36,7 +37,8 @@ Leia os artefatos da pipeline reversa nesta ordem, ignorando os que não existir
 3. `_reversa_sdd/state-machines.md` (máquinas de estado afetadas)
 4. `_reversa_sdd/dependencies.md` (bibliotecas usadas)
 5. `_reversa_sdd/code-analysis.md`, mas apenas as seções dos componentes citados no requirements
-6. `.reversa/principles.md` (princípios obrigatórios)
+6. `_reversa_sdd/addenda/*.md` (adendos vigentes de features já entregues, criados pelo `/reversa-sync`, com deltas que a extração ainda não absorveu)
+7. `.reversa/principles.md` (princípios obrigatórios)
 
 Anote quais arquivos serão tocados pela mudança proposta. Essa lista vai virar parte do `legacy-impact.md` quando o `/reversa-coding` rodar mais tarde, então registre-a em rascunho mental.
 
